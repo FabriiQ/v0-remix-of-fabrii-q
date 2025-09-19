@@ -1,0 +1,429 @@
+"use client"
+
+import { useState, useRef, useEffect } from "react"
+import { motion } from "framer-motion"
+import { Badge } from "@/components/ui/badge"
+import { StatusIndicatorsGroup } from "@/components/status-indicators"
+import {
+  Brain,
+  Building2,
+  Target,
+  Gamepad2,
+  Wifi,
+  Shield,
+  Users,
+  TrendingUp,
+  Star,
+  Zap,
+  Database,
+  BarChart,
+} from "lucide-react"
+
+const capabilities = [
+  {
+    id: "aivy",
+    title: "AIVY Multi-Agent System",
+    subtitle: "Purpose-Built Educational AI",
+    description:
+      "Transform educational workflows with specialized agents designed specifically for learning environments. Student Companion, Teacher Assistant, Content Generation, Assessment Intelligence, and Compliance Monitoring - all working together seamlessly.",
+    icon: <Brain className="w-8 h-8" />,
+    features: [
+      { icon: <Users className="w-5 h-5" />, text: "Personalized learning support" },
+      { icon: <Target className="w-5 h-5" />, text: "Intelligent lesson planning" },
+      { icon: <Zap className="w-5 h-5" />, text: "Automated content creation" },
+      { icon: <BarChart className="w-5 h-5" />, text: "Real-time analytics insights" },
+    ],
+    stats: [
+      { label: "Teacher Time Saved", value: "85%" },
+      { label: "Student Engagement", value: "92%" },
+      { label: "Assessment Accuracy", value: "97%" },
+    ],
+    technologies: ["Python", "TensorFlow", "OpenAI", "PostgreSQL", "Redis"],
+    statusIndicators: [
+      { status: "active" as const, label: "Core agents" },
+      { status: "beta" as const, label: "Advanced collaboration" },
+      { status: "development" as const, label: "Multi-modal support" },
+    ],
+    gradient: "from-fabriiq-primary via-fabriiq-teal to-fabriiq-primary",
+    bgGradient: "from-fabriiq-primary/20 via-fabriiq-teal/10 to-fabriiq-primary/20",
+    accentColor: "text-fabriiq-primary",
+  },
+  {
+    id: "operations",
+    title: "Unified Operations Hub",
+    subtitle: "Complete Institutional Management",
+    description:
+      "Replace fragmented systems with one comprehensive platform managing enrollment, finances, attendance, and analytics. Native multi-campus architecture with centralized governance and campus autonomy.",
+    icon: <Building2 className="w-8 h-8" />,
+    features: [
+      { icon: <Zap className="w-5 h-5" />, text: "Automated enrollment workflows" },
+      { icon: <Database className="w-5 h-5" />, text: "Multi-currency financial management" },
+      { icon: <BarChart className="w-5 h-5" />, text: "Predictive attendance analytics" },
+      { icon: <TrendingUp className="w-5 h-5" />, text: "Real-time reporting dashboards" },
+    ],
+    stats: [
+      { label: "Admin Time Reduction", value: "75%" },
+      { label: "Data Accuracy", value: "90%" },
+      { label: "System Uptime", value: "99.9%" },
+    ],
+    technologies: ["Next.js", "Node.js", "PostgreSQL", "Redis", "Docker"],
+    statusIndicators: [
+      { status: "active" as const, label: "Core operations" },
+      { status: "beta" as const, label: "Advanced analytics" },
+      { status: "development" as const, label: "Multi-campus sync" },
+    ],
+    gradient: "from-fabriiq-teal via-fabriiq-primary to-fabriiq-teal",
+    bgGradient: "from-fabriiq-teal/20 via-fabriiq-primary/10 to-fabriiq-teal/20",
+    accentColor: "text-fabriiq-teal",
+  },
+  {
+    id: "pedagogy",
+    title: "Bloom's Taxonomy Integration",
+    subtitle: "Pedagogically Intelligent Learning",
+    description:
+      "Move beyond grades to genuine understanding with integrated Bloom's Taxonomy analytics. Track cognitive development from Remember to Create with real-time mastery measurement and intervention triggers.",
+    icon: <Target className="w-8 h-8" />,
+    features: [
+      { icon: <Brain className="w-5 h-5" />, text: "Automatic cognitive level classification" },
+      { icon: <TrendingUp className="w-5 h-5" />, text: "Real-time mastery tracking" },
+      { icon: <BarChart className="w-5 h-5" />, text: "Learning progression analytics" },
+      { icon: <Target className="w-5 h-5" />, text: "Intervention recommendation engine" },
+    ],
+    stats: [
+      { label: "Learning Outcome Improvement", value: "89%" },
+      { label: "Teacher Satisfaction", value: "94%" },
+      { label: "Faster Mastery", value: "78%" },
+    ],
+    technologies: ["Python", "scikit-learn", "D3.js", "React", "GraphQL"],
+    statusIndicators: [
+      { status: "active" as const, label: "Classification engine" },
+      { status: "beta" as const, label: "Mastery tracking" },
+      { status: "development" as const, label: "Intervention AI" },
+    ],
+    gradient: "from-primary via-fabriiq-primary to-primary",
+    bgGradient: "from-primary/20 via-fabriiq-primary/10 to-primary/20",
+    accentColor: "text-primary",
+  },
+  {
+    id: "gamification",
+    title: "Gamification & Social Learning",
+    subtitle: "Engagement Through Achievement",
+    description:
+      "Transform learning into an engaging journey with comprehensive achievement systems, social learning walls, and intelligent motivation engines that adapt to individual student needs.",
+    icon: <Gamepad2 className="w-8 h-8" />,
+    features: [
+      { icon: <Star className="w-5 h-5" />, text: "Multi-source point systems" },
+      { icon: <TrendingUp className="w-5 h-5" />, text: "Progressive achievement levels" },
+      { icon: <Users className="w-5 h-5" />, text: "Class social collaboration" },
+      { icon: <Brain className="w-5 h-5" />, text: "Personalized motivation triggers" },
+    ],
+    stats: [
+      { label: "Engagement Increase", value: "156%" },
+      { label: "Assignment Completion", value: "88%" },
+      { label: "Student Satisfaction", value: "4.7★" },
+    ],
+    technologies: ["React", "Socket.IO", "Redis", "MongoDB", "WebRTC"],
+    statusIndicators: [
+      { status: "active" as const, label: "Achievement system" },
+      { status: "beta" as const, label: "Social features" },
+      { status: "development" as const, label: "AI motivation" },
+    ],
+    gradient: "from-purple-500 via-pink-400 to-purple-600",
+    bgGradient: "from-purple-500/20 via-pink-400/10 to-purple-600/20",
+    accentColor: "text-purple-400",
+  },
+  {
+    id: "offline",
+    title: "Offline-First Architecture",
+    subtitle: "Learning Never Stops",
+    description:
+      "Complete educational functionality without internet dependency. Teachers grade, students learn, coordinators manage - all offline. Intelligent synchronization when connectivity returns with conflict resolution.",
+    icon: <Wifi className="w-8 h-8" />,
+    features: [
+      { icon: <Zap className="w-5 h-5" />, text: "Complete offline functionality" },
+      { icon: <Database className="w-5 h-5" />, text: "Intelligent data synchronization" },
+      { icon: <Target className="w-5 h-5" />, text: "Conflict resolution automation" },
+      { icon: <Building2 className="w-5 h-5" />, text: "Progressive web app capabilities" },
+    ],
+    stats: [
+      { label: "Offline Functionality", value: "100%" },
+      { label: "Sync Accuracy", value: "99.7%" },
+      { label: "Continuous Operation", value: "24hrs" },
+    ],
+    technologies: ["Service Workers", "IndexedDB", "PWA", "WebAssembly"],
+    statusIndicators: [
+      { status: "active" as const, label: "Offline core" },
+      { status: "beta" as const, label: "Sync engine" },
+      { status: "development" as const, label: "Conflict resolution" },
+    ],
+    gradient: "from-emerald-500 via-teal-400 to-emerald-600",
+    bgGradient: "from-emerald-500/20 via-teal-400/10 to-emerald-600/20",
+    accentColor: "text-emerald-400",
+  },
+  {
+    id: "privacy",
+    title: "Privacy & Compliance Excellence",
+    subtitle: "FERPA-Native Architecture",
+    description:
+      "Privacy-by-design architecture with automated compliance monitoring, intelligent risk assessment, and comprehensive audit trails. Built-in protection, not retrofitted security.",
+    icon: <Shield className="w-8 h-8" />,
+    features: [
+      { icon: <Shield className="w-5 h-5" />, text: "Automated FERPA compliance" },
+      { icon: <Brain className="w-5 h-5" />, text: "AI-powered privacy protection" },
+      { icon: <BarChart className="w-5 h-5" />, text: "Comprehensive audit trails" },
+      { icon: <Target className="w-5 h-5" />, text: "Risk assessment automation" },
+    ],
+    stats: [
+      { label: "FERPA Compliance", value: "100%" },
+      { label: "Data Protection", value: "99.9%" },
+      { label: "Security Incidents", value: "0" },
+    ],
+    technologies: ["Node.js", "PostgreSQL", "Redis", "Encryption APIs"],
+    statusIndicators: [
+      { status: "active" as const, label: "FERPA compliance" },
+      { status: "beta" as const, label: "Risk assessment" },
+      { status: "development" as const, label: "Advanced monitoring" },
+    ],
+    gradient: "from-red-500 via-orange-400 to-red-600",
+    bgGradient: "from-red-500/20 via-orange-400/10 to-red-600/20",
+    accentColor: "text-red-400",
+  },
+]
+
+export function CoreCapabilitiesSection() {
+  const [activeCapability, setActiveCapability] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const capabilityRefs = useRef<(HTMLDivElement | null)[]>([])
+
+  // Intersection observer for section visibility
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = capabilityRefs.current.findIndex((ref) => ref === entry.target)
+            if (index !== -1) {
+              setActiveCapability(index)
+            }
+          }
+        })
+      },
+      { threshold: 0.3, rootMargin: "-20% 0px -20% 0px" },
+    )
+
+    capabilityRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref)
+    })
+
+    return () => observer.disconnect()
+  }, [])
+
+  const scrollToCapability = (index: number) => {
+    capabilityRefs.current[index]?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    })
+  }
+
+  return (
+    <section ref={containerRef} className="relative py-20 px-4 sm:px-6 bg-black overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900" />
+        <motion.div
+          className="absolute inset-0 opacity-5"
+          animate={{
+            background: [
+              "radial-gradient(circle at 20% 50%, rgba(31,80,75,0.1) 0%, transparent 50%)",
+              "radial-gradient(circle at 80% 50%, rgba(90,138,132,0.1) 0%, transparent 50%)",
+              "radial-gradient(circle at 50% 80%, rgba(31,80,75,0.1) 0%, transparent 50%)",
+              "radial-gradient(circle at 20% 50%, rgba(31,80,75,0.1) 0%, transparent 50%)",
+            ],
+          }}
+          transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+        />
+      </div>
+
+      {/* Dot Navigation - Left Side */}
+      <div className="fixed left-6 top-1/2 transform -translate-y-1/2 z-20 hidden lg:block">
+        <div className="flex flex-col space-y-4">
+          {capabilities.map((capability, index) => (
+            <button
+              key={capability.id}
+              onClick={() => scrollToCapability(index)}
+              className={`group relative w-3 h-3 rounded-full transition-all duration-300 ${
+                activeCapability === index
+                  ? "bg-fabriiq-primary scale-125 shadow-lg"
+                  : "bg-white/30 hover:bg-fabriiq-primary/60 hover:scale-110"
+              }`}
+            >
+              {/* Tooltip */}
+              <div className="absolute left-6 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <div className="bg-black/90 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap border border-fabriiq-primary/20">
+                  {capability.title}
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <motion.div
+            className="inline-flex items-center space-x-2 px-6 py-3 bg-fabriiq-primary/10 rounded-full border border-fabriiq-primary/20 mb-6 backdrop-blur-sm"
+            animate={{ scale: [1, 1.02, 1] }}
+            transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
+          >
+            <div className="w-2 h-2 bg-fabriiq-primary rounded-full animate-pulse" />
+            <span className="text-sm font-medium text-fabriiq-primary">Core Capabilities</span>
+          </motion.div>
+
+          <h2 className="text-5xl sm:text-6xl font-black mb-6 leading-tight">
+            <span className="text-white">Capabilities That </span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal font-light italic">
+              Transform
+            </span>
+          </h2>
+
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            Comprehensive solutions designed to transform educational institutions and enhance learning outcomes
+          </p>
+        </motion.div>
+
+        <div className="relative">
+          {/* Capabilities Content */}
+          <div className="space-y-32">
+            {capabilities.map((capability, index) => (
+              <motion.div
+                key={capability.id}
+                ref={(el) => (capabilityRefs.current[index] = el)}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                viewport={{ once: false, amount: 0.3 }}
+                className="min-h-[80vh] flex items-center"
+              >
+                <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                  {/* Content */}
+                  <motion.div
+                    className={`space-y-8 ${index % 2 === 1 ? "lg:order-2" : ""}`}
+                    initial={{ opacity: 0, x: index % 2 === 1 ? 50 : -50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8 }}
+                    viewport={{ once: false, amount: 0.3 }}
+                  >
+                    <div>
+                      <motion.div
+                        className={`inline-flex items-center space-x-3 px-4 py-2 bg-gradient-to-r ${capability.bgGradient} rounded-full border border-white/10 mb-6`}
+                        animate={{ scale: [1, 1.02, 1] }}
+                        transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, delay: index * 0.5 }}
+                      >
+                        <div className={capability.accentColor}>{capability.icon}</div>
+                        <span className={`text-sm font-medium ${capability.accentColor}`}>{capability.subtitle}</span>
+                      </motion.div>
+
+                      <h3 className="text-4xl sm:text-5xl font-bold text-white mb-4 leading-tight">
+                        {capability.title}
+                      </h3>
+
+                      <p className="text-lg text-gray-300 leading-relaxed mb-8">{capability.description}</p>
+                    </div>
+
+                    {/* Features */}
+                    <div className="space-y-4">
+                      {capability.features.map((feature, featureIndex) => (
+                        <motion.div
+                          key={featureIndex}
+                          initial={{ opacity: 0, x: -20 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          transition={{ delay: featureIndex * 0.1 }}
+                          viewport={{ once: false }}
+                          className="flex items-center space-x-3"
+                        >
+                          <div className={capability.accentColor}>{feature.icon}</div>
+                          <span className="text-gray-300">{feature.text}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* Stats */}
+                    <div className="grid grid-cols-3 gap-4">
+                      {capability.stats.map((stat, statIndex) => (
+                        <motion.div
+                          key={statIndex}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          transition={{ delay: statIndex * 0.1 }}
+                          viewport={{ once: false }}
+                          className={`text-center p-4 bg-gradient-to-br ${capability.bgGradient} rounded-xl border border-white/10`}
+                        >
+                          <div className={`text-2xl font-bold ${capability.accentColor} mb-1`}>{stat.value}</div>
+                          <div className="text-xs text-gray-400">{stat.label}</div>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* Status Indicators - Replacing Technologies */}
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wider">Development Status</h4>
+                      <StatusIndicatorsGroup indicators={capability.statusIndicators} />
+                    </div>
+
+                    {/* Technologies */}
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wider">Tech Stack</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {capability.technologies.map((tech, techIndex) => (
+                          <motion.div
+                            key={techIndex}
+                            initial={{ opacity: 0, scale: 0 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: techIndex * 0.05 }}
+                            viewport={{ once: false }}
+                          >
+                            <Badge
+                              className={`bg-gradient-to-r ${capability.bgGradient} ${capability.accentColor} border-white/20 hover:border-white/30`}
+                            >
+                              {tech}
+                            </Badge>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Visual Placeholder - Can be enhanced with actual UI graphics */}
+                  <motion.div
+                    className={`${index % 2 === 1 ? "lg:order-1" : ""}`}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.8 }}
+                    viewport={{ once: false, amount: 0.3 }}
+                  >
+                    <div
+                      className={`relative h-96 bg-gradient-to-br ${capability.bgGradient} rounded-2xl border border-white/10 flex items-center justify-center`}
+                    >
+                      <div className={`${capability.accentColor} opacity-20`}>{capability.icon}</div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-2xl" />
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <h4 className="text-white font-semibold mb-2">{capability.title}</h4>
+                        <p className="text-gray-300 text-sm">{capability.subtitle}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}

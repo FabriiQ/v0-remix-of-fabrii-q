@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 98%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    /* Updated primary colors to FabriiQ green (#1F504B) */
+    --primary: 174 44% 22%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    /* Updated ring color to match FabriiQ primary */
+    --ring: 174 44% 22%;
+    --radius: 0.5rem;
+    /* Added FabriiQ brand colors */
+    --fabriiq-primary: 174 44% 22%;
+    --fabriiq-teal: 174 25% 45%;
+    --fabriiq-mint: 174 25% 87%;
+    --fabriiq-orange: 38 92% 50%;
+    --fabriiq-blue: 217 91% 60%;
+    --fabriiq-red: 0 84% 60%;
+    --fabriiq-dark-gray: 220 26% 14%;
+    --fabriiq-medium-gray: 220 14% 46%;
+    --fabriiq-light-gray: 220 13% 91%;
+    --fabriiq-off-white: 210 20% 98%;
+  }
+
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    /* Updated dark mode primary to FabriiQ green */
+    --primary: 174 44% 22%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    /* Dark mode FabriiQ colors with proper contrast */
+    --fabriiq-primary: 174 44% 22%;
+    --fabriiq-teal: 174 25% 55%;
+    --fabriiq-mint: 174 25% 77%;
+    --fabriiq-orange: 38 92% 50%;
+    --fabriiq-blue: 217 91% 60%;
+    --fabriiq-red: 0 84% 60%;
+    --fabriiq-dark-gray: 220 26% 18%;
+    --fabriiq-medium-gray: 220 14% 56%;
+    --fabriiq-light-gray: 220 13% 81%;
+    --fabriiq-off-white: 210 20% 88%;
+  }
+}
+
+body {
+  @apply bg-background text-foreground;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-muted;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent content shift on page load */
+html,
+body {
+  overflow-x: hidden;
+}
+
+/* Enhanced responsive breakpoints and mobile-first utilities */
+@layer components {
+  .btn-micro {
+    @apply transition-all duration-200 ease-in-out transform;
+  }
+
+  .btn-micro:hover {
+    @apply scale-105 shadow-lg;
+  }
+
+  .btn-micro:active {
+    @apply scale-95;
+  }
+
+  .btn-primary {
+    @apply bg-fabriiq-primary hover:bg-fabriiq-primary-600 text-white;
+    @apply transition-all duration-200 ease-in-out;
+    @apply hover:shadow-lg hover:shadow-fabriiq-primary/25;
+  }
+
+  .btn-teal {
+    @apply bg-fabriiq-teal hover:bg-fabriiq-teal-600 text-white;
+    @apply transition-all duration-200 ease-in-out;
+    @apply hover:shadow-lg hover:shadow-fabriiq-teal/25;
+  }
+
+  .btn-outline {
+    @apply border-2 border-fabriiq-primary text-fabriiq-primary;
+    @apply hover:bg-fabriiq-primary hover:text-white;
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 ease-in-out;
+    @apply hover:shadow-xl hover:shadow-fabriiq-primary/10;
+    @apply hover:-translate-y-1;
+  }
+
+  .text-gradient-fabriiq {
+    @apply bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal;
+    @apply bg-clip-text text-transparent;
+  }
+
+  /* Mobile-first responsive utilities */
+  .mobile-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  .mobile-text {
+    @apply text-sm sm:text-base;
+  }
+
+  .mobile-heading {
+    @apply text-xl sm:text-2xl lg:text-3xl;
+  }
+
+  .mobile-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
+  }
+}
+
+/* Added extra small breakpoint for better mobile control */
+@media (min-width: 475px) {
+  .xs\:inline {
+    display: inline;
+  }
+
+  .xs\:hidden {
+    display: none;
+  }
+}
