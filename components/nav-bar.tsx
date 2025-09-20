@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, Monitor, Handshake, Zap } from "lucide-react"
+import { Menu, X, Monitor, Handshake } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { LanguageSelector } from "@/components/language-selector"
 import { useLanguage } from "@/contexts/language-context"
@@ -24,7 +24,6 @@ export function NavBar() {
   }, [])
 
   const navItems = [
-    
     { name: "Capabilities", href: "/projects" },
     { name: "About", href: "/about" },
     { name: t("nav.support"), href: "/support" },
@@ -86,22 +85,22 @@ export function NavBar() {
             >
               <Monitor className="w-5 h-5" />
             </Link>
-            <Link href="/consultation" onClick={scrollToTop}>
+            <Link href="/partnership" onClick={scrollToTop}>
               <Button className="btn-primary btn-micro">
-                <Zap className="w-4 h-4 mr-2" />
-                Free Consultation
+                <Handshake className="w-4 h-4 mr-2" />
+                Partnership Application
               </Button>
             </Link>
           </div>
 
-          {/* Mobile menu button and Free Consultation */}
+          {/* Mobile menu button and Partnership Application */}
           <div className="lg:hidden flex items-center space-x-2">
             <LanguageSelector />
-            <Link href="/consultation" onClick={scrollToTop}>
+            <Link href="/partnership" onClick={scrollToTop}>
               <Button size="sm" className="btn-primary btn-micro text-xs px-2 py-1.5 h-8">
-                <Zap className="w-3 h-3 mr-1" />
-                <span className="hidden xs:inline">Free</span>
-                <span className="xs:hidden">F</span>
+                <Handshake className="w-3 h-3 mr-1" />
+                <span className="hidden xs:inline">Partner</span>
+                <span className="xs:hidden">P</span>
               </Button>
             </Link>
             <button
@@ -159,7 +158,7 @@ export function NavBar() {
                   </Link>
 
                   <Link
-                    href="/consultation"
+                    href="/partnership"
                     onClick={() => {
                       setIsOpen(false)
                       scrollToTop()
@@ -167,8 +166,8 @@ export function NavBar() {
                     className="w-full"
                   >
                     <Button className="btn-primary btn-micro w-full justify-center">
-                      <Zap className="w-4 h-4 mr-2" />
-                      Free Consultation
+                      <Handshake className="w-4 h-4 mr-2" />
+                      Partnership Application
                     </Button>
                   </Link>
                 </div>

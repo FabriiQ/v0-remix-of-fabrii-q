@@ -64,7 +64,7 @@ export function FooterPopup() {
   ]
 
   const contactInfo = [
-    { icon: Mail, label: "Email", value: "hello@weltivation.com", href: "mailto:hello@weltivation.com" },
+    { icon: Mail, label: "Email", value: "hello@fabriiq.com", href: "mailto:hello@fabriiq.com" },
     { icon: Phone, label: "Phone", value: "+1 (555) 123-4567", href: "tel:+15551234567" },
     { icon: MapPin, label: "Location", value: "San Francisco, CA", href: "#" },
   ]
@@ -106,7 +106,7 @@ export function FooterPopup() {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start mb-8 gap-4">
                   <div className="flex items-center space-x-4">
-                    <img src="/images/weltivation-logo.png" alt="Weltivation" className="h-12" />
+                    <img src="/images/fabriiq-logo.png" alt="FabriiQ" className="h-12" />
                     <div>
                       <p className="text-sm text-muted-foreground">Ready to build the future together?</p>
                     </div>
@@ -195,7 +195,7 @@ export function FooterPopup() {
                         <span className="inline-block w-2 h-2 rounded-full bg-green-500"></span>
                         <span>All systems operational</span>
                       </div>
-                      <span className="text-sm text-muted-foreground">© 2025 Weltivation. All rights reserved.</span>
+                      <span className="text-sm text-muted-foreground">© 2025 FabriiQ. All rights reserved.</span>
                     </div>
 
                     <div className="flex flex-wrap justify-center lg:justify-end gap-6">

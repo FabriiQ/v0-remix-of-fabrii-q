@@ -32,7 +32,7 @@ export default function ContactPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello! I'm Weltivation's AI assistant. How can I help you with your project today?",
+      content: "Hello! I'm FabriiQ's AI assistant. How can I help you with your project today?",
       sender: "bot",
       timestamp: new Date(),
     },
@@ -100,11 +100,11 @@ export default function ContactPage() {
 
     // General greeting responses
     if (lowerMessage.includes("hello") || lowerMessage.includes("hi") || lowerMessage.includes("hey")) {
-      return "Hello! Welcome to Weltivation. I'm here to help you explore how we can transform your business through technology. Whether you're looking to build a web application, mobile app, implement AI solutions, or need technical consulting, I can provide detailed information and connect you with our expert team. What brings you here today?"
+      return "Hello! Welcome to FabriiQ. I'm here to help you explore how we can transform your business through technology. Whether you're looking to build a web application, mobile app, implement AI solutions, or need technical consulting, I can provide detailed information and connect you with our expert team. What brings you here today?"
     }
 
     // Default intelligent response
-    return "That's an excellent question! I'd love to provide you with detailed, personalized information. Our team of experts can address your specific needs and provide comprehensive solutions. You can reach our technical team directly at hello@weltivation.com, schedule a free consultation, or continue chatting with me for immediate assistance. What specific aspect of your project would you like to explore further?"
+    return "That's an excellent question! I'd love to provide you with detailed, personalized information. Our team of experts can address your specific needs and provide comprehensive solutions. You can reach our technical team directly at hello@fabriiq.com, schedule a free consultation, or continue chatting with me for immediate assistance. What specific aspect of your project would you like to explore further?"
   }
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -139,9 +139,9 @@ export default function ContactPage() {
     {
       icon: Mail,
       title: "Email",
-      value: "hello@weltivation.com",
+      value: "hello@fabriiq.com",
       description: "Send us an email anytime",
-      href: "mailto:hello@weltivation.com",
+      href: "mailto:hello@fabriiq.com",
     },
     {
       icon: Phone,
@@ -232,7 +232,7 @@ export default function ContactPage() {
                     </motion.div>
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-1">
-                        <h3 className="text-xl font-bold">Weltivation AI Assistant</h3>
+                        <h3 className="text-xl font-bold">FabriiQ AI Assistant</h3>
                         <motion.div
                           animate={{ scale: [1, 1.2, 1] }}
                           transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}

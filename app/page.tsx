@@ -19,8 +19,8 @@ export default function Home() {
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 opacity-5">
           <img
-            src="/placeholder.svg?height=1080&width=1920"
-            alt="Educational Background"
+            src="/abstract-educational-technology-network-with-inter.jpg"
+            alt="Educational Technology Background"
             className="w-full h-full object-cover"
           />
         </div>
@@ -36,22 +36,16 @@ export default function Home() {
 
       {/* Hero Video - Full screen background */}
       <div className="fixed inset-0 z-[1] pointer-events-none">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-25"
-          style={{
-            filter: "contrast(1.2) brightness(0.7) grayscale(100%)",
-          }}
-        >
-          <source
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Untitled%20video%20-%20Made%20with%20Clipchamp%20%283%29%20%281%29%20%282%29%20%282%29-i8U3zTcWrQss8nKM5ekseP7qFR5KVP.mp4"
-            type="video/mp4"
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-fabriiq-primary/10 via-transparent to-fabriiq-teal/10">
+          <img
+            src="/abstract-animation-showing-interconnected-educatio.jpg"
+            alt="Hero Animation"
+            className="w-full h-full object-cover opacity-25"
+            style={{
+              filter: "contrast(1.2) brightness(0.7)",
+            }}
           />
-          Your browser does not support the video tag.
-        </video>
+        </div>
       </div>
 
       {/* Content container */}
@@ -65,7 +59,7 @@ export default function Home() {
             <div className="mb-8">
               <div className="inline-flex items-center px-4 py-2 rounded-full bg-fabriiq-primary/10 border border-fabriiq-primary/20 text-fabriiq-primary text-sm font-medium">
                 <span className="w-2 h-2 bg-fabriiq-primary rounded-full mr-2 animate-pulse"></span>
-                Alpha Phase - Development Partners Welcome
+                Alpha Development Phase - Partnership Opportunities Available
               </div>
             </div>
 
@@ -119,8 +113,8 @@ export default function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
               <div>
                 <img
-                  src="/placeholder.svg?height=400&width=600"
-                  alt="Modern Educational Technology"
+                  src="/modern-educational-technology-dashboard-with-ai-an.jpg"
+                  alt="Modern Educational Technology Dashboard"
                   className="rounded-2xl shadow-2xl"
                 />
               </div>
@@ -156,9 +150,9 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <span className="text-foreground">Why </span>
+                <span className="text-foreground">6 Core </span>
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
-                  FabriiQ?
+                  Capabilities
                 </span>
               </motion.h2>
               <motion.p
@@ -167,8 +161,8 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                Replace 5-10 fragmented systems with one comprehensive, AI-powered platform designed specifically for
-                educational institutions.
+                Purpose-built features designed specifically for educational institutions, not generic solutions adapted
+                for schools.
               </motion.p>
             </div>
 
@@ -178,41 +172,54 @@ export default function Home() {
                   icon: Brain,
                   title: "AIVY Multi-Agent Intelligence",
                   description:
-                    "AIVY multi-agent system designed specifically for education, not generic AI bolted onto existing systems.",
+                    "Not generic AI, but specialized agents designed specifically for education. Student Companion, Teacher Assistant, Content Generation, Assessment Intelligence, and Compliance Monitoring - all working together seamlessly.",
+                  status: "Core agents active, advanced collaboration in beta",
+                  image: "/network-of-interconnected-ai-nodes-with-educationa.jpg",
                   color: "text-fabriiq-primary",
-                },
-                {
-                  icon: Building2,
-                  title: "Multi-Campus Native",
-                  description:
-                    "Built from the ground up for complex institutional hierarchies, not adapted from single-campus solutions.",
-                  color: "text-fabriiq-teal",
                 },
                 {
                   icon: Lightbulb,
                   title: "Pedagogically Sound",
                   description:
-                    "Integrated Bloom's Taxonomy and evidence-based learning measurement, not just grades and test scores.",
-                  color: "text-primary",
-                },
-                {
-                  icon: Shield,
-                  title: "Privacy-by-Design",
-                  description:
-                    "FERPA-compliant architecture that makes compliance effortless and automatic, not an afterthought.",
-                  color: "text-fabriiq-primary",
-                },
-                {
-                  icon: Users,
-                  title: "Development Partnership",
-                  description: "Co-create with leading institutions rather than being sold to as a customer.",
+                    "Every question, assessment, and activity is automatically aligned with Bloom's Taxonomy. Track cognitive development from Remember to Create with real-time mastery analytics and intervention triggers.",
+                  status: "Classification engine active, balance analytics in development",
+                  image: "/pyramid-structure-with-cognitive-levels--bloom-s-t.jpg",
                   color: "text-fabriiq-teal",
                 },
                 {
-                  icon: Zap,
-                  title: "Unified Operations",
+                  icon: Users,
+                  title: "Gamification & Social Learning",
                   description:
-                    "Comprehensive platform replacing enrollment, fees, attendance, and reporting systems with one intelligent hub.",
+                    "Comprehensive points system, achievement unlocks, class social walls, and intelligent motivation engine. Transform learning into an engaging journey with peer recognition and collaborative growth.",
+                  status: "Core gamification complete, social features complete",
+                  image: "/achievement-badges--leaderboards--social-interacti.jpg",
+                  color: "text-primary",
+                },
+                {
+                  icon: Building2,
+                  title: "Multi-Campus Operations",
+                  description:
+                    "Native multi-campus architecture managing enrollment, fees, attendance, and analytics across unlimited locations. Centralized governance with campus autonomy - designed from the ground up, not retrofitted.",
+                  status: "Core operations active, advanced analytics in development",
+                  image: "/interconnected-campus-buildings-with-data-flow-vis.jpg",
+                  color: "text-fabriiq-primary",
+                },
+                {
+                  icon: Zap,
+                  title: "Offline-First Learning",
+                  description:
+                    "Complete offline functionality with intelligent synchronization. Teachers grade, students learn, coordinators manage - all without internet. When connection returns, everything syncs seamlessly with conflict resolution.",
+                  status: "Offline core complete, advanced sync features in beta",
+                  image: "/device-synchronization-with-cloud-connectivity-ind.jpg",
+                  color: "text-fabriiq-teal",
+                },
+                {
+                  icon: Shield,
+                  title: "Privacy-by-Design Compliance",
+                  description:
+                    "Not compliance added later, but privacy designed from the first line of code. Automated retention, intelligent redaction, comprehensive audit trails, and AI-powered risk assessment built into every feature.",
+                  status: "Compliance engine active, advanced features in development",
+                  image: "/shield-with-ferpa-compliance-badges--privacy-prote.jpg",
                   color: "text-primary",
                 },
               ].map((feature, index) => (
@@ -223,13 +230,23 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
+                  <div className="mb-4 rounded-lg overflow-hidden">
+                    <img
+                      src={feature.image || "/placeholder.svg"}
+                      alt={feature.title}
+                      className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
                   <div
                     className={`w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
                   >
                     <feature.icon className={`w-6 h-6 ${feature.color}`} />
                   </div>
                   <h3 className="text-xl font-semibold mb-3 text-foreground">{feature.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+                  <p className="text-muted-foreground leading-relaxed mb-4">{feature.description}</p>
+                  <div className="text-xs text-fabriiq-primary bg-fabriiq-primary/10 px-2 py-1 rounded-full inline-block">
+                    Alpha Status: {feature.status}
+                  </div>
                 </motion.div>
               ))}
             </div>
