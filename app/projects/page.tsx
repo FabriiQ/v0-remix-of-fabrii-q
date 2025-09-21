@@ -3,21 +3,7 @@
 import { useState, useEffect } from "react"
 import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
-import {
-  Search,
-  Monitor,
-  Settings,
-  BookOpen,
-  Zap,
-  CheckCircle,
-  Heart,
-  ThumbsDown,
-  Maximize2,
-  Minimize2,
-  TrendingUp,
-  Play,
-  ChevronRight,
-} from "lucide-react"
+import { Search, Monitor, Settings, BookOpen, Zap, CheckCircle, ThumbsDown, Play, ThumbsUp, Target } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useMobile } from "@/hooks/use-mobile"
 import VideoPlayer from "@/components/video-player" // Assuming VideoPlayer component exists
@@ -1058,28 +1044,13 @@ export default function CapabilitiesPage() {
         <div className="flex flex-1 pt-16">
           {/* Left Sidebar - Capabilities List */}
           <div className="w-1/4 border-r border-gray-800 bg-black h-[calc(100vh-64px)] overflow-y-auto">
-            <div className="p-4">
+            <div className="p-6">
               {/* Header */}
               <div className="mb-6">
                 <h1 className="text-2xl font-bold mb-3 text-white">Platform Capabilities</h1>
                 <p className="text-sm text-gray-400">
                   Explore FabriiQ's comprehensive educational technology capabilities designed for modern institutions.
                 </p>
-              </div>
-
-              {/* Stats Overview */}
-              <div className="grid grid-cols-1 gap-3 mb-6">
-                <div className="bg-gray-950 border border-gray-800 rounded-lg p-3">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                      <Monitor className="w-4 h-4 text-blue-500" />
-                    </div>
-                    <div>
-                      <p className="text-lg font-bold text-white">17+</p>
-                      <p className="text-xs text-gray-400">Core Capabilities</p>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               {/* Search */}
@@ -1095,12 +1066,12 @@ export default function CapabilitiesPage() {
               </div>
 
               {/* Filters */}
-              <div className="flex flex-wrap gap-1 mb-4">
+              <div className="flex flex-wrap gap-2 mb-6">
                 {filters.map((filter) => (
                   <button
                     key={filter.id}
                     onClick={() => setSelectedFilter(filter.id)}
-                    className={`px-2 py-1 text-xs rounded transition-all ${
+                    className={`px-3 py-1 text-xs rounded transition-all ${
                       selectedFilter === filter.id
                         ? "bg-primary/20 text-primary border border-primary/50"
                         : "bg-gray-950 text-gray-400 border border-gray-800 hover:text-white hover:border-primary/30"
@@ -1112,42 +1083,30 @@ export default function CapabilitiesPage() {
               </div>
 
               {/* Capabilities List */}
-              <div className="space-y-3 pb-4">
+              <div className="space-y-3">
                 {filteredCapabilities.map((capability) => (
                   <div
                     key={capability.id}
                     onClick={() => setSelectedCapability(capability)}
-                    className={`cursor-pointer rounded-lg border transition-all duration-300 ${
+                    className={`p-4 rounded-lg cursor-pointer transition-all border ${
                       selectedCapability?.id === capability.id
-                        ? "bg-black border-white/30 shadow-lg"
-                        : "bg-black border-white/10 hover:border-white/20 hover:shadow-md"
+                        ? "bg-primary/10 border-primary/50 text-white"
+                        : "bg-gray-950 border-gray-800 text-gray-300 hover:bg-gray-900 hover:border-primary/30"
                     }`}
                   >
-                    <div className="p-3">
-                      <div className="flex items-start space-x-2">
-                        <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center flex-shrink-0 border border-primary/20">
-                          {getCategoryIcon(capability.category)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-1">
-                            <h3 className="font-semibold text-white truncate text-sm">{capability.name}</h3>
-                            {capability.featured && (
-                              <span className="px-1 py-0.5 bg-primary text-black rounded text-xs font-medium">
-                                Featured
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-xs text-gray-400 mb-1">{capability.category}</p>
-                          <p className="text-xs text-gray-500 line-clamp-2 mb-2">{capability.description}</p>
-
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-1">
-                              <span className="text-xs text-gray-400">{capability.adoptionRate}</span>
-                            </div>
-                            <ChevronRight className="w-3 h-3 text-gray-600" />
-                          </div>
-                        </div>
+                    <div className="flex items-center space-x-3 mb-2">
+                      <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
+                        {getCategoryIcon(capability.category)}
                       </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-sm">{capability.name}</h3>
+                        <p className="text-xs text-gray-500">{capability.category}</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-400 line-clamp-2">{capability.description}</p>
+                    <div className="flex items-center space-x-4 mt-2 text-xs">
+                      <span className="text-green-400">{capability.adoptionRate} adoption</span>
+                      <span className="text-blue-400">{capability.userSatisfaction} satisfaction</span>
                     </div>
                   </div>
                 ))}
@@ -1155,255 +1114,160 @@ export default function CapabilitiesPage() {
             </div>
           </div>
 
-          {/* Right Content - Capability Details & Preview */}
-          <div className="flex-1 flex flex-col bg-black relative">
+          {/* Main Content - Single Column Layout */}
+          <div className="flex-1 bg-gray-900 h-[calc(100vh-64px)] overflow-y-auto">
             {selectedCapability ? (
-              <>
-                {/* Capability Header */}
-                <div className="border-b border-gray-800 p-6">
+              <div className="p-8">
+                <div className="max-w-4xl mx-auto space-y-8">
+                  {/* Header */}
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-6">
-                      <div className="w-24 h-24 bg-primary/10 rounded-xl p-4 border border-primary/20 flex items-center justify-center">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center border border-primary/20">
                         {getCategoryIcon(selectedCapability.category)}
                       </div>
                       <div>
-                        <h2 className="text-3xl font-bold text-white mb-2">{selectedCapability.name}</h2>
-                        <p className="text-lg text-gray-400 mb-3">{selectedCapability.category}</p>
-                        <div className="flex items-center space-x-4">
-                          <span
-                            className={`px-4 py-2 rounded-full text-sm font-medium border ${getStatusColor(
-                              selectedCapability.status,
-                            )}`}
-                          >
-                            {selectedCapability.status === "production-ready"
-                              ? "Production Ready"
-                              : selectedCapability.status}
-                          </span>
-                          <span className="text-sm text-gray-400">{selectedCapability.adoptionRate} Adoption Rate</span>
-                          <span className="text-sm text-green-400 font-semibold">
-                            {selectedCapability.userSatisfaction} Satisfaction
-                          </span>
+                        <h2 className="text-3xl font-bold text-white">{selectedCapability.name}</h2>
+                        <p className="text-gray-400">{selectedCapability.category}</p>
+                        <div className="flex items-center space-x-4 mt-2 text-sm">
+                          <span className="text-green-400">{selectedCapability.adoptionRate} adoption</span>
+                          <span className="text-blue-400">{selectedCapability.userSatisfaction} satisfaction</span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-2">
                       <Button
-                        onClick={() => setIsFullscreen(!isFullscreen)}
-                        size="sm"
                         variant="outline"
-                        className="border-gray-600 text-gray-300 hover:bg-gray-800"
+                        size="sm"
+                        onClick={() => handleLike(selectedCapability.id)}
+                        className={`${
+                          capabilityLikes[selectedCapability.id]?.liked
+                            ? "bg-green-500/20 text-green-400 border-green-500/50"
+                            : "border-gray-600 text-gray-400 hover:text-green-400 hover:border-green-500/50"
+                        }`}
                       >
-                        {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                        <ThumbsUp className="w-4 h-4 mr-2" />
+                        {capabilityLikes[selectedCapability.id]?.liked ? "Liked" : "Like"}
                       </Button>
-                      <Button size="sm" className="bg-primary/20 text-primary hover:bg-primary/30">
-                        <Play className="w-4 h-4 mr-2" />
-                        View Demo
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDislike(selectedCapability.id)}
+                        className={`${
+                          capabilityLikes[selectedCapability.id]?.disliked
+                            ? "bg-red-500/20 text-red-400 border-red-500/50"
+                            : "border-gray-600 text-gray-400 hover:text-red-400 hover:border-red-500/50"
+                        }`}
+                      >
+                        <ThumbsDown className="w-4 h-4 mr-2" />
+                        {capabilityLikes[selectedCapability.id]?.disliked ? "Disliked" : "Dislike"}
                       </Button>
                     </div>
                   </div>
-                </div>
 
-                {/* Content Area */}
-                <div className="flex-1 flex">
-                  {/* Capability Details */}
-                  <div className={`${isFullscreen ? "hidden" : "w-2/5"} border-r border-gray-800 overflow-y-auto`}>
-                    <div className="p-6 space-y-8">
-                      {/* Overview */}
-                      <div>
-                        <h3 className="text-xl font-semibold text-white mb-4">Overview</h3>
-                        <p className="text-gray-300 leading-relaxed">{selectedCapability.details.overview}</p>
-                      </div>
+                  {/* Overview Section */}
+                  <div>
+                    <h3 className="text-2xl font-semibold text-white mb-4">Overview</h3>
+                    <p className="text-gray-300 leading-relaxed text-lg">{selectedCapability.details.overview}</p>
+                  </div>
 
-                      {/* Key Features */}
-                      <div>
-                        <h3 className="text-xl font-semibold text-white mb-4">Key Features</h3>
-                        <div className="space-y-3">
-                          {selectedCapability.details.keyFeatures.map((feature: string, index: number) => (
-                            <div key={index} className="flex items-center text-gray-300">
-                              <CheckCircle className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
-                              {feature}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                  {/* Video Demo Section */}
+                  {videoData[selectedCapability.id] ? (
+                    <div>
+                      <h3 className="text-2xl font-semibold text-white mb-4">Interactive Demo</h3>
+                      <div className="space-y-6">
+                        <VideoPlayer
+                          src={videoData[selectedCapability.id][0]}
+                          title={`${selectedCapability.name} Demo`}
+                        />
 
-                      {/* Technical Specifications */}
-                      <div>
-                        <h3 className="text-xl font-semibold text-white mb-4">Technical Specifications</h3>
-                        <div className="flex flex-wrap gap-2">
-                          {selectedCapability.details.technicalSpecs.map((spec: string, index: number) => (
-                            <span
-                              key={index}
-                              className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm border border-blue-500/30"
-                            >
-                              {spec}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Benefits */}
-                      <div>
-                        <h3 className="text-xl font-semibold text-white mb-4">Key Benefits</h3>
-                        <div className="space-y-2">
-                          {selectedCapability.details.benefits.map((benefit: string, index: number) => (
-                            <div key={index} className="flex items-center text-gray-300">
-                              <TrendingUp className="w-4 h-4 text-green-400 mr-3" />
-                              {benefit}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Tags */}
-                      <div>
-                        <h3 className="text-xl font-semibold text-white mb-4">Tags</h3>
-                        <div className="flex flex-wrap gap-2">
-                          {selectedCapability.tags.map((tag: string, index: number) => (
-                            <span
-                              key={index}
-                              className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm border border-primary/30"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Metrics */}
-                      <div>
-                        <h3 className="text-xl font-semibold text-white mb-4">Performance Metrics</h3>
-                        <div className="grid grid-cols-1 gap-4">
-                          {Object.entries(selectedCapability.metrics).map(([key, value]) => (
-                            <div key={key} className="bg-gray-950 border border-gray-800 rounded-lg p-4">
-                              <div className="flex items-center justify-between">
-                                <span className="text-gray-400 capitalize">{key.replace(/([A-Z])/g, " $1")}</span>
-                                <span className="text-green-400 font-semibold">{value}</span>
+                        {/* Additional Demo Videos */}
+                        {videoData[selectedCapability.id].length > 1 && (
+                          <div className="space-y-6">
+                            {videoData[selectedCapability.id].slice(1).map((videoUrl, index) => (
+                              <div key={index}>
+                                <h4 className="text-lg font-medium text-white mb-3">Demo {index + 2}</h4>
+                                <VideoPlayer src={videoUrl} title={`${selectedCapability.name} Demo ${index + 2}`} />
                               </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex space-x-3">
-                        <Button
-                          onClick={() => handleLike(selectedCapability.id)}
-                          variant="outline"
-                          className={`border-gray-600 ${
-                            capabilityLikes[selectedCapability.id]?.liked
-                              ? "bg-red-500 text-white border-red-500"
-                              : "text-gray-400 hover:text-white"
-                          }`}
-                        >
-                          <Heart className="w-4 h-4 mr-2" />
-                          {capabilityLikes[selectedCapability.id]?.liked ? "Liked" : "Like"}
-                        </Button>
-                        <Button
-                          onClick={() => handleDislike(selectedCapability.id)}
-                          variant="outline"
-                          className={`border-gray-600 ${
-                            capabilityLikes[selectedCapability.id]?.disliked
-                              ? "bg-gray-700 text-white border-gray-500"
-                              : "text-gray-400 hover:text-white"
-                          }`}
-                        >
-                          <ThumbsDown className="w-4 h-4 mr-2" />
-                          {capabilityLikes[selectedCapability.id]?.disliked ? "Disliked" : "Dislike"}
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Capability Preview/Demo */}
-                  <div className={`${isFullscreen ? "w-full" : "flex-1"} bg-gray-900`}>
-                    <div className="w-full h-full overflow-y-auto p-8">
-                      <div className="max-w-4xl mx-auto space-y-8">
-                        {/* Overview Section */}
-                        <div>
-                          <h3 className="text-2xl font-semibold text-white mb-4">Overview</h3>
-                          <p className="text-gray-300 leading-relaxed text-lg">{selectedCapability.details.overview}</p>
-                        </div>
-
-                        {/* Video Demo Section */}
-                        {videoData[selectedCapability.id] ? (
-                          <div>
-                            <h3 className="text-2xl font-semibold text-white mb-4">Interactive Demo</h3>
-                            <div className="space-y-6">
-                              <VideoPlayer
-                                src={videoData[selectedCapability.id][0]}
-                                title={`${selectedCapability.name} Demo`}
-                              />
-
-                              {/* Additional Demo Videos */}
-                              {videoData[selectedCapability.id].length > 1 && (
-                                <div className="space-y-6">
-                                  {videoData[selectedCapability.id].slice(1).map((videoUrl, index) => (
-                                    <div key={index}>
-                                      <h4 className="text-lg font-medium text-white mb-3">Demo {index + 2}</h4>
-                                      <VideoPlayer
-                                        src={videoUrl}
-                                        title={`${selectedCapability.name} Demo ${index + 2}`}
-                                      />
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-center py-12">
-                            <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                              <Play className="w-12 h-12 text-primary" />
-                            </div>
-                            <h3 className="text-2xl font-semibold text-white mb-4">Demo Coming Soon</h3>
-                            <p className="text-gray-400">
-                              Interactive demonstration for {selectedCapability.name} will be available soon.
-                            </p>
+                            ))}
                           </div>
                         )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Play className="w-12 h-12 text-primary" />
+                      </div>
+                      <h3 className="text-2xl font-semibold text-white mb-4">Demo Coming Soon</h3>
+                      <p className="text-gray-400">
+                        Interactive demonstration for {selectedCapability.name} will be available soon.
+                      </p>
+                    </div>
+                  )}
 
-                        {/* Additional Overview/Details */}
-                        <div className="space-y-6">
-                          {/* Key Features */}
-                          <div>
-                            <h3 className="text-xl font-semibold text-white mb-4">Key Features</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                              {selectedCapability.details.keyFeatures.map((feature: string, index: number) => (
-                                <div key={index} className="flex items-center text-gray-300">
-                                  <CheckCircle className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
-                                  {feature}
-                                </div>
-                              ))}
-                            </div>
+                  {/* Additional Details */}
+                  <div className="space-y-6">
+                    {/* Key Features */}
+                    <div>
+                      <h3 className="text-xl font-semibold text-white mb-4">Key Features</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {selectedCapability.details.keyFeatures.map((feature: string, index: number) => (
+                          <div key={index} className="flex items-center text-gray-300">
+                            <CheckCircle className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
+                            {feature}
                           </div>
+                        ))}
+                      </div>
+                    </div>
 
-                          {/* Benefits */}
-                          <div>
-                            <h3 className="text-xl font-semibold text-white mb-4">Key Benefits</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                              {selectedCapability.details.benefits.map((benefit: string, index: number) => (
-                                <div key={index} className="flex items-center text-gray-300">
-                                  <TrendingUp className="w-4 h-4 text-green-400 mr-3" />
-                                  {benefit}
-                                </div>
-                              ))}
-                            </div>
+                    {/* Benefits */}
+                    <div>
+                      <h3 className="text-xl font-semibold text-white mb-4">Benefits</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {selectedCapability.details.benefits.map((benefit: string, index: number) => (
+                          <div key={index} className="flex items-center text-gray-300">
+                            <CheckCircle className="w-5 h-5 text-blue-400 mr-3 flex-shrink-0" />
+                            {benefit}
                           </div>
-                        </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Tags */}
+                    <div>
+                      <h3 className="text-xl font-semibold text-white mb-4">Tags</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedCapability.tags.map((tag) => (
+                          <span key={tag} className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-sm">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Metrics */}
+                    <div>
+                      <h3 className="text-xl font-semibold text-white mb-4">Performance Metrics</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {Object.entries(selectedCapability.metrics).map(([key, value]) => (
+                          <div key={key} className="text-center p-4 bg-gray-800 rounded-lg">
+                            <p className="text-2xl font-bold text-primary">{value}</p>
+                            <p className="text-sm text-gray-400 capitalize">{key.replace(/([A-Z])/g, " $1").trim()}</p>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
                 </div>
-              </>
+              </div>
             ) : (
-              <div className="flex-1 flex items-center justify-center">
+              <div className="flex items-center justify-center h-full">
                 <div className="text-center">
-                  <Monitor className="w-24 h-24 text-gray-400 mx-auto mb-6" />
+                  <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Target className="w-12 h-12 text-primary" />
+                  </div>
                   <h3 className="text-2xl font-semibold text-white mb-4">Select a Capability</h3>
-                  <p className="text-gray-400">
-                    Choose a capability from the list to view details and interactive demo
-                  </p>
+                  <p className="text-gray-400">Choose a capability from the sidebar to view details and demos.</p>
                 </div>
               </div>
             )}

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge" // Import Badge component
 import {
   DollarSign,
   Clock,
@@ -62,6 +63,7 @@ export default function PartnershipPage() {
         phone: "",
         role: "",
         institutionType: "",
+        institutionType: "",
         campusCount: "",
         studentPopulation: "",
         currentSystems: "",
@@ -76,7 +78,7 @@ export default function PartnershipPage() {
     <div className="min-h-screen bg-black text-white">
       <NavBar />
 
-      {/* Hero Section - Alpha Phase Exclusive Development Partnerships */}
+      {/* Hero Section with FabriiQ Development Partnership */}
       <section className="relative pt-32 pb-20 px-4 sm:px-6 overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0">
@@ -106,9 +108,8 @@ export default function PartnershipPage() {
             >
               <div className="inline-flex items-center px-6 py-3 rounded-full bg-fabriiq-primary/10 border border-fabriiq-primary/20 text-fabriiq-primary text-sm font-medium">
                 <span className="w-2 h-2 bg-fabriiq-primary rounded-full mr-2 animate-pulse"></span>
-                Alpha Phase - Exclusive Development Partnerships
+                Alpha Phase - Limited Development Partnerships
               </div>
-              {/* Removed the line about limited positions */}
             </motion.div>
 
             {/* Title */}
@@ -130,17 +131,18 @@ export default function PartnershipPage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed mb-16"
             >
-              Join a select group of forward-thinking institutions co-creating the future of educational technology.
-              Shape FabriiQ while gaining competitive advantage through strategic partnership investment.
+              Join a select group of forward-thinking institutions shaping the future of educational technology.
+              Co-create FabriiQ while gaining competitive advantage.
             </motion.p>
 
-            {/* Partnership Value Proposition */}
+            {/* Partnership Benefits Layout */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
               className="relative max-w-6xl mx-auto mb-20"
             >
+              {/* Central Partnership Card */}
               <div className="relative bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-xl border-2 border-fabriiq-primary/30 rounded-3xl p-12 shadow-2xl shadow-fabriiq-primary/10">
                 <div className="flex flex-col items-center space-y-6">
                   <div className="flex items-center space-x-4">
@@ -150,25 +152,143 @@ export default function PartnershipPage() {
                       <p className="text-fabriiq-teal">Co-create the future of education</p>
                     </div>
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl">
-                    <div className="text-center">
-                      <p className="text-gray-400 text-lg mb-2">Strategic Investment</p>
-                      <p className="text-2xl font-bold text-fabriiq-primary mb-2">Mutual Value Exchange</p>
-                      <p className="text-gray-400 text-sm">Partnership Model</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-gray-400 text-lg mb-2">Competitive Advantage</p>
-                      <p className="text-2xl font-bold text-fabriiq-teal mb-2">Market Leadership</p>
-                      <p className="text-gray-400 text-sm">Strategic Position</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-gray-400 text-lg mb-2">Investment Model</p>
-                      <p className="text-2xl font-bold text-primary mb-2">Shared Resources</p>
-                      <p className="text-gray-400 text-sm">FabriiQ + Institution</p>
-                    </div>
+                  <div className="text-center">
+                    <p className="text-gray-400 text-xl mb-2">Partnership Value</p>
+                    <p className="text-4xl font-bold text-fabriiq-primary mb-2">Priceless</p>
+                    <p className="text-gray-400 text-lg">Competitive advantage</p>
                   </div>
                 </div>
+
+                {/* Floating benefit cards around the main card */}
+                <div className="absolute inset-0 pointer-events-none">
+                  {/* Top Left - Strategic Investment */}
+                  <motion.div
+                    className="absolute -top-8 -left-8 transform -rotate-12"
+                    initial={{ opacity: 0, scale: 0, rotate: -45 }}
+                    animate={{ opacity: 1, scale: 1, rotate: -12 }}
+                    transition={{ duration: 0.6, delay: 0.5 }}
+                    whileHover={{ scale: 1.1, rotate: 0 }}
+                  >
+                    <div className="bg-gradient-to-br from-fabriiq-primary/20 to-fabriiq-teal/20 backdrop-blur-sm border border-fabriiq-primary/30 rounded-2xl p-6 shadow-lg min-w-[200px]">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <DollarSign className="w-6 h-6 text-fabriiq-primary" />
+                        <div>
+                          <h3 className="text-lg font-bold text-white">Strategic Investment</h3>
+                          <p className="text-sm text-gray-400">Mutual Value Exchange</p>
+                        </div>
+                      </div>
+                      <Badge className="bg-fabriiq-primary/20 text-fabriiq-primary border-fabriiq-primary/30">
+                        Alpha Phase
+                      </Badge>
+                    </div>
+                  </motion.div>
+
+                  {/* Top Right - Co-development */}
+                  <motion.div
+                    className="absolute -top-8 -right-8 transform rotate-12"
+                    initial={{ opacity: 0, scale: 0, rotate: 45 }}
+                    animate={{ opacity: 1, scale: 1, rotate: 12 }}
+                    transition={{ duration: 0.6, delay: 0.6 }}
+                    whileHover={{ scale: 1.1, rotate: 0 }}
+                  >
+                    <div className="bg-gradient-to-br from-fabriiq-teal/20 to-fabriiq-primary/20 backdrop-blur-sm border border-fabriiq-teal/30 rounded-2xl p-6 shadow-lg min-w-[200px]">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <Users className="w-6 h-6 text-fabriiq-teal" />
+                        <div>
+                          <h3 className="text-lg font-bold text-white">Co-development</h3>
+                          <p className="text-sm text-gray-400">Shape Product Roadmap</p>
+                        </div>
+                      </div>
+                      <Badge className="bg-fabriiq-teal/20 text-fabriiq-teal border-fabriiq-teal/30">
+                        Direct Influence
+                      </Badge>
+                    </div>
+                  </motion.div>
+
+                  {/* Left - Early Access */}
+                  <motion.div
+                    className="absolute top-1/2 -left-12 transform -translate-y-1/2 -rotate-6"
+                    initial={{ opacity: 0, scale: 0, rotate: -30 }}
+                    animate={{ opacity: 1, scale: 1, rotate: -6 }}
+                    transition={{ duration: 0.6, delay: 0.7 }}
+                    whileHover={{ scale: 1.1, rotate: 0 }}
+                  >
+                    <div className="bg-gradient-to-br from-primary/20 to-fabriiq-primary/20 backdrop-blur-sm border border-primary/30 rounded-2xl p-6 shadow-lg min-w-[200px]">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <Clock className="w-6 h-6 text-primary" />
+                        <div>
+                          <h3 className="text-lg font-bold text-white">Early Access</h3>
+                          <p className="text-sm text-gray-400">Competitive Advantage</p>
+                        </div>
+                      </div>
+                      <Badge className="bg-primary/20 text-primary border-primary/30">Competitive Edge</Badge>
+                    </div>
+                  </motion.div>
+
+                  {/* Right - AIVY Integration */}
+                  <motion.div
+                    className="absolute top-1/2 -right-12 transform -translate-y-1/2 rotate-6"
+                    initial={{ opacity: 0, scale: 0, rotate: 30 }}
+                    animate={{ opacity: 1, scale: 1, rotate: 6 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
+                    whileHover={{ scale: 1.1, rotate: 0 }}
+                  >
+                    <div className="bg-gradient-to-br from-purple-500/20 to-pink-600/20 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-6 shadow-lg min-w-[200px]">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <Brain className="w-6 h-6 text-purple-400" />
+                        <div>
+                          <h3 className="text-lg font-bold text-white">AIVY Access</h3>
+                          <p className="text-sm text-gray-400">Multi-Agent AI System</p>
+                        </div>
+                      </div>
+                      <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">Exclusive</Badge>
+                    </div>
+                  </motion.div>
+
+                  {/* Bottom Left - Multi-Campus */}
+                  <motion.div
+                    className="absolute -bottom-8 -left-8 transform rotate-6"
+                    initial={{ opacity: 0, scale: 0, rotate: 30 }}
+                    animate={{ opacity: 1, scale: 1, rotate: 6 }}
+                    transition={{ duration: 0.6, delay: 0.9 }}
+                    whileHover={{ scale: 1.1, rotate: 0 }}
+                  >
+                    <div className="bg-gradient-to-br from-emerald-500/20 to-teal-600/20 backdrop-blur-sm border border-emerald-500/30 rounded-2xl p-6 shadow-lg min-w-[200px]">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <Building2 className="w-6 h-6 text-emerald-400" />
+                        <div>
+                          <h3 className="text-lg font-bold text-white">Multi-Campus</h3>
+                          <p className="text-sm text-gray-400">Native Architecture</p>
+                        </div>
+                      </div>
+                      <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Scalable</Badge>
+                    </div>
+                  </motion.div>
+
+                  {/* Bottom Right - FERPA Compliance */}
+                  <motion.div
+                    className="absolute -bottom-8 -right-8 transform -rotate-6"
+                    initial={{ opacity: 0, scale: 0, rotate: -30 }}
+                    animate={{ opacity: 1, scale: 1, rotate: -6 }}
+                    transition={{ duration: 0.6, delay: 1.0 }}
+                    whileHover={{ scale: 1.1, rotate: 0 }}
+                  >
+                    <div className="bg-gradient-to-br from-red-500/20 to-orange-600/20 backdrop-blur-sm border border-red-500/30 rounded-2xl p-6 shadow-lg min-w-[200px]">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <Award className="w-6 h-6 text-red-400" />
+                        <div>
+                          <h3 className="text-lg font-bold text-white">FERPA Native</h3>
+                          <p className="text-sm text-gray-400">Privacy by Design</p>
+                        </div>
+                      </div>
+                      <Badge className="bg-red-500/20 text-red-400 border-red-500/30">Compliant</Badge>
+                    </div>
+                  </motion.div>
+                </div>
+
+                {/* Decorative elements */}
+                <div className="absolute top-4 right-4 w-32 h-32 bg-gradient-to-r from-fabriiq-primary/20 to-fabriiq-teal/20 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-4 left-4 w-24 h-24 bg-gradient-to-r from-fabriiq-primary/20 to-fabriiq-teal/20 rounded-full blur-3xl"></div>
               </div>
             </motion.div>
           </div>
