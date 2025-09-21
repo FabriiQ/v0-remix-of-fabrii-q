@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ChevronDown, ChevronUp, Users } from "lucide-react"
+import { ChevronDown, ChevronUp, Users, Phone, MapPin, Linkedin } from "lucide-react"
 import { NewsletterForm } from "./newsletter-form"
 import { FooterPopup } from "./footer-popup"
 import { Button } from "@/components/ui/button"
@@ -20,23 +20,23 @@ export function Footer() {
       title: "Platform",
       items: [
         "AIVY Multi-Agent System",
-        "Unified Operations",
-        "Bloom's Taxonomy",
-        "Privacy & Compliance",
-        "Offline-First",
-        "Multi-Campus",
+        "Educational Intelligence",
+        "Alpha Development",
+        "Co-creation Partnership",
+        "School Operating System",
+        "Multi-Campus Support",
       ],
     },
     {
       id: "partnership",
       title: "Partnership",
       items: [
-        "Development Partners",
-        "Alpha Access",
-        "Co-creation",
-        "Early Adopters",
-        "Institutional Benefits",
+        "Alpha Phase Partners",
+        "Co-development Program",
+        "Strategic Investment",
+        "Competitive Advantage",
         "Partnership Application",
+        "Founding Partners",
       ],
     },
     {
@@ -44,17 +44,17 @@ export function Footer() {
       title: "Resources",
       items: [
         "Alpha Documentation",
-        "API Reference",
-        "Integration Guides",
-        "Best Practices",
-        "Support Center",
-        "Community",
+        "Partnership Guide",
+        "Implementation Support",
+        "Training Materials",
+        "Community Forum",
+        "Technical Support",
       ],
     },
     {
       id: "company",
       title: "Company",
-      items: ["About FabriiQ", "Our Mission", "Team", "Careers", "News", "Contact"],
+      items: ["About FabriiQ", "Our Vision", "Leadership Team", "Careers", "News & Updates", "Contact Us"],
     },
   ]
 
@@ -94,8 +94,29 @@ export function Footer() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-8">
-            <div className="text-muted-foreground text-xs">
-              &copy; {new Date().getFullYear()} FabriiQ. All rights reserved.
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <Phone className="w-4 h-4" />
+                  <span>+923086253722</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-4 h-4" />
+                  <span>Lahore Pakistan, Palembang Indonesia</span>
+                </div>
+                <a
+                  href="https://linkedin.com/company/fabriiq"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 hover:text-fabriiq-primary transition-colors"
+                >
+                  <Linkedin className="w-4 h-4" />
+                  <span>LinkedIn</span>
+                </a>
+              </div>
+              <div className="text-muted-foreground text-xs">
+                &copy; {new Date().getFullYear()} FabriiQ. All rights reserved.
+              </div>
             </div>
 
             <div className="flex items-center gap-4">
@@ -104,7 +125,7 @@ export function Footer() {
                 className="bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal hover:from-fabriiq-teal hover:to-fabriiq-primary text-white font-medium px-4 py-2 text-sm"
               >
                 <Users className="w-4 h-4 mr-2" />
-                Start Partnership Discussion
+                Let's co-create
               </Button>
 
               <div className="flex items-center gap-2">
@@ -120,6 +141,27 @@ export function Footer() {
           {/* Logo and main info */}
           <div className="text-center space-y-4">
             <img src="/images/fabriiq-logo.png" alt="FabriiQ" className="h-12 mx-auto" />
+
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <div className="flex items-center justify-center gap-1">
+                <Phone className="w-4 h-4" />
+                <span>+923086253722</span>
+              </div>
+              <div className="flex items-center justify-center gap-1">
+                <MapPin className="w-4 h-4" />
+                <span>Lahore Pakistan, Palembang Indonesia</span>
+              </div>
+              <a
+                href="https://linkedin.com/company/fabriiq"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1 hover:text-fabriiq-primary transition-colors"
+              >
+                <Linkedin className="w-4 h-4" />
+                <span>LinkedIn</span>
+              </a>
+            </div>
+
             <div className="text-muted-foreground text-xs">
               &copy; {new Date().getFullYear()} FabriiQ. All rights reserved.
             </div>
@@ -181,7 +223,7 @@ export function Footer() {
               className="w-full bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal hover:from-fabriiq-teal hover:to-fabriiq-primary text-white font-medium px-4 py-2 text-sm"
             >
               <Users className="w-4 h-4 mr-2" />
-              Start Partnership Discussion
+              Let's co-create
             </Button>
           </div>
         </div>

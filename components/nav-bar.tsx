@@ -24,10 +24,11 @@ export function NavBar() {
   }, [])
 
   const navItems = [
-    { name: "Capabilities", href: "/projects" },
-    { name: "About", href: "/about" },
+    { name: t("nav.capabilities"), href: "/projects" },
+    { name: t("nav.platform"), href: "/platform" },
+    { name: t("nav.partnership"), href: "/partnership", icon: <Handshake className="w-4 h-4" /> },
     { name: t("nav.support"), href: "/support" },
-    { name: "Partnership", href: "/partnership", icon: <Handshake className="w-4 h-4" /> },
+    { name: t("nav.about"), href: "/about" },
     { name: t("nav.process"), href: "/process" },
   ]
 
@@ -88,7 +89,7 @@ export function NavBar() {
             <Link href="/partnership" onClick={scrollToTop}>
               <Button className="btn-primary btn-micro">
                 <Handshake className="w-4 h-4 mr-2" />
-                Partnership Application
+                {t("cta.lets_cocreate")}
               </Button>
             </Link>
           </div>
@@ -99,8 +100,8 @@ export function NavBar() {
             <Link href="/partnership" onClick={scrollToTop}>
               <Button size="sm" className="btn-primary btn-micro text-xs px-2 py-1.5 h-8">
                 <Handshake className="w-3 h-3 mr-1" />
-                <span className="hidden xs:inline">Partner</span>
-                <span className="xs:hidden">P</span>
+                <span className="hidden xs:inline">Co-create</span>
+                <span className="xs:hidden">C</span>
               </Button>
             </Link>
             <button
@@ -167,7 +168,7 @@ export function NavBar() {
                   >
                     <Button className="btn-primary btn-micro w-full justify-center">
                       <Handshake className="w-4 h-4 mr-2" />
-                      Partnership Application
+                      {t("cta.lets_cocreate")}
                     </Button>
                   </Link>
                 </div>
