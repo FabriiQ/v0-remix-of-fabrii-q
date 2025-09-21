@@ -1317,37 +1317,81 @@ export default function CapabilitiesPage() {
 
                   {/* Capability Preview/Demo */}
                   <div className={`${isFullscreen ? "w-full" : "flex-1"} bg-gray-900`}>
-                    <div className="w-full h-full flex items-center justify-center text-white p-8">
-                      {videoData[selectedCapability.id] ? (
-                        <div className="w-full max-w-4xl">
-                          <VideoPlayer
-                            src={videoData[selectedCapability.id][0]}
-                            title={`${selectedCapability.name} Demo`}
-                          />
+                    <div className="w-full h-full overflow-y-auto p-8">
+                      <div className="max-w-4xl mx-auto space-y-8">
+                        {/* Overview Section */}
+                        <div>
+                          <h3 className="text-2xl font-semibold text-white mb-4">Overview</h3>
+                          <p className="text-gray-300 leading-relaxed text-lg">{selectedCapability.details.overview}</p>
+                        </div>
 
-                          {/* Multiple Demo Options for Desktop */}
-                          {videoData[selectedCapability.id].length > 1 && (
-                            <div className="grid grid-cols-1 gap-4 mt-6">
-                              {videoData[selectedCapability.id].slice(1).map((videoUrl, index) => (
-                                <div key={index}>
-                                  <h4 className="text-lg font-medium text-white mb-3">Demo {index + 2}</h4>
-                                  <VideoPlayer src={videoUrl} title={`${selectedCapability.name} Demo ${index + 2}`} />
+                        {/* Video Demo Section */}
+                        {videoData[selectedCapability.id] ? (
+                          <div>
+                            <h3 className="text-2xl font-semibold text-white mb-4">Interactive Demo</h3>
+                            <div className="space-y-6">
+                              <VideoPlayer
+                                src={videoData[selectedCapability.id][0]}
+                                title={`${selectedCapability.name} Demo`}
+                              />
+
+                              {/* Additional Demo Videos */}
+                              {videoData[selectedCapability.id].length > 1 && (
+                                <div className="space-y-6">
+                                  {videoData[selectedCapability.id].slice(1).map((videoUrl, index) => (
+                                    <div key={index}>
+                                      <h4 className="text-lg font-medium text-white mb-3">Demo {index + 2}</h4>
+                                      <VideoPlayer
+                                        src={videoUrl}
+                                        title={`${selectedCapability.name} Demo ${index + 2}`}
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-center py-12">
+                            <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                              <Play className="w-12 h-12 text-primary" />
+                            </div>
+                            <h3 className="text-2xl font-semibold text-white mb-4">Demo Coming Soon</h3>
+                            <p className="text-gray-400">
+                              Interactive demonstration for {selectedCapability.name} will be available soon.
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Additional Overview/Details */}
+                        <div className="space-y-6">
+                          {/* Key Features */}
+                          <div>
+                            <h3 className="text-xl font-semibold text-white mb-4">Key Features</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {selectedCapability.details.keyFeatures.map((feature: string, index: number) => (
+                                <div key={index} className="flex items-center text-gray-300">
+                                  <CheckCircle className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
+                                  {feature}
                                 </div>
                               ))}
                             </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="text-center max-w-md">
-                          <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <Play className="w-12 h-12 text-primary" />
                           </div>
-                          <h3 className="text-2xl font-semibold text-white mb-4">Demo Coming Soon</h3>
-                          <p className="text-gray-400">
-                            Interactive demonstration for {selectedCapability.name} will be available soon.
-                          </p>
+
+                          {/* Benefits */}
+                          <div>
+                            <h3 className="text-xl font-semibold text-white mb-4">Key Benefits</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {selectedCapability.details.benefits.map((benefit: string, index: number) => (
+                                <div key={index} className="flex items-center text-gray-300">
+                                  <TrendingUp className="w-4 h-4 text-green-400 mr-3" />
+                                  {benefit}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
                         </div>
-                      )}
+                      </div>
                     </div>
                   </div>
                 </div>
