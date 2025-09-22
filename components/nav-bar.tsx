@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation"
 import { Menu, X, Monitor, Handshake } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { LanguageSelector } from "@/components/language-selector"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { useLanguage } from "@/contexts/language-context"
 
 export function NavBar() {
@@ -24,12 +25,10 @@ export function NavBar() {
   }, [])
 
   const navItems = [
-    { name: t("nav.capabilities"), href: "/projects" },
-    { name: t("nav.platform"), href: "/platform" },
-    { name: t("nav.partnership"), href: "/partnership", icon: <Handshake className="w-4 h-4" /> },
-    { name: t("nav.support"), href: "/support" },
-    { name: t("nav.about"), href: "/about" },
-    { name: t("nav.process"), href: "/process" },
+    { name: t("navigation.capabilities"), href: "/projects" },
+    { name: t("navigation.partnership"), href: "/partnership", icon: <Handshake className="w-4 h-4" /> },
+    { name: t("navigation.about"), href: "/about" },
+    { name: t("navigation.process"), href: "/process" },
   ]
 
   const scrollToTop = () => {
@@ -60,13 +59,13 @@ export function NavBar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-8 nav-items">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
                 onClick={scrollToTop}
-                className={`flex items-center space-x-1 text-sm font-medium transition-all duration-200 btn-micro ${
+                className={`flex items-center space-x-1 text-sm font-medium transition-all duration-200 btn-micro nav-item ${
                   pathname === item.href ? "text-fabriiq-primary" : "text-muted-foreground hover:text-fabriiq-teal"
                 }`}
               >
@@ -78,6 +77,7 @@ export function NavBar() {
 
           {/* Right side items - Desktop */}
           <div className="hidden lg:flex items-center space-x-4">
+            <ThemeToggle />
             <LanguageSelector />
             <Link
               href="/corporate-login"
@@ -96,12 +96,13 @@ export function NavBar() {
 
           {/* Mobile menu button and Partnership Application */}
           <div className="lg:hidden flex items-center space-x-2">
+            <ThemeToggle />
             <LanguageSelector />
             <Link href="/partnership" onClick={scrollToTop}>
               <Button size="sm" className="btn-primary btn-micro text-xs px-2 py-1.5 h-8">
                 <Handshake className="w-3 h-3 mr-1" />
-                <span className="hidden xs:inline">Co-create</span>
-                <span className="xs:hidden">C</span>
+                <span className="hidden xs:inline">{t("cta.cocreate_short")}</span>
+                <span className="xs:hidden">{t("cta.cocreate_letter")}</span>
               </Button>
             </Link>
             <button
@@ -155,7 +156,7 @@ export function NavBar() {
                     className="flex items-center space-x-3 text-muted-foreground hover:text-fabriiq-teal py-2 px-3 rounded-lg transition-all duration-200"
                   >
                     <Monitor className="w-5 h-5" />
-                    <span>Corporate Login</span>
+                    <span>{t("navigation.corporate_login")}</span>
                   </Link>
 
                   <Link

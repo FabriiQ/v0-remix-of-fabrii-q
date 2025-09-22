@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { StatusIndicatorsGroup } from "@/components/status-indicators"
+import { useLanguage } from "@/contexts/language-context"
 import {
   Brain,
   Building2,
@@ -19,30 +20,30 @@ import {
   BarChart,
 } from "lucide-react"
 
-const capabilities = [
+// Create capabilities configuration function that uses translations
+const createCapabilities = (t: (key: string) => string) => [
   {
     id: "aivy",
-    title: "AIVY Multi-Agent System",
-    subtitle: "Purpose-Built Educational AI",
-    description:
-      "Transform educational workflows with specialized agents designed specifically for learning environments. Student Companion, Teacher Assistant, Content Generation, Assessment Intelligence, and Compliance Monitoring - all working together seamlessly.",
+    title: t("capabilities.aivy.title"),
+    subtitle: t("capabilities.aivy.subtitle"),
+    description: t("capabilities.aivy.description"),
     icon: <Brain className="w-8 h-8" />,
     features: [
-      { icon: <Users className="w-5 h-5" />, text: "Personalized learning support" },
-      { icon: <Target className="w-5 h-5" />, text: "Intelligent lesson planning" },
-      { icon: <Zap className="w-5 h-5" />, text: "Automated content creation" },
-      { icon: <BarChart className="w-5 h-5" />, text: "Real-time analytics insights" },
+      { icon: <Users className="w-5 h-5" />, text: t("capabilities.aivy.features.personalized_support") },
+      { icon: <Target className="w-5 h-5" />, text: t("capabilities.aivy.features.lesson_planning") },
+      { icon: <Zap className="w-5 h-5" />, text: t("capabilities.aivy.features.content_creation") },
+      { icon: <BarChart className="w-5 h-5" />, text: t("capabilities.aivy.features.analytics_insights") },
     ],
     stats: [
-      { label: "Teacher Time Saved", value: "85%" },
-      { label: "Student Engagement", value: "92%" },
-      { label: "Assessment Accuracy", value: "97%" },
+      { label: t("capabilities.aivy.stats.time_saved"), value: "85%" },
+      { label: t("capabilities.aivy.stats.engagement"), value: "92%" },
+      { label: t("capabilities.aivy.stats.accuracy"), value: "97%" },
     ],
     technologies: ["Python", "TensorFlow", "OpenAI", "PostgreSQL", "Redis"],
     statusIndicators: [
-      { status: "active" as const, label: "Core agents" },
-      { status: "beta" as const, label: "Advanced collaboration" },
-      { status: "development" as const, label: "Multi-modal support" },
+      { status: "active" as const, label: t("status.active") },
+      { status: "beta" as const, label: t("status.beta") },
+      { status: "development" as const, label: t("status.development") },
     ],
     gradient: "from-fabriiq-primary via-fabriiq-teal to-fabriiq-primary",
     bgGradient: "from-fabriiq-primary/20 via-fabriiq-teal/10 to-fabriiq-primary/20",
@@ -50,6 +51,59 @@ const capabilities = [
   },
   {
     id: "operations",
+    title: t("capabilities.operations.title"),
+    subtitle: t("capabilities.operations.subtitle"),
+    description: t("capabilities.operations.description"),
+    icon: <Building2 className="w-8 h-8" />,
+    features: [
+      { icon: <Zap className="w-5 h-5" />, text: t("capabilities.operations.features.enrollment_workflows") },
+      { icon: <Database className="w-5 h-5" />, text: t("capabilities.operations.features.financial_management") },
+      { icon: <BarChart className="w-5 h-5" />, text: t("capabilities.operations.features.attendance_analytics") },
+      { icon: <TrendingUp className="w-5 h-5" />, text: t("capabilities.operations.features.reporting_dashboards") },
+    ],
+    stats: [
+      { label: t("capabilities.operations.stats.admin_reduction"), value: "75%" },
+      { label: t("capabilities.operations.stats.data_accuracy"), value: "90%" },
+      { label: t("capabilities.operations.stats.system_uptime"), value: "99.9%" },
+    ],
+    technologies: ["Next.js", "Node.js", "PostgreSQL", "Redis", "Docker"],
+    statusIndicators: [
+      { status: "active" as const, label: t("status.active") },
+      { status: "beta" as const, label: t("status.beta") },
+      { status: "development" as const, label: t("status.development") },
+    ],
+    gradient: "from-fabriiq-teal via-fabriiq-primary to-fabriiq-teal",
+    bgGradient: "from-fabriiq-teal/20 via-fabriiq-primary/10 to-fabriiq-teal/20",
+    accentColor: "text-fabriiq-teal",
+  },
+  {
+    id: "pedagogy",
+    title: t("capabilities.pedagogy.title"),
+    subtitle: t("capabilities.pedagogy.subtitle"),
+    description: t("capabilities.pedagogy.description"),
+    icon: <Target className="w-8 h-8" />,
+    features: [
+      { icon: <Brain className="w-5 h-5" />, text: t("capabilities.pedagogy.features.cognitive_classification") },
+      { icon: <TrendingUp className="w-5 h-5" />, text: t("capabilities.pedagogy.features.mastery_tracking") },
+      { icon: <BarChart className="w-5 h-5" />, text: t("capabilities.pedagogy.features.progression_analytics") },
+      { icon: <Target className="w-5 h-5" />, text: t("capabilities.pedagogy.features.intervention_engine") },
+    ],
+    stats: [
+      { label: t("capabilities.pedagogy.stats.outcome_improvement"), value: "89%" },
+      { label: t("capabilities.pedagogy.stats.teacher_satisfaction"), value: "94%" },
+      { label: t("capabilities.pedagogy.stats.faster_mastery"), value: "78%" },
+    ],
+    technologies: ["Python", "scikit-learn", "D3.js", "React", "GraphQL"],
+    statusIndicators: [
+      { status: "active" as const, label: t("status.active") },
+      { status: "beta" as const, label: t("status.beta") },
+      { status: "development" as const, label: t("status.development") },
+    ],
+    gradient: "from-primary via-fabriiq-primary to-primary",
+    bgGradient: "from-primary/20 via-fabriiq-primary/10 to-primary/20",
+    accentColor: "text-primary",
+  },
+]
     title: "Unified Operations Hub",
     subtitle: "Complete Institutional Management",
     description:
@@ -194,6 +248,10 @@ export function CoreCapabilitiesSection() {
   const [activeCapability, setActiveCapability] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
   const capabilityRefs = useRef<(HTMLDivElement | null)[]>([])
+  const { t } = useLanguage()
+  
+  // Get dynamic capabilities with translations
+  const capabilities = createCapabilities(t)
 
   // Intersection observer for section visibility
   useEffect(() => {
@@ -282,17 +340,15 @@ export function CoreCapabilitiesSection() {
             transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
           >
             <div className="w-2 h-2 bg-fabriiq-primary rounded-full animate-pulse" />
-            <span className="text-sm font-medium text-fabriiq-primary">Core Capabilities</span>
+            <span className="text-sm font-medium text-fabriiq-primary">{t("capabilities.title")}</span>
           </motion.div>
 
           <h2 className="text-5xl sm:text-6xl font-black mb-6 leading-tight">
-            <span className="text-white">Capabilities That </span>
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal font-light italic">
-              Transform
-            </span>
+            <span className="text-white">{t("capabilities.subtitle")} </span>
           </h2>
 
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            {t("capabilities.description")}
             Comprehensive solutions designed to transform educational institutions and enhance learning outcomes
           </p>
         </motion.div>

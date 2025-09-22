@@ -6,6 +6,7 @@ import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
 import { Send, Bot, User, ChevronDown, ChevronUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useLanguage } from "@/contexts/language-context"
 
 type Message = {
   id: string
@@ -15,10 +16,11 @@ type Message = {
 }
 
 export default function SupportPage() {
+  const { t } = useLanguage()
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      text: "Hello! I'm your AI support assistant. How can I help you today?",
+      text: t("pages.support.ai_support.initial_message"),
       sender: "bot",
       timestamp: new Date(),
     },
@@ -130,19 +132,18 @@ export default function SupportPage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="inline-flex items-center space-x-2 px-4 py-2 bg-fabriiq-primary/10 rounded-full border border-fabriiq-primary/20 mb-6">
               <Bot className="w-4 h-4 text-fabriiq-primary" />
-              <span className="text-sm font-medium text-fabriiq-primary">AI-Powered Support</span>
+              <span className="text-sm font-medium text-fabriiq-primary">{t("pages.support.ai_support.badge")}</span>
             </div>
 
             <h1 className="text-5xl sm:text-6xl font-bold mb-6 leading-tight">
-              <span className="text-white">Get </span>
+              <span className="text-white">{t("pages.support.title").split(" ")[0]} </span>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
-                Instant Help
+                {t("pages.support.title").split(" ").slice(1).join(" ")}
               </span>
             </h1>
 
             <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
-              Chat with our AI assistant for immediate support, or browse our comprehensive FAQ section for quick
-              answers about FabriiQ's educational platform.
+              {t("pages.support.subtitle")}
             </p>
           </motion.div>
         </div>

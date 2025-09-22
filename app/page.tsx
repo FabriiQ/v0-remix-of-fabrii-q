@@ -7,10 +7,16 @@ import { Footer } from "@/components/footer"
 import { SpinningEarth } from "@/components/spinning-earth"
 import { TypingHero } from "@/components/typing-hero"
 import { motion } from "framer-motion"
-import { Zap, Users, Brain, Shield, Building2, Lightbulb, Target } from "lucide-react"
+import { Zap, Users, Brain, Shield, Building2, Lightbulb, Target, Trophy, Wifi, Lock } from "lucide-react"
 import { ProfileDropdown } from "@/components/profile-dropdown"
+import { useLanguage } from "@/contexts/language-context"
+import { useDynamicMetadata } from "@/hooks/use-dynamic-metadata"
+import VideoPlayer from "@/components/video-player"
 
 export default function Home() {
+  const { t } = useLanguage()
+  useDynamicMetadata()
+  
   return (
     <main className="relative min-h-screen bg-black text-foreground overflow-x-hidden">
       {/* Background layers */}
@@ -52,12 +58,12 @@ export default function Home() {
         <ProfileDropdown />
 
         {/* Hero section with FabriiQ messaging */}
-        <section className="flex flex-col items-center justify-center min-h-[90vh] px-4 sm:px-6">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
+        <section className="flex flex-col items-center justify-center min-h-[90vh] px-4 sm:px-6 pt-24">
+          <div className="max-w-4xl mx-auto text-center space-y-8">
             <div className="mb-8">
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-fabriiq-primary/10 border border-fabriiq-primary/20 text-fabriiq-primary text-sm font-medium">
-                <span className="w-2 h-2 bg-fabriiq-primary rounded-full mr-2 animate-pulse"></span>
-                Alpha Development Phase - Partnership Opportunities Available
+              <div className="inline-flex items-center px-6 py-3 rounded-full bg-fabriiq-primary/20 border border-fabriiq-primary/40 text-fabriiq-primary text-base font-semibold backdrop-blur-sm">
+                <span className="w-3 h-3 bg-fabriiq-primary rounded-full mr-3 animate-pulse"></span>
+                {t("hero.alpha_status")}
               </div>
             </div>
 
@@ -75,30 +81,29 @@ export default function Home() {
             <div className="relative">
               <div className="absolute inset-0 bg-background/60 rounded-xl blur-2xl"></div>
               <p className="relative z-10 text-muted-foreground max-w-2xl mx-auto font-medium text-lg leading-relaxed">
-                Join forward-thinking institutions in co-creating FabriiQ - moving beyond fragmented LMS solutions to
-                unified institutional intelligence designed for modern educational excellence.
+                {t("hero.description_detailed")}
               </p>
             </div>
 
             <div className="pt-8">
               <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                 <Link
-                  href="/partnership"
+                  href="/projects"
                   className="group relative px-8 py-4 bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal text-white rounded-lg font-medium text-base hover:from-fabriiq-teal hover:to-fabriiq-primary transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_20px_rgba(31,80,75,0.3)]"
                 >
                   <span className="flex items-center space-x-2">
-                    <Users className="w-5 h-5" />
-                    <span>Become a Development Partner</span>
+                    <Brain className="w-5 h-5" />
+                    <span>{t("cta.explore_core_capabilities")}</span>
                   </span>
                 </Link>
 
                 <Link
-                  href="/platform"
+                  href="/partnership"
                   className="group relative px-8 py-4 bg-gray-800 text-white rounded-lg font-medium text-base hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 border border-gray-700"
                 >
                   <span className="flex items-center space-x-2">
-                    <Brain className="w-5 h-5" />
-                    <span>Explore the Platform</span>
+                    <Users className="w-5 h-5" />
+                    <span>{t("cta.become_development_partner")}</span>
                   </span>
                 </Link>
               </div>
@@ -106,38 +111,6 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="py-20 px-4 sm:px-6 relative">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
-              <div>
-                <img
-                  src="/modern-educational-technology-dashboard-with-ai-an.jpg"
-                  alt="Modern Educational Technology Dashboard"
-                  className="rounded-2xl shadow-2xl"
-                />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold mb-6">
-                  <span className="text-foreground">Transforming </span>
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
-                    Educational Excellence
-                  </span>
-                </h2>
-                <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                  FabriiQ empowers educational institutions with AI-driven insights, seamless multi-campus operations,
-                  and comprehensive student lifecycle management - all in one unified platform.
-                </p>
-                <Link
-                  href="/capabilities"
-                  className="inline-flex items-center space-x-2 text-fabriiq-primary hover:text-fabriiq-teal transition-colors"
-                >
-                  <span>Explore Platform Capabilities</span>
-                  <Zap className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
 
         <section className="py-20 px-4 sm:px-6 relative">
           <div className="max-w-6xl mx-auto">
@@ -148,9 +121,9 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <span className="text-foreground">6 Key </span>
+                <span className="text-foreground">{t("homepage.sections.key_cornerstones.title_key")} </span>
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
-                  Capabilities
+                  {t("homepage.sections.key_cornerstones.title_cornerstones")}
                 </span>
               </motion.h2>
               <motion.p
@@ -159,8 +132,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                Purpose-built features designed specifically for educational institutions, not generic solutions adapted
-                for schools.
+                {t("homepage.sections.key_cornerstones.description")}
               </motion.p>
             </div>
 
@@ -168,56 +140,38 @@ export default function Home() {
               {[
                 {
                   icon: Brain,
-                  title: "AIVY Multi-Agent Intelligence",
-                  description:
-                    "Not generic AI, but specialized agents designed specifically for education. Student Companion, Teacher Assistant, Content Generation, Assessment Intelligence, and Compliance Monitoring - all working together seamlessly.",
-                  status: "Core agents active, advanced collaboration in beta",
+                  key: "aivy",
                   image: "/network-of-interconnected-ai-nodes-with-educationa.jpg",
                   color: "text-fabriiq-primary",
                 },
                 {
                   icon: Lightbulb,
-                  title: "Pedagogically Sound",
-                  description:
-                    "Every question, assessment, and activity is automatically aligned with Bloom's Taxonomy. Track cognitive development from Remember to Create with real-time mastery analytics and intervention triggers.",
-                  status: "Classification engine active, balance analytics in development",
+                  key: "pedagogical",
                   image: "/pyramid-structure-with-cognitive-levels--bloom-s-t.jpg",
                   color: "text-fabriiq-teal",
                 },
                 {
-                  icon: Users,
-                  title: "Intelligent Enrollment Management",
-                  description:
-                    "Streamline student lifecycle management with automated processing and multi-campus coordination. Single and bulk enrollment creation, real-time CSV validation, and predictive analytics transform administrative efficiency.",
-                  status: "Core operations active, advanced analytics in development",
-                  image: "/student-enrollment-dashboard-with-automated-workf.jpg",
+                  icon: Trophy,
+                  key: "gamification",
+                  image: "/achievement-badges--leaderboards--social-interacti.png",
                   color: "text-primary",
                 },
                 {
                   icon: Building2,
-                  title: "Financial Operations Automation",
-                  description:
-                    "Transform fee management with intelligent automation, multi-currency support, and comprehensive financial analytics. Automated challan generation, payment processing, and policy-based late fee management.",
-                  status: "Core functionality complete, advanced reporting in development",
-                  image: "/financial-dashboard-with-multi-currency-support-a.jpg",
+                  key: "multi_campus",
+                  image: "/interconnected-campus-buildings-with-data-flow-vis.png",
                   color: "text-fabriiq-primary",
                 },
                 {
-                  icon: Zap,
-                  title: "Strategic Communication Intelligence",
-                  description:
-                    "Coordinate institutional communications with FERPA-compliant messaging, emergency broadcasting, and intelligent routing. Multi-channel delivery, automated prioritization, and comprehensive analytics.",
-                  status: "Core messaging active, analytics dashboard in beta",
-                  image: "/communication-hub-with-multi-channel-messaging-an.jpg",
+                  icon: Wifi,
+                  key: "offline_first",
+                  image: "/device-synchronization-with-cloud-connectivity-ind.png",
                   color: "text-fabriiq-teal",
                 },
                 {
-                  icon: Shield,
-                  title: "Data-Driven Teaching Analytics",
-                  description:
-                    "Access comprehensive class performance insights with predictive student outcome analysis and intervention recommendations. Real-time dashboards, Bloom's Taxonomy cognitive tracking, and at-risk student identification.",
-                  status: "Core reporting active, predictive features in development",
-                  image: "/analytics-dashboard-with-student-performance-pred.jpg",
+                  icon: Lock,
+                  key: "privacy_compliance",
+                  image: "/privacy.png",
                   color: "text-primary",
                 },
               ].map((feature, index) => (
@@ -231,8 +185,8 @@ export default function Home() {
                   <div className="mb-4 rounded-lg overflow-hidden flex items-center justify-center">
                     <img
                       src={feature.image || "/placeholder.svg"}
-                      alt={feature.title}
-                      className="w-full h-48 object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                      alt={t(`homepage.sections.key_cornerstones.features.${feature.key}.title`)}
+                      className="w-full h-48 object-contain object-center group-hover:scale-105 transition-transform duration-300 bg-gray-900/20 rounded-lg"
                     />
                   </div>
                   <div
@@ -240,11 +194,78 @@ export default function Home() {
                   >
                     <feature.icon className={`w-6 h-6 ${feature.color}`} />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-foreground">{feature.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed mb-4">{feature.description}</p>
+                  <h3 className="text-xl font-semibold mb-3 text-foreground">{t(`homepage.sections.key_cornerstones.features.${feature.key}.title`)}</h3>
+                  <p className="text-muted-foreground leading-relaxed mb-4">{t(`homepage.sections.key_cornerstones.features.${feature.key}.description`)}</p>
                   <div className="text-xs text-fabriiq-primary bg-fabriiq-primary/10 px-2 py-1 rounded-full inline-block">
-                    Alpha Status: {feature.status}
+                    {t("homepage.sections.key_cornerstones.status_prefix")} {t(`homepage.sections.key_cornerstones.features.${feature.key}.status`)}
                   </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Platform Philosophy Section */}
+        <section className="py-20 px-4 sm:px-6 relative bg-gradient-to-b from-black to-gray-900">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <motion.h2
+                className="text-4xl sm:text-5xl font-bold mb-6 text-white"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <span className="text-white">{t("homepage.sections.platform_philosophy.title_platform")} </span>
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
+                  {t("homepage.sections.platform_philosophy.title_philosophy")}
+                </span>
+              </motion.h2>
+              <motion.p
+                className="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                {t("homepage.sections.platform_philosophy.description")}
+              </motion.p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {[
+                {
+                  key: "school_os_vs_lms",
+                  icon: Building2,
+                },
+                {
+                  key: "unified_vs_fragmented",
+                  icon: Zap,
+                },
+                {
+                  key: "ai_native_vs_added",
+                  icon: Brain,
+                },
+                {
+                  key: "online_vs_blended",
+                  icon: Users,
+                },
+              ].map((comparison, index) => (
+                <motion.div
+                  key={comparison.key}
+                  className="bg-black/50 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-fabriiq-primary/30 transition-all duration-300"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ y: -5 }}
+                >
+                  <div className="w-12 h-12 bg-fabriiq-primary/10 rounded-lg flex items-center justify-center mb-4 border border-fabriiq-primary/20">
+                    <comparison.icon className="w-6 h-6 text-fabriiq-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-3">
+                    {t(`homepage.sections.platform_philosophy.comparisons.${comparison.key}.title`)}
+                  </h3>
+                  <p className="text-gray-300 leading-relaxed">
+                    {t(`homepage.sections.platform_philosophy.comparisons.${comparison.key}.description`)}
+                  </p>
                 </motion.div>
               ))}
             </div>
@@ -266,135 +287,52 @@ export default function Home() {
                 transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
               >
                 <div className="w-2 h-2 bg-fabriiq-primary rounded-full animate-pulse" />
-                <span className="text-sm font-medium text-fabriiq-primary">Comprehensive Platform Capabilities</span>
+                <span className="text-sm font-medium text-fabriiq-primary">{t("homepage.sections.comprehensive_capabilities.badge")}</span>
               </motion.div>
 
               <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-                Capabilities That{" "}
+                {t("homepage.sections.comprehensive_capabilities.title_capabilities")}{" "}
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
-                  Transform
+                  {t("homepage.sections.comprehensive_capabilities.title_transform")}
                 </span>
               </h2>
               <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-                Five comprehensive capabilities designed to revolutionize educational operations and enhance learning
-                outcomes
+                {t("homepage.sections.comprehensive_capabilities.description")}
               </p>
             </motion.div>
 
             <div className="space-y-20">
               {[
                 {
-                  title: "Intelligent Enrollment Management",
-                  description:
-                    "Streamline student lifecycle management with automated processing and multi-campus coordination. Single and bulk enrollment creation, real-time CSV validation, and predictive analytics transform administrative efficiency across institutional hierarchies.",
-                  features: [
-                    "Multi-campus enrollment coordination",
-                    "Automated status management workflows",
-                    "Real-time validation and error handling",
-                    "Predictive enrollment forecasting",
-                  ],
-                  benefits: ["75% Manual Task Reduction", "98% Data Accuracy", "65% Time Savings"],
-                  status: {
-                    active: "Core operations",
-                    development: "Advanced analytics",
-                    planned: "AI-powered forecasting",
-                  },
+                  key: "enrollment_mgmt",
                   techStack: ["Next.js", "Prisma", "PostgreSQL", "TypeScript"],
                   videoUrl:
                     "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Enrollments.mp4",
                   image: "/intelligent-enrollment-management-dashboard-with-.jpg",
                 },
                 {
-                  title: "Financial Operations Automation",
-                  description:
-                    "Transform fee management with intelligent automation, multi-currency support, and comprehensive financial analytics. Automated challan generation, payment processing, and policy-based late fee management streamline institutional financial operations.",
-                  features: [
-                    "Flexible fee structure management",
-                    "Multi-payment method processing",
-                    "Automated compliance reporting",
-                    "Real-time financial analytics",
-                  ],
-                  benefits: [
-                    "80% Financial Task Efficiency",
-                    "99% Calculation Accuracy",
-                    "50% Processing Speed Improvement",
-                  ],
-                  status: {
-                    complete: "Core functionality",
-                    development: "Advanced reporting",
-                    planned: "Predictive financial analytics",
-                  },
+                  key: "financial_ops",
                   techStack: ["Node.js", "Stripe API", "PostgreSQL", "Redis"],
                   videoUrl:
                     "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Fee%20Management.mp4",
                   image: "/financial-operations-automation-dashboard-with-m.jpg",
                 },
                 {
-                  title: "Pedagogical Intelligence Framework",
-                  description:
-                    "Align curriculum with learning outcomes using Bloom's Taxonomy integration and cognitive balance analysis. Learning outcome mapping, curriculum alignment verification, and performance correlation tracking enhance educational effectiveness.",
-                  features: [
-                    "Six-level Bloom's Taxonomy framework",
-                    "Automated curriculum alignment",
-                    "Cognitive balance analysis",
-                    "Performance correlation tracking",
-                  ],
-                  benefits: ["65% Curriculum Alignment Accuracy", "92% Outcome Correlation", "55% Planning Efficiency"],
-                  status: {
-                    complete: "Core framework",
-                    development: "Advanced analytics",
-                    beta: "Cognitive balance optimization",
-                  },
+                  key: "pedagogical_intel",
                   techStack: ["Python", "scikit-learn", "PostgreSQL", "React"],
                   videoUrl:
                     "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/System%20Admin%20Subjects%20and%20learning%20outcomes.mp4",
                   image: "/pedagogical-intelligence-framework-with-bloom-s-.jpg",
                 },
                 {
-                  title: "Strategic Communication Intelligence",
-                  description:
-                    "Coordinate institutional communications with FERPA-compliant messaging, emergency broadcasting, and intelligent routing. Multi-channel delivery, automated prioritization, and comprehensive analytics ensure effective stakeholder engagement.",
-                  features: [
-                    "FERPA-compliant messaging system",
-                    "Emergency broadcast capabilities",
-                    "Intelligent routing and prioritization",
-                    "Communication analytics insights",
-                  ],
-                  benefits: [
-                    "85% Communication Efficiency",
-                    "100% Compliance Adherence",
-                    "60% Response Time Improvement",
-                  ],
-                  status: {
-                    active: "Core messaging",
-                    planned: "Advanced features",
-                    beta: "Analytics dashboard",
-                  },
+                  key: "communication_intel",
                   techStack: ["WebSocket", "Node.js", "Redis", "PostgreSQL"],
                   videoUrl:
                     "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/System%20Admin%20Communication%20hub.mp4",
                   image: "/strategic-communication-intelligence-hub-with-mu.jpg",
                 },
                 {
-                  title: "Data-Driven Teaching Analytics",
-                  description:
-                    "Access comprehensive class performance insights with predictive student outcome analysis and intervention recommendations. Real-time dashboards, Bloom's Taxonomy cognitive tracking, and at-risk student identification enhance teaching effectiveness.",
-                  features: [
-                    "Real-time performance dashboards",
-                    "Predictive outcome analysis",
-                    "At-risk student identification",
-                    "Bloom's cognitive level tracking",
-                  ],
-                  benefits: [
-                    "70% Prediction Accuracy",
-                    "88% Intervention Reliability",
-                    "50% Faster Risk Identification",
-                  ],
-                  status: {
-                    active: "Core reporting",
-                    development: "Predictive features",
-                    planned: "AI-powered interventions",
-                  },
+                  key: "teaching_analytics",
                   techStack: ["Python", "TensorFlow", "D3.js", "PostgreSQL"],
                   videoUrl:
                     "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Class%20Reports.mp4",
@@ -411,17 +349,17 @@ export default function Home() {
                   {/* Content */}
                   <div className={`space-y-8 ${index % 2 === 1 ? "lg:order-2" : ""}`}>
                     <div>
-                      <h3 className="text-3xl font-bold text-white mb-4">{capability.title}</h3>
-                      <p className="text-lg text-gray-300 leading-relaxed mb-6">{capability.description}</p>
+                      <h3 className="text-3xl font-bold text-white mb-4">{t(`homepage.sections.comprehensive_capabilities.capabilities.${capability.key}.title`)}</h3>
+                      <p className="text-lg text-gray-300 leading-relaxed mb-6">{t(`homepage.sections.comprehensive_capabilities.capabilities.${capability.key}.description`)}</p>
                     </div>
 
                     {/* Features and Benefits Side by Side */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {/* Features */}
                       <div>
-                        <h4 className="text-lg font-semibold text-fabriiq-primary mb-4">Key Features</h4>
+                        <h4 className="text-lg font-semibold text-fabriiq-primary mb-4">{t("homepage.sections.comprehensive_capabilities.labels.key_features")}</h4>
                         <ul className="space-y-3">
-                          {capability.features.map((feature, featureIndex) => (
+                          {Object.values(t(`homepage.sections.comprehensive_capabilities.capabilities.${capability.key}.features`, undefined, { returnObjects: true }) as Record<string, string>).map((feature, featureIndex) => (
                             <motion.li
                               key={featureIndex}
                               initial={{ opacity: 0, x: -20 }}
@@ -438,9 +376,9 @@ export default function Home() {
 
                       {/* Benefits */}
                       <div>
-                        <h4 className="text-lg font-semibold text-fabriiq-teal mb-4">Expected Benefits</h4>
+                        <h4 className="text-lg font-semibold text-fabriiq-teal mb-4">{t("homepage.sections.comprehensive_capabilities.labels.expected_benefits")}</h4>
                         <div className="space-y-3">
-                          {capability.benefits.map((benefit, benefitIndex) => (
+                          {Object.values(t(`homepage.sections.comprehensive_capabilities.capabilities.${capability.key}.benefits`, undefined, { returnObjects: true }) as Record<string, string>).map((benefit, benefitIndex) => (
                             <motion.div
                               key={benefitIndex}
                               initial={{ opacity: 0, x: 20 }}
@@ -458,10 +396,10 @@ export default function Home() {
                     {/* Development Status */}
                     <div>
                       <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">
-                        Development Status
+                        {t("homepage.sections.comprehensive_capabilities.labels.development_status")}
                       </h4>
                       <div className="flex flex-wrap gap-2">
-                        {Object.entries(capability.status).map(([status, label], statusIndex) => (
+                        {Object.entries(t(`homepage.sections.comprehensive_capabilities.capabilities.${capability.key}.status`, undefined, { returnObjects: true }) as Record<string, string>).map(([status, label], statusIndex) => (
                           <motion.div
                             key={statusIndex}
                             initial={{ opacity: 0, scale: 0 }}
@@ -487,7 +425,7 @@ export default function Home() {
 
                     {/* Tech Stack */}
                     <div>
-                      <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">Tech Stack</h4>
+                      <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">{t("homepage.sections.comprehensive_capabilities.labels.tech_stack")}</h4>
                       <div className="flex flex-wrap gap-2">
                         {capability.techStack.map((tech, techIndex) => (
                           <motion.div
@@ -504,25 +442,18 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Image and Video */}
+                  {/* Video Demo */}
                   <motion.div
                     className={`${index % 2 === 1 ? "lg:order-1" : ""}`}
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8 }}
                   >
-                    <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-fabriiq-primary/10 to-fabriiq-teal/10 border border-white/10">
-                      <img
-                        src={capability.image || "/placeholder.svg"}
-                        alt={capability.title}
-                        className="w-full h-80 object-cover object-center"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <h4 className="text-white font-semibold mb-2">{capability.title}</h4>
-                        <p className="text-gray-300 text-sm">Interactive Demo Available</p>
-                      </div>
-                    </div>
+                    <VideoPlayer
+                      src={capability.videoUrl}
+                      title={t(`homepage.sections.comprehensive_capabilities.capabilities.${capability.key}.title`)}
+                      className="w-full"
+                    />
                   </motion.div>
                 </motion.div>
               ))}
@@ -545,18 +476,17 @@ export default function Home() {
                 transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
               >
                 <Zap className="w-4 h-4 text-fabriiq-primary" />
-                <span className="text-sm font-medium text-fabriiq-primary">Platform Excellence</span>
+                <span className="text-sm font-medium text-fabriiq-primary">{t("homepage.sections.platform_showcase.badge")}</span>
               </motion.div>
 
               <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-                Built for{" "}
+                {t("homepage.sections.platform_showcase.title_built")}{" "}
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
-                  Education
+                  {t("homepage.sections.platform_showcase.title_education")}
                 </span>
               </h2>
               <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-                Purpose-built architecture designed specifically for educational institutions, not generic solutions
-                retrofitted for schools
+                {t("homepage.sections.platform_showcase.description")}
               </p>
             </motion.div>
 
@@ -570,14 +500,14 @@ export default function Home() {
               >
                 <div className="relative rounded-2xl overflow-hidden">
                   <img
-                    src="/comprehensive-educational-platform-dashboard-wi.jpg"
-                    alt="FabriiQ Platform Dashboard"
-                    className="w-full h-96 object-cover object-center"
+                    src="/blended-learning.png"
+                    alt={t("homepage.sections.platform_showcase.platform_name")}
+                    className="w-full h-96 object-contain object-center bg-gray-900/20 rounded-2xl"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4">
-                    <h4 className="text-white font-semibold mb-2">FabriiQ Platform</h4>
-                    <p className="text-gray-300 text-sm">Comprehensive Educational Intelligence</p>
+                    <h4 className="text-white font-semibold mb-2">{t("homepage.sections.platform_showcase.platform_name")}</h4>
+                    <p className="text-gray-300 text-sm">{t("homepage.sections.platform_showcase.platform_tagline")}</p>
                   </div>
                 </div>
               </motion.div>
@@ -590,10 +520,9 @@ export default function Home() {
                 className="space-y-8"
               >
                 <div>
-                  <h3 className="text-3xl font-bold text-white mb-6">Platform Excellence</h3>
+                  <h3 className="text-3xl font-bold text-white mb-6">{t("homepage.sections.platform_showcase.title_built")} {t("homepage.sections.platform_showcase.title_education")}</h3>
                   <p className="text-lg text-gray-300 leading-relaxed mb-8">
-                    Every component of FabriiQ is designed with educational workflows in mind, from AIVY's multi-agent
-                    intelligence to FERPA-native privacy architecture.
+                    {t("homepage.sections.platform_showcase.excellence.description")}
                   </p>
                 </div>
 
@@ -601,20 +530,17 @@ export default function Home() {
                   {[
                     {
                       icon: Brain,
-                      title: "AIVY Multi-Agent System",
-                      description: "Purpose-built AI agents that understand educational contexts and workflows",
+                      key: "aivy_system",
                       color: "text-fabriiq-primary",
                     },
                     {
                       icon: Target,
-                      title: "Bloom's Taxonomy Native",
-                      description: "Integrated cognitive level tracking and mastery measurement at the core",
+                      key: "blooms_native",
                       color: "text-fabriiq-teal",
                     },
                     {
                       icon: Shield,
-                      title: "Privacy-by-Design",
-                      description: "FERPA compliance built into the architecture, not bolted on afterwards",
+                      key: "privacy_design",
                       color: "text-primary",
                     },
                   ].map((feature, index) => (
@@ -631,8 +557,8 @@ export default function Home() {
                         <feature.icon className={`w-5 h-5 ${feature.color}`} />
                       </div>
                       <div>
-                        <h4 className="text-lg font-semibold text-white mb-2">{feature.title}</h4>
-                        <p className="text-gray-300 leading-relaxed">{feature.description}</p>
+                        <h4 className="text-lg font-semibold text-white mb-2">{t(`homepage.sections.platform_showcase.excellence.features.${feature.key}.title`)}</h4>
+                        <p className="text-gray-300 leading-relaxed">{t(`homepage.sections.platform_showcase.excellence.features.${feature.key}.description`)}</p>
                       </div>
                     </motion.div>
                   ))}
@@ -645,10 +571,9 @@ export default function Home() {
                   className="pt-6"
                 >
                   <div className="p-6 bg-gradient-to-r from-fabriiq-primary/10 to-fabriiq-teal/10 rounded-xl border border-fabriiq-primary/20">
-                    <h4 className="text-lg font-semibold text-white mb-2">Alpha Development Status</h4>
+                    <h4 className="text-lg font-semibold text-white mb-2">{t("homepage.sections.platform_showcase.excellence.status.title")}</h4>
                     <p className="text-gray-300 text-sm leading-relaxed">
-                      Core systems are active and being refined through development partnerships. Join us in co-creating
-                      the future of educational technology.
+                      {t("homepage.sections.platform_showcase.excellence.status.description")}
                     </p>
                   </div>
                 </motion.div>
@@ -666,9 +591,9 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <span className="text-foreground">Ready to </span>
+                <span className="text-foreground">{t("homepage.sections.contact.title_ready")} </span>
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
-                  co-create?
+                  {t("homepage.sections.contact.title_cocreate")}
                 </span>
               </motion.h2>
               <motion.div
@@ -683,8 +608,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                Join a select group of forward-thinking institutions shaping the future of educational technology.
-                Limited development partnerships available.
+                {t("homepage.sections.contact.description")}
               </motion.p>
             </div>
 
@@ -702,7 +626,7 @@ export default function Home() {
                   >
                     <span className="flex items-center space-x-2">
                       <Users className="w-5 h-5" />
-                      <span>Apply for Partnership</span>
+                      <span>{t("homepage.sections.contact.cta.apply_partnership")}</span>
                     </span>
                   </Link>
 
@@ -712,7 +636,7 @@ export default function Home() {
                   >
                     <span className="flex items-center space-x-2">
                       <Zap className="w-5 h-5" />
-                      <span>Schedule Discussion</span>
+                      <span>{t("homepage.sections.contact.cta.schedule_discussion")}</span>
                     </span>
                   </Link>
 
@@ -722,7 +646,7 @@ export default function Home() {
                   >
                     <span className="flex items-center space-x-2">
                       <Brain className="w-5 h-5" />
-                      <span>Alpha Documentation</span>
+                      <span>{t("homepage.sections.contact.cta.alpha_documentation")}</span>
                     </span>
                   </Link>
                 </div>
@@ -732,19 +656,19 @@ export default function Home() {
                     <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
                       <span className="text-primary font-bold text-sm">1</span>
                     </div>
-                    <p className="text-sm text-muted-foreground">Strategic Investment</p>
+                    <p className="text-sm text-muted-foreground">{t("homepage.sections.contact.process.strategic_investment")}</p>
                   </div>
                   <div className="flex flex-col items-center space-y-2">
                     <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
                       <span className="text-primary font-bold text-sm">2</span>
                     </div>
-                    <p className="text-sm text-muted-foreground">Co-development opportunity</p>
+                    <p className="text-sm text-muted-foreground">{t("homepage.sections.contact.process.codevelopment")}</p>
                   </div>
                   <div className="flex flex-col items-center space-y-2">
                     <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
                       <span className="text-primary font-bold text-sm">3</span>
                     </div>
-                    <p className="text-sm text-muted-foreground">Competitive advantage</p>
+                    <p className="text-sm text-muted-foreground">{t("homepage.sections.contact.process.competitive_advantage")}</p>
                   </div>
                 </div>
               </div>

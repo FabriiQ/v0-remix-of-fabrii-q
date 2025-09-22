@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
 import { CodeRain } from "@/components/code-rain"
+import { useLanguage } from "@/contexts/language-context"
 import {
   MessageCircle,
   Settings,
@@ -33,6 +34,7 @@ import {
 } from "lucide-react"
 
 export default function ProcessPage() {
+  const { t } = useLanguage()
   const [activeStep, setActiveStep] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
 
@@ -49,150 +51,75 @@ export default function ProcessPage() {
   const processSteps = [
     {
       id: "discovery",
-      title: "Discovery & Institutional Alignment",
-      duration: "2-4 weeks",
+      title: t('pages.process.steps.discovery.title'),
+      duration: t('pages.process.steps.discovery.duration'),
       icon: <MessageCircle className="w-6 h-6" />,
       color: "text-blue-500",
       bgColor: "bg-blue-500/10",
       borderColor: "border-blue-500/20",
-      description:
-        "We dive deep into understanding your institution's unique challenges, educational mission, and technology requirements.",
-      activities: [
-        "Institutional stakeholder interviews across all levels",
-        "Current system analysis and pain point identification",
-        "Educational workflow mapping and process documentation",
-        "Multi-campus coordination requirements assessment",
-        "Compliance and privacy requirement evaluation",
-      ],
-      deliverables: [
-        "Comprehensive institutional assessment report",
-        "Custom FabriiQ configuration recommendations",
-        "Partnership agreement and collaboration framework",
-        "Implementation timeline with milestone definitions",
-        "Success metrics and measurement criteria",
-      ],
+      description: t('pages.process.steps.discovery.description'),
+      activities: t('pages.process.steps.discovery.activities', { returnObjects: true }) || [],
+      deliverables: t('pages.process.steps.discovery.deliverables', { returnObjects: true }) || [],
     },
     {
       id: "configuration",
-      title: "Alpha Platform Configuration & Customization",
-      duration: "3-4 weeks",
+      title: t('pages.process.steps.configuration.title'),
+      duration: t('pages.process.steps.configuration.duration'),
       icon: <Settings className="w-6 h-6" />,
       color: "text-purple-500",
       bgColor: "bg-purple-500/10",
       borderColor: "border-purple-500/20",
-      description:
-        "Configuring FabriiQ's Alpha platform to match your institution's specific workflows and requirements.",
-      activities: [
-        "Multi-campus hierarchy setup and role configuration",
-        "Educational data model customization and mapping",
-        "Workflow automation design and implementation",
-        "User interface customization and branding",
-        "Integration planning with existing systems",
-      ],
-      deliverables: [
-        "Fully configured FabriiQ platform instance",
-        "Custom workflow documentation",
-        "User role and permission structure",
-        "Integration roadmap and specifications",
-        "Training material customization",
-      ],
+      description: t('pages.process.steps.configuration.description'),
+      activities: t('pages.process.steps.configuration.activities', { returnObjects: true }) || [],
+      deliverables: t('pages.process.steps.configuration.deliverables', { returnObjects: true }) || [],
     },
     {
       id: "pilot",
-      title: "Pilot Implementation & Staff Onboarding",
-      duration: "4-6 weeks",
+      title: t('pages.process.steps.pilot.title'),
+      duration: t('pages.process.steps.pilot.duration'),
       icon: <Users className="w-6 h-6" />,
       color: "text-green-500",
       bgColor: "bg-green-500/10",
       borderColor: "border-green-500/20",
-      description: "Deploying the platform with selected user groups and comprehensive staff training programs.",
-      activities: [
-        "Pilot user group selection and onboarding",
-        "Comprehensive staff training across all user roles",
-        "Data migration from existing systems",
-        "Workflow implementation and process refinement",
-        "Initial feedback collection and platform adjustment",
-      ],
-      deliverables: [
-        "Live pilot platform deployment",
-        "Trained administrative and teaching staff",
-        "Migrated historical data and records",
-        "Refined workflow documentation",
-        "Pilot phase performance metrics",
-      ],
+      description: t('pages.process.steps.pilot.description'),
+      activities: t('pages.process.steps.pilot.activities', { returnObjects: true }) || [],
+      deliverables: t('pages.process.steps.pilot.deliverables', { returnObjects: true }) || [],
     },
     {
       id: "refinement",
-      title: "Feedback Integration & Platform Refinement",
-      duration: "2-3 weeks",
+      title: t('pages.process.steps.refinement.title'),
+      duration: t('pages.process.steps.refinement.duration'),
       icon: <TestTube className="w-6 h-6" />,
       color: "text-orange-500",
       bgColor: "bg-orange-500/10",
       borderColor: "border-orange-500/20",
-      description:
-        "Incorporating your feedback to refine features, improve workflows, and enhance the educational experience.",
-      activities: [
-        "User feedback analysis and categorization",
-        "Platform feature refinement and enhancement",
-        "Workflow optimization based on real usage",
-        "Performance monitoring and optimization",
-        "Educational outcome measurement and analysis",
-      ],
-      deliverables: [
-        "Enhanced platform with integrated feedback",
-        "Optimized educational workflows",
-        "Performance improvement documentation",
-        "Feature enhancement roadmap",
-        "Educational impact assessment",
-      ],
+      description: t('pages.process.steps.refinement.description'),
+      activities: t('pages.process.steps.refinement.activities', { returnObjects: true }) || [],
+      deliverables: t('pages.process.steps.refinement.deliverables', { returnObjects: true }) || [],
     },
     {
       id: "deployment",
-      title: "Full Campus Deployment",
-      duration: "4-8 weeks",
+      title: t('pages.process.steps.deployment.title'),
+      duration: t('pages.process.steps.deployment.duration'),
       icon: <Rocket className="w-6 h-6" />,
       color: "text-red-500",
       bgColor: "bg-red-500/10",
       borderColor: "border-red-500/20",
-      description: "Rolling out the refined platform across your entire institution with comprehensive support.",
-      activities: [
-        "Institution-wide user onboarding and training",
-        "Complete data migration and system integration",
-        "Multi-campus coordination and synchronization",
-        "Comprehensive monitoring and support setup",
-        "Success metric tracking and optimization",
-      ],
-      deliverables: [
-        "Fully operational institutional platform",
-        "Complete staff training and certification",
-        "Integrated multi-campus operations",
-        "Comprehensive monitoring dashboards",
-        "Launch success validation report",
-      ],
+      description: t('pages.process.steps.deployment.description'),
+      activities: t('pages.process.steps.deployment.activities', { returnObjects: true }) || [],
+      deliverables: t('pages.process.steps.deployment.deliverables', { returnObjects: true }) || [],
     },
     {
       id: "partnership",
-      title: "Ongoing Partnership & Co-Development",
-      duration: "Ongoing",
+      title: t('pages.process.steps.partnership.title'),
+      duration: t('pages.process.steps.partnership.duration'),
       icon: <LifeBuoy className="w-6 h-6" />,
       color: "text-primary",
       bgColor: "bg-primary/10",
       borderColor: "border-primary/20",
-      description: "Continuous collaboration to evolve FabriiQ based on your institution's growth and changing needs.",
-      activities: [
-        "Regular partnership review meetings and strategic planning",
-        "Feature co-development based on institutional needs",
-        "Educational outcome analysis and optimization",
-        "Platform evolution and enhancement planning",
-        "Best practice sharing and case study development",
-      ],
-      deliverables: [
-        "Monthly partnership performance reports",
-        "Quarterly feature development roadmap",
-        "Educational outcome improvement documentation",
-        "Platform evolution and enhancement delivery",
-        "Thought leadership and case study contributions",
-      ],
+      description: t('pages.process.steps.partnership.description'),
+      activities: t('pages.process.steps.partnership.activities', { returnObjects: true }) || [],
+      deliverables: t('pages.process.steps.partnership.deliverables', { returnObjects: true }) || [],
     },
   ]
 
@@ -332,17 +259,16 @@ export default function ProcessPage() {
           >
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-fabriiq-primary/10 border border-fabriiq-primary/20 text-fabriiq-primary text-sm font-medium mb-6">
               <Award className="w-4 h-4 mr-2" />
-              Development Partnership Process
+              {t('pages.process.badge')}
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-balance">
-              Co-Creating the Future of{" "}
+              {t('pages.process.title')}{" "}
               <span className="bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal bg-clip-text text-transparent">
-                Educational Technology
+                {t('pages.process.titleHighlight')}
               </span>
             </h1>
             <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
-              A collaborative methodology that transforms educational institutions through partnership-driven
-              innovation, transparency, and co-creation.
+              {t('pages.process.subtitle')}
             </p>
           </motion.div>
 

@@ -4,8 +4,10 @@ import type React from "react"
 
 import { useState } from "react"
 import { ArrowRight } from "lucide-react"
+import { useLanguage } from "@/contexts/language-context"
 
 export function NewsletterForm() {
+  const { t } = useLanguage()
   const [email, setEmail] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
 
@@ -26,7 +28,7 @@ export function NewsletterForm() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Your email"
+            placeholder={t("common.email_placeholder")}
             required
             className="bg-background/30 border border-border/50 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary w-full"
           />
@@ -38,7 +40,7 @@ export function NewsletterForm() {
           </button>
         </form>
       ) : (
-        <p className="text-sm text-primary">Thanks for subscribing!</p>
+        <p className="text-sm text-primary">{t("common.thanks_subscribing")}</p>
       )}
     </div>
   )

@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { LanguageProvider } from "@/contexts/language-context"
+import { TranslationLoader } from "@/components/translation-loader"
 import { BusinessProfileHeader } from "@/components/business-profile-header"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -39,8 +40,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <LanguageProvider>
-            <BusinessProfileHeader />
-            {children}
+            <TranslationLoader>
+              <BusinessProfileHeader />
+              {children}
+            </TranslationLoader>
           </LanguageProvider>
         </ThemeProvider>
       </body>

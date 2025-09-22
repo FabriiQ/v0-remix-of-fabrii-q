@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
 import { CodeRain } from "@/components/code-rain"
+import { useLanguage } from "@/contexts/language-context"
 import {
   Mail,
   Phone,
@@ -29,10 +30,11 @@ interface Message {
 }
 
 export default function ContactPage() {
+  const { t } = useLanguage()
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello! I'm FabriiQ's AI assistant. How can I help you with your project today?",
+      content: t("pages.contact.ai_assistant.initial_message"),
       sender: "bot",
       timestamp: new Date(),
     },
@@ -138,30 +140,30 @@ export default function ContactPage() {
   const contactInfo = [
     {
       icon: Mail,
-      title: "Email",
-      value: "hello@fabriiq.com",
-      description: "Send us an email anytime",
+      title: t("pages.contact.contact_methods.email.title"),
+      value: t("pages.contact.contact_methods.email.value"),
+      description: t("pages.contact.contact_methods.email.description"),
       href: "mailto:hello@fabriiq.com",
     },
     {
       icon: Phone,
-      title: "Phone",
-      value: "+1 (555) 123-4567",
-      description: "Mon-Fri from 8am to 6pm PST",
+      title: t("pages.contact.contact_methods.phone.title"),
+      value: t("pages.contact.contact_methods.phone.value"),
+      description: t("pages.contact.contact_methods.phone.description"),
       href: "tel:+15551234567",
     },
     {
       icon: MapPin,
-      title: "Office",
-      value: "San Francisco, CA",
-      description: "Come say hello at our HQ",
+      title: t("pages.contact.contact_methods.office.title"),
+      value: t("pages.contact.contact_methods.office.value"),
+      description: t("pages.contact.contact_methods.office.description"),
       href: "#",
     },
     {
       icon: Clock,
-      title: "Response Time",
-      value: "< 24 hours",
-      description: "We'll get back to you quickly",
+      title: t("pages.contact.contact_methods.response_time.title"),
+      value: t("pages.contact.contact_methods.response_time.value"),
+      description: t("pages.contact.contact_methods.response_time.description"),
       href: "#",
     },
   ]
@@ -190,9 +192,9 @@ export default function ContactPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <span className="text-white">Get in </span>
+              <span className="text-white">{t("pages.contact.title").split(" ")[0]} {t("pages.contact.title").split(" ")[1]} </span>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-green-600">
-                Touch
+                {t("pages.contact.title").split(" ")[2]}
               </span>
             </motion.h1>
             <motion.p
@@ -201,7 +203,7 @@ export default function ContactPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Chat with our AI assistant or reach out directly. We're here to help transform your ideas into reality.
+              {t("pages.contact.subtitle")}
             </motion.p>
           </div>
 

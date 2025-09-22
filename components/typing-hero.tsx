@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/contexts/language-context"
 
 export function TypingHero() {
+  const { t } = useLanguage()
   const [displayText, setDisplayText] = useState("")
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0)
   const [currentCharIndex, setCurrentCharIndex] = useState(0)
@@ -11,12 +13,12 @@ export function TypingHero() {
   const [showCursor, setShowCursor] = useState(true)
 
   const phrases = [
-    { text: "School Operating System", color: "text-fabriiq-primary", cursorColor: "bg-fabriiq-primary" },
-    { text: "educational intelligence", color: "text-fabriiq-teal", cursorColor: "bg-fabriiq-teal" },
-    { text: "unified platform", color: "text-primary", cursorColor: "bg-primary" },
+    { text: t("hero.typing.school_os"), color: "text-fabriiq-primary", cursorColor: "bg-fabriiq-primary" },
+    { text: t("hero.typing.educational_intelligence"), color: "text-fabriiq-teal", cursorColor: "bg-fabriiq-teal" },
+    { text: t("hero.typing.unified_platform"), color: "text-primary", cursorColor: "bg-primary" },
   ]
 
-  const baseText = "The first comprehensive "
+  const baseText = t("hero.typing.base_text")
   const typingSpeed = 100
   const deletingSpeed = 50
   const pauseTime = 2000

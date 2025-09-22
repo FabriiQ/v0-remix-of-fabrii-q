@@ -6,8 +6,10 @@ import { ChevronDown, ChevronUp, Users, Phone, MapPin, Linkedin } from "lucide-r
 import { NewsletterForm } from "./newsletter-form"
 import { FooterPopup } from "./footer-popup"
 import { Button } from "@/components/ui/button"
+import { useLanguage } from "@/contexts/language-context"
 
 export function Footer() {
+  const { t } = useLanguage()
   const [expandedSection, setExpandedSection] = useState<string | null>(null)
 
   const toggleSection = (sectionId: string) => {
@@ -17,44 +19,20 @@ export function Footer() {
   const footerSections = [
     {
       id: "platform",
-      title: "Platform",
+      title: t("footer.platform.title"),
       items: [
-        "AIVY Multi-Agent System",
-        "Educational Intelligence",
-        "Alpha Development",
-        "Co-creation Partnership",
-        "School Operating System",
-        "Multi-Campus Support",
+        { name: t("footer.platform.capabilities"), href: "/projects" },
+        { name: t("footer.platform.about"), href: "/about" },
+        { name: t("footer.platform.process"), href: "/process" },
       ],
     },
     {
       id: "partnership",
-      title: "Partnership",
+      title: t("footer.partnership.title"),
       items: [
-        "Alpha Phase Partners",
-        "Co-development Program",
-        "Strategic Investment",
-        "Competitive Advantage",
-        "Partnership Application",
-        "Founding Partners",
+        { name: t("footer.partnership.apply"), href: "/partnership" },
+        { name: t("footer.partnership.contact"), href: "/contact" },
       ],
-    },
-    {
-      id: "resources",
-      title: "Resources",
-      items: [
-        "Alpha Documentation",
-        "Partnership Guide",
-        "Implementation Support",
-        "Training Materials",
-        "Community Forum",
-        "Technical Support",
-      ],
-    },
-    {
-      id: "company",
-      title: "Company",
-      items: ["About FabriiQ", "Our Vision", "Leadership Team", "Careers", "News & Updates", "Contact Us"],
     },
   ]
 
@@ -115,7 +93,7 @@ export function Footer() {
                 </a>
               </div>
               <div className="text-muted-foreground text-xs">
-                &copy; {new Date().getFullYear()} FabriiQ. All rights reserved.
+                &copy; {new Date().getFullYear()} FabriiQ. {t("footer.rights")}
               </div>
             </div>
 
@@ -125,7 +103,7 @@ export function Footer() {
                 className="bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal hover:from-fabriiq-teal hover:to-fabriiq-primary text-white font-medium px-4 py-2 text-sm"
               >
                 <Users className="w-4 h-4 mr-2" />
-                Let's co-create
+                {t("cta.lets_cocreate")}
               </Button>
 
               <div className="flex items-center gap-2">
@@ -158,7 +136,7 @@ export function Footer() {
                 className="flex items-center justify-center gap-1 hover:text-fabriiq-primary transition-colors"
               >
                 <Linkedin className="w-4 h-4" />
-                <span>LinkedIn</span>
+                <span>{t("footer.linkedin")}</span>
               </a>
             </div>
 
@@ -201,7 +179,9 @@ export function Footer() {
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ delay: index * 0.05 }}
                           >
-                            {item}
+                            <a href={item.href} className="hover:text-fabriiq-primary transition-colors">
+                              {item.name}
+                            </a>
                           </motion.div>
                         ))}
                       </div>
@@ -218,13 +198,13 @@ export function Footer() {
             <div className="px-4">
               <NewsletterForm />
             </div>
-            <Button
-              onClick={() => (window.location.href = "/partnership")}
-              className="w-full bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal hover:from-fabriiq-teal hover:to-fabriiq-primary text-white font-medium px-4 py-2 text-sm"
-            >
-              <Users className="w-4 h-4 mr-2" />
-              Let's co-create
-            </Button>
+              <Button
+                onClick={() => (window.location.href = "/partnership")}
+                className="w-full bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal hover:from-fabriiq-teal hover:to-fabriiq-primary text-white font-medium px-4 py-2 text-sm"
+              >
+                <Users className="w-4 h-4 mr-2" />
+                {t("cta.lets_cocreate")}
+              </Button>
           </div>
         </div>
       </div>

@@ -90,3 +90,83 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* RTL Support for Arabic */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+}
+
+/* Fix Arabic text inversion issues */
+[dir="rtl"] .rtl-fix {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+}
+
+/* Ensure buttons and headers display correctly in RTL */
+[dir="rtl"] button,
+[dir="rtl"] .btn,
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6 {
+  unicode-bidi: embed;
+  direction: rtl;
+  text-align: right;
+}
+
+/* Additional fix for text inversion in buttons */
+[dir="rtl"] button span,
+[dir="rtl"] .btn span,
+[dir="rtl"] button p,
+[dir="rtl"] .btn p {
+  direction: rtl;
+  unicode-bidi: embed;
+  display: inline-block;
+}
+
+/* Fix for navigation text */
+[dir="rtl"] nav a,
+[dir="rtl"] nav button,
+[dir="rtl"] nav span {
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: embed;
+}
+
+/* Fix text input fields in RTL */
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Preserve LTR for specific elements that should not be RTL */
+[dir="rtl"] .ltr-preserve {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Navigation items alignment */
+[dir="rtl"] nav {
+  direction: rtl;
+}
+
+[dir="rtl"] .nav-item {
+  text-align: right;
+}
+
+/* Flex direction adjustments for RTL */
+[dir="rtl"] .flex-row {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .flex-row-reverse {
+  flex-direction: row;
+}
