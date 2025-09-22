@@ -25,6 +25,8 @@ export function NavBar() {
   }, [])
 
   const navItems = [
+    { name: t("navigation.home"), href: "/" },
+    { name: t("navigation.philosophy"), href: "/philosophy" },
     { name: t("navigation.capabilities"), href: "/projects" },
     { name: t("navigation.partnership"), href: "/partnership", icon: <Handshake className="w-4 h-4" /> },
     { name: t("navigation.about"), href: "/about" },
