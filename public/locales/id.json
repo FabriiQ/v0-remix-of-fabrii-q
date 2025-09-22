@@ -530,7 +530,123 @@
       "title": "Berkreasi Masa Depan",
       "titleHighlight": "Teknologi Pendidikan",
       "subtitle": "Metodologi kolaboratif yang mentransformasi institusi pendidikan melalui inovasi yang didorong kemitraan, transparansi, dan ko-kreasi.",
-      "badge": "Proses Kemitraan Pengembangan"
+      "badge": "Proses Kemitraan Pengembangan",
+      "steps": {
+        "discovery": {
+          "title": "Penemuan & Penyelarasan Institusional",
+          "duration": "2-4 minggu",
+          "description": "Kami mendalami untuk memahami tantangan unik, misi pendidikan, dan persyaratan teknologi institusi Anda.",
+          "activities": [
+            "Wawancara dengan pemangku kepentingan institusional di semua tingkatan",
+            "Analisis sistem saat ini dan identifikasi titik masalah",
+            "Pemetaan alur kerja pendidikan dan dokumentasi proses",
+            "Penilaian persyaratan koordinasi multi-kampus",
+            "Evaluasi persyaratan kepatuhan dan privasi"
+          ],
+          "deliverables": [
+            "Laporan penilaian institusional yang komprehensif",
+            "Rekomendasi konfigurasi FabriiQ yang disesuaikan",
+            "Perjanjian kemitraan dan kerangka kerja kolaborasi",
+            "Jadwal implementasi dengan definisi tonggak sejarah",
+            "Metrik keberhasilan dan kriteria pengukuran"
+          ]
+        },
+        "configuration": {
+          "title": "Konfigurasi & Kustomisasi Platform Alpha",
+          "duration": "3-4 minggu",
+          "description": "Mengonfigurasi platform Alpha FabriiQ agar sesuai dengan alur kerja dan persyaratan spesifik institusi Anda.",
+          "activities": [
+            "Pengaturan hierarki multi-kampus dan konfigurasi peran",
+            "Kustomisasi dan pemetaan model data pendidikan",
+            "Desain dan implementasi otomatisasi alur kerja",
+            "Kustomisasi antarmuka pengguna dan branding",
+            "Perencanaan integrasi dengan sistem yang ada"
+          ],
+          "deliverables": [
+            "Instans platform FabriiQ yang dikonfigurasi penuh",
+            "Dokumentasi alur kerja kustom",
+            "Struktur peran dan izin pengguna",
+            "Peta jalan dan spesifikasi integrasi",
+            "Kustomisasi materi pelatihan"
+          ]
+        },
+        "pilot": {
+          "title": "Implementasi Percontohan & Orientasi Staf",
+          "duration": "4-6 minggu",
+          "description": "Menyebarkan platform dengan grup pengguna terpilih dan program pelatihan staf yang komprehensif.",
+          "activities": [
+            "Pemilihan dan orientasi grup pengguna percontohan",
+            "Pelatihan staf komprehensif di semua peran pengguna",
+            "Migrasi data dari sistem yang ada",
+            "Implementasi alur kerja dan penyempurnaan proses",
+            "Pengumpulan umpan balik awal dan penyesuaian platform"
+          ],
+          "deliverables": [
+            "Penyebaran platform percontohan langsung",
+            "Staf administrasi dan pengajar yang terlatih",
+            "Data dan catatan historis yang dimigrasi",
+            "Dokumentasi alur kerja yang disempurnakan",
+            "Metrik kinerja awal dan laporan umpan balik"
+          ]
+        },
+        "refinement": {
+          "title": "Integrasi Umpan Balik & Penyempurnaan Platform",
+          "duration": "2-3 minggu",
+          "description": "Memasukkan umpan balik Anda untuk menyempurnakan fitur, meningkatkan alur kerja, dan meningkatkan pengalaman pendidikan.",
+          "activities": [
+            "Analisis dan kategorisasi umpan balik pengguna",
+            "Penyempurnaan dan peningkatan fitur platform",
+            "Optimalisasi alur kerja berdasarkan penggunaan nyata",
+            "Pemantauan dan optimalisasi kinerja",
+            "Pengukuran dan analisis hasil pendidikan"
+          ],
+          "deliverables": [
+            "Platform yang disempurnakan dengan umpan balik terintegrasi",
+            "Alur kerja pendidikan yang dioptimalkan",
+            "Dokumentasi peningkatan kinerja",
+            "Peta jalan peningkatan fitur",
+            "Penilaian dampak pendidikan"
+          ]
+        },
+        "deployment": {
+          "title": "Penyebaran Kampus Penuh",
+          "duration": "4-8 minggu",
+          "description": "Meluncurkan platform yang disempurnakan di seluruh institusi Anda dengan dukungan komprehensif.",
+          "activities": [
+            "Orientasi dan pelatihan pengguna di seluruh institusi",
+            "Migrasi data lengkap dan integrasi sistem",
+            "Koordinasi dan sinkronisasi multi-kampus",
+            "Pengaturan pemantauan dan dukungan komprehensif",
+            "Pelacakan dan optimalisasi metrik keberhasilan"
+          ],
+          "deliverables": [
+            "Platform institusional yang beroperasi penuh",
+            "Pelatihan dan sertifikasi staf lengkap",
+            "Operasi multi-kampus terintegrasi",
+            "Dasbor pemantauan komprehensif",
+            "Laporan validasi keberhasilan peluncuran"
+          ]
+        },
+        "partnership": {
+          "title": "Kemitraan Berkelanjutan & Pengembangan Bersama",
+          "duration": "Berkelanjutan",
+          "description": "Kolaborasi berkelanjutan untuk mengembangkan FabriiQ berdasarkan pertumbuhan dan kebutuhan institusi Anda yang berubah.",
+          "activities": [
+            "Pertemuan tinjauan kemitraan dan perencanaan strategis reguler",
+            "Pengembangan bersama fitur berdasarkan kebutuhan institusional",
+            "Analisis dan optimalisasi hasil pendidikan",
+            "Perencanaan evolusi dan peningkatan platform",
+            "Berbagi praktik terbaik dan pengembangan studi kasus"
+          ],
+          "deliverables": [
+            "Laporan kinerja kemitraan bulanan",
+            "Peta jalan pengembangan fitur triwulanan",
+            "Dokumentasi peningkatan hasil pendidikan",
+            "Pengiriman evolusi dan peningkatan platform",
+            "Kontribusi kepemimpinan pemikiran dan studi kasus"
+          ]
+        }
+      }
     }
   },
   "homepage": {
@@ -1071,6 +1187,296 @@
       },
       "status": {
         "alpha": "Alpha"
+      },
+      "capabilities": {
+        "academic-calendar": {
+          "name": "Manajemen Kalender Akademik",
+          "subtitle": "Penjadwalan Multi-Kampus Terpadu",
+          "description": "Sentralisasi perencanaan akademik di berbagai kampus dengan deteksi konflik cerdas dan sinkronisasi otomatis.",
+          "features": [
+            "Koordinasi kalender multi-kampus",
+            "Manajemen acara akademik (ujian, orientasi, wisuda)",
+            "Manajemen hari libur dengan pengecualian otomatis",
+            "Penjadwalan sumber daya dengan deteksi konflik",
+            "Sinkronisasi real-time di semua kampus"
+          ],
+          "benefits": [
+            "Proyeksi pengurangan konflik penjadwalan sebesar 60%",
+            "Antisipasi koordinasi multi-kampus yang disederhanakan",
+            "Peningkatan pemanfaatan sumber daya yang diharapkan",
+            "Pelacakan kepatuhan otomatis yang direncanakan"
+          ],
+          "tags": ["Multi-Kampus", "Penjadwalan", "Perencanaan Akademik", "Manajemen Konflik"],
+          "performance": {
+            "coordination": "+60%",
+            "timeReduction": "40%",
+            "accuracy": "95%"
+          }
+        },
+        "enrollment-management": {
+          "name": "Sistem Manajemen Pendaftaran",
+          "subtitle": "Manajemen Siklus Hidup Mahasiswa yang Cerdas",
+          "description": "Otomatiskan proses pendaftaran mahasiswa dengan validasi cerdas dan pelacakan komprehensif di seluruh hierarki institusi.",
+          "features": [
+            "Pemrosesan pendaftaran tunggal dan massal",
+            "Manajemen status otomatis (AKTIF, TERTUNDA, SELESAI, MENGUNDURKAN DIRI)",
+            "Impor CSV dengan validasi real-time",
+            "Analitik pendaftaran multi-kampus",
+            "Peramalan pendaftaran prediktif"
+          ],
+          "benefits": [
+            "Proyeksi pengurangan 75% tugas pendaftaran manual",
+            "Antisipasi visibilitas pendaftaran real-time",
+            "Akurasi pembuatan profil otomatis yang diharapkan",
+            "Wawasan lintas kampus yang direncanakan"
+          ],
+          "tags": ["Manajemen Mahasiswa", "Otomatisasi", "Multi-Kampus", "Analisis Data"],
+          "performance": {
+            "efficiency": "+75%",
+            "timeReduction": "65%",
+            "accuracy": "98%"
+          }
+        },
+        "fee-management": {
+          "name": "Manajemen Biaya Komprehensif",
+          "subtitle": "Otomatisasi Operasi Keuangan",
+          "description": "Sederhanakan operasi keuangan dengan struktur biaya otomatis, pemrosesan pembayaran, dan dukungan multi-mata uang.",
+          "features": [
+            "Manajemen struktur biaya yang fleksibel",
+            "Pembuatan tagihan dan faktur otomatis",
+            "Dukungan metode pembayaran multi",
+            "Otomatisasi biaya keterlambatan dengan aturan kebijakan",
+            "Pelaporan dan analitik keuangan"
+          ],
+          "benefits": [
+            "Proyeksi pengurangan 80% tugas keuangan manual",
+            "Antisipasi peningkatan tingkat penagihan pembayaran",
+            "Visibilitas keuangan komprehensif yang diharapkan",
+            "Pelaporan kepatuhan otomatis yang direncanakan"
+          ],
+          "tags": ["Manajemen Keuangan", "Otomatisasi", "Multi-Mata Uang", "Kepatuhan"],
+          "performance": {
+            "efficiency": "+80%",
+            "processing": "50%",
+            "accuracy": "99%"
+          }
+        },
+        "question-bank": {
+          "name": "Bank Soal Bertenaga AI",
+          "subtitle": "Pembuatan Penilaian Cerdas",
+          "description": "Bangun repositori pertanyaan komprehensif dengan integrasi Taksonomi Bloom dan pembuatan konten bertenaga AI.",
+          "features": [
+            "16+ jenis pertanyaan dengan dukungan media kaya",
+            "Penandaan tingkat kognitif Taksonomi Bloom",
+            "Pembuatan pertanyaan bertenaga AI",
+            "Metrik kualitas dan analitik penggunaan",
+            "Tinjauan dan validasi kolaboratif"
+          ],
+          "benefits": [
+            "Proyeksi pembuatan pertanyaan 70% lebih cepat",
+            "Antisipasi peningkatan kualitas penilaian",
+            "Validasi keseimbangan kognitif yang diharapkan",
+            "Rekomendasi cerdas yang direncanakan"
+          ],
+          "tags": ["Penilaian", "Konten AI", "Taksonomi Bloom", "Jaminan Kualitas"],
+          "performance": {
+            "efficiency": "+70%",
+            "timeReduction": "45%",
+            "quality": "95%"
+          }
+        },
+        "communication-hub": {
+          "name": "Hub Komunikasi Strategis",
+          "subtitle": "Kecerdasan Pesan Seluruh Institusi",
+          "description": "Koordinasikan komunikasi institusional dengan perutean cerdas, pemantauan kepatuhan, dan analitik.",
+          "features": [
+            "Pesan multi-saluran (langsung, grup, siaran)",
+            "Komunikasi yang sesuai dengan FERPA",
+            "Kemampuan siaran darurat",
+            "Analitik dan wawasan komunikasi",
+            "Perutean dan prioritas otomatis"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan 85% jangkauan komunikasi",
+            "Antisipasi pemantauan kepatuhan yang ditingkatkan",
+            "Komunikasi krisis yang disederhanakan yang diharapkan",
+            "Analitik keterlibatan pemangku kepentingan yang direncanakan"
+          ],
+          "tags": ["Komunikasi", "Kepatuhan FERPA", "Manajemen Darurat", "Analitik"],
+          "performance": {
+            "efficiency": "+85%",
+            "responseTime": "60%",
+            "compliance": "100%"
+          }
+        },
+        "curriculum-management": {
+          "name": "Manajemen Kurikulum Pedagogis",
+          "subtitle": "Kecerdasan Hasil Belajar",
+          "description": "Selaraskan kurikulum dengan hasil belajar menggunakan integrasi Taksonomi Bloom dan analisis keseimbangan kognitif.",
+          "features": [
+            "Definisi dan pemetaan hasil belajar",
+            "Kerangka kerja enam tingkat Taksonomi Bloom",
+            "Verifikasi keselarasan kurikulum",
+            "Analisis keseimbangan kognitif",
+            "Pelacakan korelasi kinerja"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan 65% dalam keselarasan kurikulum",
+            "Antisipasi peningkatan kejelasan hasil belajar",
+            "Pelacakan perkembangan kognitif yang diharapkan",
+            "Validasi pedagogis yang direncanakan"
+          ],
+          "tags": ["Kurikulum", "Taksonomi Bloom", "Hasil Belajar", "Kecerdasan Pedagogis"],
+          "performance": {
+            "alignment": "+65%",
+            "efficiency": "55%",
+            "correlation": "92%"
+          }
+        },
+        "class-analytics": {
+          "name": "Analitik Kelas Komprehensif",
+          "subtitle": "Wawasan Mengajar Berbasis Data",
+          "description": "Akses analitik kinerja kelas terperinci dengan wawasan siswa dan rekomendasi intervensi.",
+          "features": [
+            "Dasbor kinerja kelas waktu nyata",
+            "Pelacakan kemajuan siswa individu",
+            "Analisis kognitif Taksonomi Bloom",
+            "Identifikasi siswa berisiko",
+            "Mesin rekomendasi intervensi"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan 70% dalam prediksi hasil siswa",
+            "Antisipasi peningkatan efektivitas pengajaran",
+            "Pengambilan keputusan berbasis data yang diharapkan",
+            "Strategi intervensi personal yang direncanakan"
+          ],
+          "tags": ["Analitik", "Kinerja Siswa", "Kecerdasan Prediktif", "Intervensi"],
+          "performance": {
+            "insight": "+70%",
+            "identification": "50%",
+            "reliability": "88%"
+          }
+        },
+        "resource-management": {
+          "name": "Manajemen Sumber Daya Dinamis",
+          "subtitle": "Organisasi Konten Cerdas",
+          "description": "Atur dan distribusikan sumber daya pendidikan dengan berbagi cerdas dan analitik penggunaan.",
+          "features": [
+            "Organisasi sumber daya hierarkis",
+            "Berbagi cerdas berdasarkan pendaftaran",
+            "Analitik penggunaan dan metrik keterlibatan",
+            "Kontrol versi dan kolaborasi",
+            "Rekomendasi konten bertenaga AI"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan 60% dalam aksesibilitas sumber daya",
+            "Antisipasi peningkatan pemanfaatan konten",
+            "Keuntungan efisiensi kolaboratif yang diharapkan",
+            "Kurasi konten cerdas yang direncanakan"
+          ],
+          "tags": ["Manajemen Sumber Daya", "Analitik Konten", "Kolaborasi", "Rekomendasi AI"],
+          "performance": {
+            "efficiency": "+60%",
+            "accessTime": "40%",
+            "utilization": "85%"
+          }
+        },
+        "quiz-activities": {
+          "name": "Aktivitas Kuis Interaktif",
+          "subtitle": "Pembuatan Penilaian yang Menarik",
+          "description": "Buat aktivitas kuis dinamis dengan berbagai jenis pertanyaan dan pelacakan keterlibatan siswa secara waktu nyata.",
+          "features": [
+            "Berbagai format pertanyaan dan dukungan media",
+            "Pelacakan respons siswa waktu nyata",
+            "Penyelarasan kognitif Taksonomi Bloom",
+            "Umpan balik instan dan penjelasan",
+            "Analitik kinerja dan wawasan"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan 75% dalam keterlibatan siswa",
+            "Antisipasi peningkatan efisiensi penilaian",
+            "Peningkatan hasil belajar yang diharapkan",
+            "Penyesuaian kesulitan adaptif yang direncanakan"
+          ],
+          "tags": ["Penilaian Interaktif", "Keterlibatan Siswa", "Analitik Waktu Nyata", "Penyelarasan Kognitif"],
+          "performance": {
+            "engagement": "+75%",
+            "creationTime": "55%",
+            "accuracy": "90%"
+          }
+        },
+        "personal-dashboard": {
+          "name": "Dasbor Siswa yang Dipersonalisasi",
+          "subtitle": "Perjalanan Belajar Individu",
+          "description": "Akses dasbor pembelajaran pribadi Anda dengan pelacakan kemajuan dan wawasan yang dipersonalisasi.",
+          "features": [
+            "Visualisasi kemajuan individu",
+            "Penetapan dan pelacakan tujuan",
+            "Wawasan dan rekomendasi kinerja",
+            "Perayaan tonggak pembelajaran",
+            "Manajemen jadwal belajar"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan 80% dalam pembelajaran mandiri",
+            "Antisipasi peningkatan motivasi dan keterlibatan",
+            "Pengalaman belajar yang dipersonalisasi yang diharapkan",
+            "Sistem pengakuan pencapaian yang direncanakan"
+          ],
+          "tags": ["Pengembangan Pribadi", "Pelacakan Kemajuan", "Keterlibatan Siswa", "Belajar Mandiri"],
+          "performance": {
+            "motivation": "+80%",
+            "selfDirected": "65%",
+            "goalCompletion": "92%"
+          }
+        },
+        "assignment-submission": {
+          "name": "Pengajuan Tugas Cerdas",
+          "subtitle": "Manajemen Tugas yang Disederhanakan",
+          "description": "Kirim tugas dengan deteksi plagiarisme cerdas dan umpan balik instan tentang format dan kualitas konten.",
+          "features": [
+            "Dukungan unggah file multi-format",
+            "Deteksi plagiarisme waktu nyata",
+            "Penilaian kualitas konten",
+            "Pelacakan pengajuan dan pengingat",
+            "Alat tinjauan sejawat dan kolaborasi"
+          ],
+          "benefits": [
+            "Proyeksi pengurangan 70% insiden plagiarisme",
+            "Antisipasi peningkatan kualitas tugas",
+            "Peningkatan integritas akademik yang diharapkan",
+            "Peluang belajar kolaboratif yang direncanakan"
+          ],
+          "tags": ["Manajemen Tugas", "Deteksi Plagiarisme", "Penilaian Kualitas", "Kolaborasi"],
+          "performance": {
+            "qualityImprovement": "+70%",
+            "plagiarismReduction": "85%",
+            "submissionRate": "95%"
+          }
+        },
+        "interactive-learning": {
+          "name": "Modul Pembelajaran Interaktif",
+          "subtitle": "Konten Pendidikan yang Menarik",
+          "description": "Alami modul pembelajaran interaktif dengan elemen gamifikasi dan penyesuaian kesulitan adaptif.",
+          "features": [
+            "Pengalaman belajar yang digamifikasi",
+            "Progresi kesulitan adaptif",
+            "Konten multimedia interaktif",
+            "Lencana dan hadiah pencapaian",
+            "Tantangan belajar kolaboratif"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan 85% dalam keterlibatan belajar",
+            "Antisipasi peningkatan retensi pengetahuan",
+            "Peningkatan motivasi belajar yang diharapkan",
+            "Jalur belajar yang dipersonalisasi yang direncanakan"
+          ],
+          "tags": ["Pembelajaran Interaktif", "Gamifikasi", "Sistem Adaptif", "Keterlibatan Siswa"],
+          "performance": {
+            "engagement": "+85%",
+            "retention": "75%",
+            "completion": "88%"
+          }
+        }
       }
     }
   },
