@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { CodeRain } from "@/components/code-rain"
 import { NavBar } from "@/components/nav-bar"
@@ -22,9 +23,11 @@ export default function Home() {
       {/* Background layers */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 opacity-5">
-          <img
+          <Image
             src="/abstract-educational-technology-network-with-inter.jpg"
             alt="Educational Technology Background"
+            width={1920}
+            height={1080}
             className="w-full h-full object-cover"
           />
         </div>
@@ -41,9 +44,11 @@ export default function Home() {
       {/* Hero Video - Full screen background */}
       <div className="fixed inset-0 z-[1] pointer-events-none">
         <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-fabriiq-primary/10 via-transparent to-fabriiq-teal/10">
-          <img
+          <Image
             src="/abstract-animation-showing-interconnected-educatio.jpg"
             alt="Hero Animation"
+            width={1920}
+            height={1080}
             className="w-full h-full object-cover opacity-25"
             style={{
               filter: "contrast(1.2) brightness(0.7)",
@@ -183,9 +188,11 @@ export default function Home() {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
                   <div className="mb-4 rounded-lg overflow-hidden flex items-center justify-center">
-                    <img
+                    <Image
                       src={feature.image || "/placeholder.svg"}
                       alt={t(`homepage.sections.key_cornerstones.features.${feature.key}.title`)}
+                      width={400}
+                      height={300}
                       className="w-full h-48 object-contain object-center group-hover:scale-105 transition-transform duration-300 bg-gray-900/20 rounded-lg"
                     />
                   </div>
@@ -499,9 +506,11 @@ export default function Home() {
                 className="relative"
               >
                 <div className="relative rounded-2xl overflow-hidden">
-                  <img
+                  <Image
                     src="/blended-learning.png"
                     alt={t("homepage.sections.platform_showcase.platform_name")}
+                    width={600}
+                    height={400}
                     className="w-full h-96 object-contain object-center bg-gray-900/20 rounded-2xl"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />

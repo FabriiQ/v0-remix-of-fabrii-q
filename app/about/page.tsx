@@ -333,9 +333,9 @@ export default function AboutPage() {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-3xl font-bold mb-6">
-                <span className="text-foreground">{t('pages.about.school_os.title').split('\"')[0]}</span>
+                <span className="text-foreground">{t('pages.about.school_os.title').split('"')[0]}</span>
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
-                  \"{t('pages.about.school_os.title').split('\"')[1]}\"?
+                  &quot;{t('pages.about.school_os.title').split('"')[1]}&quot;?
                 </span>
               </h2>
               <p className="text-xl mb-8 text-muted-foreground text-pretty leading-relaxed">

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { motion } from "framer-motion"
 import { useLanguage } from "@/contexts/language-context"
 
@@ -12,11 +12,14 @@ export function TypingHero() {
   const [isDeleting, setIsDeleting] = useState(false)
   const [showCursor, setShowCursor] = useState(true)
 
-  const phrases = [
-    { text: t("hero.typing.school_os"), color: "text-fabriiq-primary", cursorColor: "bg-fabriiq-primary" },
-    { text: t("hero.typing.educational_intelligence"), color: "text-fabriiq-teal", cursorColor: "bg-fabriiq-teal" },
-    { text: t("hero.typing.unified_platform"), color: "text-primary", cursorColor: "bg-primary" },
-  ]
+  const phrases = useMemo(
+    () => [
+      { text: t("hero.typing.school_os"), color: "text-fabriiq-primary", cursorColor: "bg-fabriiq-primary" },
+      { text: t("hero.typing.educational_intelligence"), color: "text-fabriiq-teal", cursorColor: "bg-fabriiq-teal" },
+      { text: t("hero.typing.unified_platform"), color: "text-primary", cursorColor: "bg-primary" },
+    ],
+    [t],
+  )
 
   const baseText = t("hero.typing.base_text")
   const typingSpeed = 100
@@ -58,7 +61,7 @@ export function TypingHero() {
     }, 500)
 
     return () => clearInterval(cursorInterval)
-  }, [currentCharIndex, isDeleting, currentPhraseIndex])
+  }, [currentCharIndex, isDeleting, currentPhraseIndex, phrases])
 
   return (
     <h1 className="text-5xl sm:text-7xl font-bold tracking-tighter font-mono">

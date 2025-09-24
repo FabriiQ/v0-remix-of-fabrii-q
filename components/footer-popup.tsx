@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { ArrowUp, X, Mail, Phone, MapPin, ChevronDown, ChevronUp, ExternalLink } from "lucide-react"
 
@@ -106,7 +107,7 @@ export function FooterPopup() {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start mb-8 gap-4">
                   <div className="flex items-center space-x-4">
-                    <img src="/images/fabriiq-logo.png" alt="FabriiQ" className="h-12" />
+                    <Image src="/images/fabriiq-logo.png" alt="FabriiQ" width={192} height={48} className="h-12" />
                     <div>
                       <p className="text-sm text-muted-foreground">Ready to build the future together?</p>
                     </div>

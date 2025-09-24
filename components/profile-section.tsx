@@ -78,9 +78,9 @@ export function ProfileSection() {
               thinking to provide comprehensive security solutions that stay ahead of emerging threats.
             </p>
             <p className="text-muted-foreground leading-relaxed max-w-3xl">
-              Operating with discretion and precision, I've helped secure critical infrastructure and sensitive systems
-              across multiple sectors. My methodology emphasizes thorough analysis, innovative problem-solving, and
-              clear communication.
+              Operating with discretion and precision, I&apos;ve helped secure critical infrastructure and sensitive
+              systems across multiple sectors. My methodology emphasizes thorough analysis, innovative problem-solving,
+              and clear communication.
             </p>
           </motion.div>
 

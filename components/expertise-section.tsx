@@ -7,6 +7,7 @@ import { DashboardChart } from "@/components/dashboard-chart"
 
 import { useRef, useEffect, useState } from "react"
 import { motion, useInView } from "framer-motion"
+import Image from "next/image"
 import {
   ArrowUpRight,
   ChevronRight,
@@ -74,7 +75,6 @@ export function ExpertiseSection(): ReactElement {
           variants={containerVariants}
           className="space-y-12"
         >
-          {/* Section header with 0-0 to 0-1 animation */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <motion.div variants={itemVariants} className="lg:col-span-4">
               <div
@@ -117,20 +117,17 @@ export function ExpertiseSection(): ReactElement {
               </div>
 
               <h3 className="text-3xl sm:text-4xl font-bold leading-tight">
-                We help brands grow with strategic design that's thoughtful, visually bold, and built to make an
+                We help brands grow with strategic design that&apos;s thoughtful, visually bold, and built to make an
                 impression.
               </h3>
             </motion.div>
           </div>
 
-          {/* First row of cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Card 1: Enhanced Service Selection Interface */}
             <motion.div variants={itemVariants} className="group">
               <ServiceSelectionCard />
             </motion.div>
 
-            {/* Card 2: Enhanced 45% stat with viewport trigger */}
             <motion.div variants={itemVariants} className="group">
               <div className="h-full rounded-lg border border-border bg-background/50 p-6 hover:border-primary/50 transition-all duration-300 relative overflow-hidden">
                 <div className="absolute top-6 right-6">
@@ -152,17 +149,15 @@ export function ExpertiseSection(): ReactElement {
 
                   <p className="text-muted-foreground">of clients recommend us to other clients</p>
 
-                  {/* Enhanced testimonial section */}
                   <div className="pt-2 pb-4">
                     <div className="flex items-start space-x-2">
                       <ThumbsUp className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
                       <p className="text-xs text-muted-foreground italic">
-                        "Their expertise in web development and business systems transformed our operations completely."
+                        &quot;Their expertise in web development and business systems transformed our operations completely.&quot;
                       </p>
                     </div>
                   </div>
 
-                  {/* Multi-row company ticker */}
                   <div className="relative h-16 overflow-hidden bg-gradient-to-r from-muted/5 via-muted/10 to-muted/5 rounded-md border border-border/30">
                     <CompanyLogoTicker />
                   </div>
@@ -209,7 +204,6 @@ export function ExpertiseSection(): ReactElement {
               </div>
             </motion.div>
 
-            {/* Card 3: GlassPatch with working video */}
             <motion.div variants={itemVariants} className="group">
               <div className="h-full rounded-lg border border-border bg-background/50 overflow-hidden hover:border-primary/50 transition-all duration-300 relative">
                 <div className="absolute top-6 right-6 z-10">
@@ -245,7 +239,7 @@ export function ExpertiseSection(): ReactElement {
 
                   <div className="space-y-2">
                     <h3 className="text-xl font-bold text-white">
-                      $2M raised: the strategy behind Glass Patch's growth
+                      $2M raised: the strategy behind Glass Patch&apos;s growth
                     </h3>
                     <button className="text-primary flex items-center text-sm group-hover:underline">
                       <ChevronRight className="w-4 h-4 mr-1" />
@@ -257,9 +251,7 @@ export function ExpertiseSection(): ReactElement {
             </motion.div>
           </div>
 
-          {/* Second row of cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Card 4: Animated Timeline Process */}
             <motion.div variants={itemVariants} className="group">
               <div className="h-full rounded-lg border border-border bg-background/50 p-6 hover:border-primary/50 transition-all duration-300">
                 <div className="space-y-6">
@@ -290,7 +282,6 @@ export function ExpertiseSection(): ReactElement {
               </div>
             </motion.div>
 
-            {/* Card 5: Fixed $12M chart */}
             <motion.div variants={itemVariants} className="group">
               <div className="h-full rounded-lg border border-border bg-background/50 p-6 hover:border-primary/50 transition-all duration-300 relative overflow-hidden">
                 <div className="absolute top-6 right-6">
@@ -302,11 +293,11 @@ export function ExpertiseSection(): ReactElement {
                     <div>
                       <p className="text-sm text-muted-foreground">Fact 02</p>
                       <ViewportTriggeredCountUp />
-                      <p className="text-muted-foreground">Raised by the brands we've partnered with</p>
+                      <p className="text-muted-foreground">Raised by the brands we&apos;ve partnered with</p>
                     </div>
                     <div className="flex items-center space-x-2 px-3 py-2 bg-background/50 backdrop-blur-sm border border-border/30 rounded-full self-start lg:self-center">
                       <span className="text-xs text-muted-foreground">powered by</span>
-                      <img src="/images/weltivation-logo.png" alt="Weltivation" className="h-6" />
+                      <Image src="/images/weltivation-logo.png" alt="Weltivation" width={100} height={24} className="h-6" />
                     </div>
                   </div>
 
@@ -348,7 +339,6 @@ function ViewportTriggered45Percent(): ReactElement {
     <div ref={ref} className="relative">
       <h3 className="text-6xl font-bold">{count}%</h3>
 
-      {/* Enhanced stats with additional metrics */}
       <div className="flex flex-wrap gap-4 mt-2">
         <div className="flex items-center space-x-1">
           <CheckCircle className="w-4 h-4 text-primary" />
@@ -360,7 +350,6 @@ function ViewportTriggered45Percent(): ReactElement {
         </div>
       </div>
 
-      {/* Small floating animation */}
       <motion.div
         className="absolute -top-2 -right-2 w-3 h-3 bg-primary rounded-full"
         animate={{
@@ -419,21 +408,18 @@ function AnimatedTimelineChart(): ReactElement {
       setActiveStage((prev) => (prev + 1) % stages.length)
     }, 2000)
     return () => clearInterval(interval)
-  }, [])
+  }, [stages.length])
 
   return (
     <div className="relative h-32 bg-gradient-to-r from-muted/10 to-muted/5 rounded-lg p-4">
-      {/* Background timeline line */}
       <div className="absolute top-1/2 left-4 right-4 h-1 bg-muted/30 rounded-full"></div>
 
-      {/* Animated progress line */}
       <motion.div
         className="absolute top-1/2 left-4 h-1 bg-primary rounded-full"
         animate={{ width: `${stages[activeStage].position}%` }}
         transition={{ duration: 1, ease: "easeInOut" }}
       />
 
-      {/* Stage markers */}
       {stages.map((stage, index) => (
         <motion.div
           key={stage.name}
@@ -443,7 +429,6 @@ function AnimatedTimelineChart(): ReactElement {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.8 + index * 0.3, duration: 0.5 }}
         >
-          {/* Circle marker */}
           <motion.div
             className={`w-5 h-5 rounded-full border-2 border-background relative z-10 transition-colors duration-500 ${
               index <= activeStage ? "bg-primary" : "bg-muted/50"
@@ -452,7 +437,6 @@ function AnimatedTimelineChart(): ReactElement {
             transition={{ duration: 0.5 }}
           />
 
-          {/* Stage label above */}
           <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 text-center">
             <motion.div
               className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors duration-500 ${
@@ -463,7 +447,6 @@ function AnimatedTimelineChart(): ReactElement {
             </motion.div>
           </div>
 
-          {/* Duration label below */}
           <div className="absolute top-8 left-1/2 transform -translate-x-1/2 text-center">
             <span className="text-xs text-muted-foreground whitespace-nowrap">{stage.duration}</span>
           </div>
@@ -476,7 +459,6 @@ function AnimatedTimelineChart(): ReactElement {
 function CompanyLogoTicker(): ReactElement {
   return (
     <div className="relative h-16 overflow-hidden">
-      {/* First row - moving left */}
       <motion.div
         className="absolute top-1 whitespace-nowrap flex items-center gap-8"
         animate={{
@@ -491,94 +473,116 @@ function CompanyLogoTicker(): ReactElement {
         }}
       >
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/images/weltivation-logo.png"
             alt="Weltivation"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/placeholder-jo7vj.png"
             alt="NVIDIA"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/images/nicfound-logo.png"
             alt="NicFound"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/google-search-results.png"
             alt="Google"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/fisher-labs-sign.png"
             alt="Fisher Labs"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/bevel-razors.png"
             alt="Bevel Razers"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/images/weltivation-logo.png"
             alt="Weltivation"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/chatchill-generic.png"
             alt="Chatchill"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
 
-        {/* Duplicate set for seamless looping */}
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/images/weltivation-logo.png"
             alt="Weltivation"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/placeholder-jo7vj.png"
             alt="NVIDIA"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/images/nicfound-logo.png"
             alt="NicFound"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/google-search-results.png"
             alt="Google"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
       </motion.div>
 
-      {/* Second row - moving right */}
       <motion.div
         className="absolute top-9 whitespace-nowrap flex items-center gap-8"
         animate={{
@@ -593,88 +597,111 @@ function CompanyLogoTicker(): ReactElement {
         }}
       >
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/images/pufftrak-logo.png"
             alt="PuffTrak"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/fisher-labs-sign.png"
             alt="Fisher Labs"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/bevel-razors.png"
             alt="Bevel Razers"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/images/weltivation-logo.png"
             alt="Weltivation"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/google-search-results.png"
             alt="Google"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/images/pufftrak-logo.png"
             alt="PuffTrak"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/chatchill-generic.png"
             alt="Chatchill"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/images/nicfound-logo.png"
             alt="NicFound"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
 
-        {/* Duplicate set for seamless looping */}
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/images/pufftrak-logo.png"
             alt="PuffTrak"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/fisher-labs-sign.png"
             alt="Fisher Labs"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/bevel-razors.png"
             alt="Bevel Razers"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
         <div className="h-5 w-auto">
-          <img
+          <Image
             src="/images/weltivation-logo.png"
             alt="Weltivation"
+            width={100}
+            height={24}
             className="h-5 w-auto object-contain filter grayscale opacity-70 hover:opacity-100 transition-opacity"
           />
         </div>
@@ -813,7 +840,6 @@ function ServiceSelectionCard(): ReactElement {
       setCurrentQuestion(currentQuestion + 1)
     } else {
       setIsCompleted(true)
-      // Send email with inquiry details
       sendInquiryEmail(newAnswers, selectedService)
     }
   }
@@ -848,8 +874,6 @@ Email: ${inquiryData.email || "Not provided"}
 Submitted at: ${new Date().toLocaleString()}
     `
 
-      // This would typically be handled by a server endpoint
-      // For now, we'll use mailto as a fallback
       const mailtoLink = `mailto:andrdyer@gmail.com?subject=New Consultation Inquiry - ${selectedServiceData?.name}&body=${encodeURIComponent(emailBody)}`
       window.open(mailtoLink)
     } catch (error) {
@@ -874,7 +898,6 @@ Submitted at: ${new Date().toLocaleString()}
 
     return (
       <div className="h-full rounded-lg border border-border bg-black text-white overflow-hidden">
-        {/* Header */}
         <div className="p-4 border-b border-gray-800">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-3">
@@ -896,7 +919,6 @@ Submitted at: ${new Date().toLocaleString()}
           </div>
         </div>
 
-        {/* Question */}
         <div className="p-4">
           <h2 className="text-xl font-semibold mb-6 text-center">{currentQuestionData.question}</h2>
 
@@ -947,7 +969,7 @@ Submitted at: ${new Date().toLocaleString()}
           </div>
           <h3 className="text-xl font-bold">Thank you!</h3>
           <p className="text-gray-400 text-sm">
-            Your inquiry has been sent to our team. We'll get back to you within 24 hours with a customized
+            Your inquiry has been sent to our team. We&apos;ll get back to you within 24 hours with a customized
             consultation.
           </p>
           <div className="pt-4">
@@ -979,7 +1001,7 @@ Submitted at: ${new Date().toLocaleString()}
       <div className="space-y-4">
         <div>
           <h3 className="text-2xl font-bold mb-2">Select a Service</h3>
-          <p className="text-muted-foreground">Choose the service you're interested in to start a consultation</p>
+          <p className="text-muted-foreground">Choose the service you&apos;re interested in to start a consultation</p>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -991,15 +1013,12 @@ Submitted at: ${new Date().toLocaleString()}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
             >
-              {/* Background gradient */}
               <div
                 className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-10 group-hover:opacity-20 transition-opacity duration-300 rounded-lg`}
               />
 
-              {/* Border */}
               <div className="absolute inset-0 rounded-lg border border-white/10 group-hover:border-white/20 transition-colors duration-300" />
 
-              {/* Animated glow effect */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12">
                   <motion.div
@@ -1018,7 +1037,6 @@ Submitted at: ${new Date().toLocaleString()}
                 </div>
               </div>
 
-              {/* Content */}
               <div className="relative flex flex-col items-center space-y-3">
                 <div
                   className={`w-12 h-12 rounded-full bg-gradient-to-br ${service.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300`}

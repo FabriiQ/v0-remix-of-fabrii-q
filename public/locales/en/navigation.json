@@ -1,0 +1,15 @@
+{
+  "navigation": {
+    "capabilities": "Capabilities",
+    "platform": "Platform",
+    "partnership": "Partnership",
+    "support": "Support",
+    "about": "About",
+    "process": "Process",
+    "services": "Services",
+    "portfolio": "Portfolio",
+    "contact": "Contact",
+    "corporate_login": "Corporate Login",
+    "projects": "Projects"
+  }
+}

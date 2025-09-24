@@ -1,0 +1,317 @@
+{
+  "pages": {
+    "projects": {
+      "title": "Capacidades de la Plataforma",
+      "subtitle": "Características integrales diseñadas para instituciones educativas modernas",
+      "search_placeholder": "Buscar capacidades...",
+      "filters": {
+        "all": "Todas las Capacidades",
+        "system_admin": "Portal de Administrador del Sistema",
+        "teacher_portal": "Portal del Profesor",
+        "student_portal": "Portal del Estudiante"
+      },
+      "status": {
+        "alpha": "Fase Alfa",
+        "beta": "Fase Beta",
+        "development": "En Desarrollo",
+        "coming_soon": "Próximamente"
+      },
+      "performance_metrics": {
+        "coordination": "Coordinación",
+        "time_reduction": "Reducción de Tiempo",
+        "accuracy": "Precisión",
+        "efficiency": "Eficiencia"
+      },
+      "capabilities": {
+        "academic-calendar": {
+          "name": "Gestión del Calendario Académico",
+          "subtitle": "Programación Unificada Multi-Campus",
+          "description": "Centralice la planificación académica en múltiples campus con detección inteligente de conflictos y sincronización automatizada.",
+          "features": [
+            "Coordinación de calendario multi-campus",
+            "Gestión de eventos académicos (exámenes, orientaciones, graduaciones)",
+            "Gestión de feriados con exclusiones automáticas",
+            "Programación de recursos con detección de conflictos",
+            "Sincronización en tiempo real en todos los campus"
+          ],
+          "benefits": [
+            "Reducción proyectada del 60% en conflictos de programación",
+            "Coordinación multi-campus simplificada anticipada",
+            "Mejora esperada en la utilización de recursos",
+            "Seguimiento de cumplimiento automatizado planificado"
+          ],
+          "tags": ["Multi-Campus", "Programación", "Planificación Académica", "Gestión de Conflictos"],
+          "performance": {
+            "coordination": "+60%",
+            "timeReduction": "40%",
+            "accuracy": "95%"
+          }
+        },
+        "enrollment-management": {
+          "name": "Sistema de Gestión de Matrículas",
+          "subtitle": "Gestión Inteligente del Ciclo de Vida Estudiantil",
+          "description": "Automatice los procesos de matrícula de estudiantes con validación inteligente y seguimiento integral en toda la jerarquía institucional.",
+          "features": [
+            "Procesamiento de matrículas individuales y masivas",
+            "Gestión automatizada de estados (ACTIVO, PENDIENTE, COMPLETADO, RETIRADO)",
+            "Importación de CSV con validación en tiempo real",
+            "Análisis de matrículas multi-campus",
+            "Pronóstico de matrículas predictivo"
+          ],
+          "benefits": [
+            "Reducción proyectada del 75% en tareas de matrícula manuales",
+            "Visibilidad de matrículas en tiempo real anticipada",
+            "Precisión en la creación de perfiles automatizada esperada",
+            "Perspectivas inter-campus planificadas"
+          ],
+          "tags": ["Gestión de Estudiantes", "Automatización", "Multi-Campus", "Análisis de Datos"],
+          "performance": {
+            "efficiency": "+75%",
+            "timeReduction": "65%",
+            "accuracy": "98%"
+          }
+        },
+        "fee-management": {
+          "name": "Gestión Integral de Tasas",
+          "subtitle": "Automatización de Operaciones Financieras",
+          "description": "Optimice las operaciones financieras con estructuras de tasas automatizadas, procesamiento de pagos y soporte multi-moneda.",
+          "features": [
+            "Gestión flexible de la estructura de tasas",
+            "Generación automatizada de recibos y facturas",
+            "Soporte para múltiples métodos de pago",
+            "Automatización de tasas por mora con reglas de política",
+            "Informes y análisis financieros"
+          ],
+          "benefits": [
+            "Reducción proyectada del 80% en tareas financieras manuales",
+            "Mejora anticipada en las tasas de cobro de pagos",
+            "Visibilidad financiera integral esperada",
+            "Informes de cumplimiento automatizados planificados"
+          ],
+          "tags": ["Gestión Financiera", "Automatización", "Multi-Moneda", "Cumplimiento"],
+          "performance": {
+            "efficiency": "+80%",
+            "processing": "50%",
+            "accuracy": "99%"
+          }
+        },
+        "question-bank": {
+          "name": "Banco de Preguntas Impulsado por IA",
+          "subtitle": "Creación Inteligente de Evaluaciones",
+          "description": "Construya repositorios de preguntas integrales con la integración de la Taxonomía de Bloom y generación de contenido impulsada por IA.",
+          "features": [
+            "Más de 16 tipos de preguntas con soporte de medios enriquecidos",
+            "Etiquetado de nivel cognitivo de la Taxonomía de Bloom",
+            "Generación de preguntas impulsada por IA",
+            "Métricas de calidad y análisis de uso",
+            "Revisión y validación colaborativa"
+          ],
+          "benefits": [
+            "Creación de preguntas 70% más rápida proyectada",
+            "Mejora anticipada en la calidad de las evaluaciones",
+            "Validación del equilibrio cognitivo esperada",
+            "Recomendaciones inteligentes planificadas"
+          ],
+          "tags": ["Evaluación", "Contenido de IA", "Taxonomía de Bloom", "Garantía de Calidad"],
+          "performance": {
+            "efficiency": "+70%",
+            "timeReduction": "45%",
+            "quality": "95%"
+          }
+        },
+        "communication-hub": {
+          "name": "Centro de Comunicación Estratégica",
+          "subtitle": "Inteligencia de Mensajería a Nivel Institucional",
+          "description": "Coordine las comunicaciones institucionales con enrutamiento inteligente, monitoreo de cumplimiento y análisis.",
+          "features": [
+            "Mensajería multicanal (directa, grupal, de difusión)",
+            "Comunicación compatible con FERPA",
+            "Capacidades de transmisión de emergencia",
+            "Análisis y perspectivas de comunicación",
+            "Enrutamiento y priorización automatizados"
+          ],
+          "benefits": [
+            "Mejora proyectada del 85% en el alcance de la comunicación",
+            "Monitoreo de cumplimiento mejorado anticipado",
+            "Comunicación de crisis simplificada esperada",
+            "Análisis de participación de las partes interesadas planificado"
+          ],
+          "tags": ["Comunicación", "Cumplimiento de FERPA", "Gestión de Emergencias", "Análisis"],
+          "performance": {
+            "efficiency": "+85%",
+            "responseTime": "60%",
+            "compliance": "100%"
+          }
+        },
+        "curriculum-management": {
+          "name": "Gestión Pedagógica del Currículo",
+          "subtitle": "Inteligencia de Resultados de Aprendizaje",
+          "description": "Alinee el currículo con los resultados de aprendizaje utilizando la integración de la Taxonomía de Bloom y el análisis del equilibrio cognitivo.",
+          "features": [
+            "Definición y mapeo de resultados de aprendizaje",
+            "Marco de seis niveles de la Taxonomía de Bloom",
+            "Verificación de la alineación del currículo",
+            "Análisis del equilibrio cognitivo",
+            "Seguimiento de la correlación del rendimiento"
+          ],
+          "benefits": [
+            "Mejora proyectada del 65% en la alineación del currículo",
+            "Claridad mejorada de los resultados de aprendizaje anticipada",
+            "Seguimiento del desarrollo cognitivo esperado",
+            "Validación pedagógica planificada"
+          ],
+          "tags": ["Currículo", "Taxonomía de Bloom", "Resultados de Aprendizaje", "Inteligencia Pedagógica"],
+          "performance": {
+            "alignment": "+65%",
+            "efficiency": "55%",
+            "correlation": "92%"
+          }
+        },
+        "class-analytics": {
+          "name": "Análisis Integral de Clases",
+          "subtitle": "Perspectivas de Enseñanza Basadas en Datos",
+          "description": "Acceda a análisis detallados del rendimiento de la clase con perspectivas de los estudiantes y recomendaciones de intervención.",
+          "features": [
+            "Paneles de rendimiento de la clase en tiempo real",
+            "Seguimiento del progreso individual del estudiante",
+            "Análisis cognitivo de la Taxonomía de Bloom",
+            "Identificación de estudiantes en riesgo",
+            "Motor de recomendación de intervenciones"
+          ],
+          "benefits": [
+            "Mejora proyectada del 70% en la predicción de resultados de los estudiantes",
+            "Eficacia docente mejorada anticipada",
+            "Toma de decisiones basada en datos esperada",
+            "Estrategias de intervención personalizadas planificadas"
+          ],
+          "tags": ["Análisis", "Rendimiento Estudiantil", "Inteligencia Predictiva", "Intervención"],
+          "performance": {
+            "insight": "+70%",
+            "identification": "50%",
+            "reliability": "88%"
+          }
+        },
+        "resource-management": {
+          "name": "Gestión Dinámica de Recursos",
+          "subtitle": "Organización Inteligente de Contenidos",
+          "description": "Organice y distribuya recursos educativos con intercambio inteligente y análisis de uso.",
+          "features": [
+            "Organización jerárquica de recursos",
+            "Intercambio inteligente basado en la matrícula",
+            "Análisis de uso y métricas de participación",
+            "Control de versiones y colaboración",
+            "Recomendaciones de contenido impulsadas por IA"
+          ],
+          "benefits": [
+            "Mejora proyectada del 60% en la accesibilidad de los recursos",
+            "Utilización de contenido mejorada anticipada",
+            "Ganancias de eficiencia colaborativa esperadas",
+            "Curación de contenido inteligente planificada"
+          ],
+          "tags": ["Gestión de Recursos", "Análisis de Contenido", "Colaboración", "Recomendaciones de IA"],
+          "performance": {
+            "efficiency": "+60%",
+            "accessTime": "40%",
+            "utilization": "85%"
+          }
+        },
+        "quiz-activities": {
+          "name": "Actividades de Cuestionarios Interactivos",
+          "subtitle": "Creación de Evaluaciones Atractivas",
+          "description": "Cree actividades de cuestionarios dinámicos con múltiples tipos de preguntas y seguimiento de la participación de los estudiantes en tiempo real.",
+          "features": [
+            "Múltiples formatos de preguntas y soporte de medios",
+            "Seguimiento de respuestas de los estudiantes en tiempo real",
+            "Alineación cognitiva con la Taxonomía de Bloom",
+            "Retroalimentación y explicación instantáneas",
+            "Análisis de rendimiento y perspectivas"
+          ],
+          "benefits": [
+            "Aumento proyectado del 75% en la participación de los estudiantes",
+            "Eficiencia de evaluación mejorada anticipada",
+            "Resultados de aprendizaje mejorados esperados",
+            "Ajuste de dificultad adaptativo planificado"
+          ],
+          "tags": ["Evaluación Interactiva", "Participación Estudiantil", "Análisis en Tiempo Real", "Alineación Cognitiva"],
+          "performance": {
+            "engagement": "+75%",
+            "creationTime": "55%",
+            "accuracy": "90%"
+          }
+        },
+        "personal-dashboard": {
+          "name": "Panel de Control Personalizado del Estudiante",
+          "subtitle": "Viaje de Aprendizaje Individual",
+          "description": "Acceda a su panel de control de aprendizaje personal con seguimiento del progreso y perspectivas personalizadas.",
+          "features": [
+            "Visualización del progreso individual",
+            "Establecimiento y seguimiento de metas",
+            "Perspectivas de rendimiento y recomendaciones",
+            "Celebraciones de hitos de aprendizaje",
+            "Gestión del horario de estudio"
+          ],
+          "benefits": [
+            "Mejora proyectada del 80% en el aprendizaje autodirigido",
+            "Motivación y participación mejoradas anticipadas",
+            "Experiencia de aprendizaje personalizada esperada",
+            "Sistema de reconocimiento de logros planificado"
+          ],
+          "tags": ["Desarrollo Personal", "Seguimiento del Progreso", "Participación Estudiantil", "Autoaprendizaje"],
+          "performance": {
+            "motivation": "+80%",
+            "selfDirected": "65%",
+            "goalCompletion": "92%"
+          }
+        },
+        "assignment-submission": {
+          "name": "Entrega Inteligente de Tareas",
+          "subtitle": "Gestión Simplificada de Tareas",
+          "description": "Entregue tareas con detección inteligente de plagio y retroalimentación instantánea sobre el formato y la calidad del contenido.",
+          "features": [
+            "Soporte para carga de archivos de múltiples formatos",
+            "Detección de plagio en tiempo real",
+            "Evaluación de la calidad del contenido",
+            "Seguimiento de entregas y recordatorios",
+            "Herramientas de revisión por pares y colaboración"
+          ],
+          "benefits": [
+            "Reducción proyectada del 70% en incidentes de plagio",
+            "Calidad de las tareas mejorada anticipada",
+            "Integridad académica mejorada esperada",
+            "Oportunidades de aprendizaje colaborativo planificadas"
+          ],
+          "tags": ["Gestión de Tareas", "Detección de Plagio", "Evaluación de Calidad", "Colaboración"],
+          "performance": {
+            "qualityImprovement": "+70%",
+            "plagiarismReduction": "85%",
+            "submissionRate": "95%"
+          }
+        },
+        "interactive-learning": {
+          "name": "Módulos de Aprendizaje Interactivos",
+          "subtitle": "Contenido Educativo Atractivo",
+          "description": "Experimente módulos de aprendizaje interactivos con elementos de gamificación y ajuste de dificultad adaptativo.",
+          "features": [
+            "Experiencias de aprendizaje gamificadas",
+            "Progresión de dificultad adaptativa",
+            "Contenido multimedia interactivo",
+            "Insignias de logros y recompensas",
+            "Desafíos de aprendizaje colaborativo"
+          ],
+          "benefits": [
+            "Aumento proyectado del 85% en la participación en el aprendizaje",
+            "Retención de conocimientos mejorada anticipada",
+            "Motivación de aprendizaje mejorada esperada",
+            "Rutas de aprendizaje personalizadas planificadas"
+          ],
+          "tags": ["Aprendizaje Interactivo", "Gamificación", "Sistemas Adaptativos", "Participación Estudiantil"],
+          "performance": {
+            "engagement": "+85%",
+            "retention": "75%",
+            "completion": "88%"
+          }
+        }
+      }
+    }
+  }
+}

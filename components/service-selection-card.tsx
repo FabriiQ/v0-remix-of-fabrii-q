@@ -62,11 +62,11 @@ const questions = [
     options: ["Startup", "Small Business", "Enterprise", "Non-Profit"],
   },
   {
-    question: "What's your primary goal?",
+    question: "What&apos;s your primary goal?",
     options: ["Increase Revenue", "Improve Efficiency", "Scale Operations", "Digital Transformation"],
   },
   {
-    question: "What's your timeline?",
+    question: "What&apos;s your timeline?",
     options: ["ASAP", "1-3 Months", "3-6 Months", "6+ Months"],
   },
 ]
@@ -188,7 +188,7 @@ export function ServiceSelectionCard() {
           </div>
           <h3 className="text-2xl font-bold">Thank you!</h3>
           <p className="text-gray-400">
-            We'll review your responses and get back to you with a customized consultation.
+            We&apos;ll review your responses and get back to you with a customized consultation.
           </p>
           <button
             onClick={() => {
@@ -211,7 +211,7 @@ export function ServiceSelectionCard() {
       <div className="space-y-6">
         <div>
           <h3 className="text-2xl font-bold mb-2">Select a Service</h3>
-          <p className="text-muted-foreground">Choose the service you're interested in to start a consultation</p>
+          <p className="text-muted-foreground">Choose the service you&apos;re interested in to start a consultation</p>
         </div>
 
         <div className="grid grid-cols-2 gap-3">

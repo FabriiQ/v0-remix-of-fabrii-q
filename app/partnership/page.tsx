@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge" // Import Badge component
+import { Badge } from "@/components/ui/badge"
 import {
   DollarSign,
   Clock,
@@ -55,7 +55,6 @@ export default function PartnershipPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Simulate submission
     setTimeout(() => {
       setIsSubmitted(true)
       setFormData({
@@ -80,9 +79,7 @@ export default function PartnershipPage() {
     <div className="min-h-screen bg-black text-white">
       <NavBar />
 
-      {/* Hero Section with FabriiQ Development Partnership */}
       <section className="relative pt-32 pb-20 px-4 sm:px-6 overflow-hidden">
-        {/* Background Effects */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800" />
           <motion.div
@@ -101,7 +98,6 @@ export default function PartnershipPage() {
 
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="text-center">
-            {/* Alpha Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -114,7 +110,6 @@ export default function PartnershipPage() {
               </div>
             </motion.div>
 
-            {/* Title */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -136,14 +131,12 @@ export default function PartnershipPage() {
               {t('partnership.hero.description')}
             </motion.p>
 
-            {/* Partnership Benefits Layout */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
               className="relative max-w-6xl mx-auto mb-20"
             >
-              {/* Central Partnership Card */}
               <div className="relative bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-xl border-2 border-fabriiq-primary/30 rounded-3xl p-12 shadow-2xl shadow-fabriiq-primary/10">
                 <div className="flex flex-col items-center space-y-6">
                   <div className="flex items-center space-x-4">
@@ -160,9 +153,7 @@ export default function PartnershipPage() {
                   </div>
                 </div>
 
-                {/* Floating benefit cards around the main card */}
                 <div className="absolute inset-0 pointer-events-none">
-                  {/* Top Left - Strategic Investment */}
                   <motion.div
                     className="absolute -top-8 -left-8 transform -rotate-12"
                     initial={{ opacity: 0, scale: 0, rotate: -45 }}
@@ -184,7 +175,6 @@ export default function PartnershipPage() {
                     </div>
                   </motion.div>
 
-                  {/* Top Right - Co-development */}
                   <motion.div
                     className="absolute -top-8 -right-8 transform rotate-12"
                     initial={{ opacity: 0, scale: 0, rotate: 45 }}
@@ -206,7 +196,6 @@ export default function PartnershipPage() {
                     </div>
                   </motion.div>
 
-                  {/* Left - Early Access */}
                   <motion.div
                     className="absolute top-1/2 -left-12 transform -translate-y-1/2 -rotate-6"
                     initial={{ opacity: 0, scale: 0, rotate: -30 }}
@@ -226,7 +215,6 @@ export default function PartnershipPage() {
                     </div>
                   </motion.div>
 
-                  {/* Right - AIVY Integration */}
                   <motion.div
                     className="absolute top-1/2 -right-12 transform -translate-y-1/2 rotate-6"
                     initial={{ opacity: 0, scale: 0, rotate: 30 }}
@@ -246,7 +234,6 @@ export default function PartnershipPage() {
                     </div>
                   </motion.div>
 
-                  {/* Bottom Left - Multi-Campus */}
                   <motion.div
                     className="absolute -bottom-8 -left-8 transform rotate-6"
                     initial={{ opacity: 0, scale: 0, rotate: 30 }}
@@ -266,7 +253,6 @@ export default function PartnershipPage() {
                     </div>
                   </motion.div>
 
-                  {/* Bottom Right - FERPA Compliance */}
                   <motion.div
                     className="absolute -bottom-8 -right-8 transform -rotate-6"
                     initial={{ opacity: 0, scale: 0, rotate: -30 }}
@@ -287,7 +273,6 @@ export default function PartnershipPage() {
                   </motion.div>
                 </div>
 
-                {/* Decorative elements */}
                 <div className="absolute top-4 right-4 w-32 h-32 bg-gradient-to-r from-fabriiq-primary/20 to-fabriiq-teal/20 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-4 left-4 w-24 h-24 bg-gradient-to-r from-fabriiq-primary/20 to-fabriiq-teal/20 rounded-full blur-3xl"></div>
               </div>
@@ -296,7 +281,6 @@ export default function PartnershipPage() {
         </div>
       </section>
 
-      {/* Co-Creators Philosophy Section */}
       <section className="py-20 px-4 sm:px-6 bg-gradient-to-b from-black to-gray-900">
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -318,7 +302,6 @@ export default function PartnershipPage() {
         </div>
       </section>
 
-      {/* Partnership Journey Timeline */}
       <section className="py-20 px-4 sm:px-6 bg-gradient-to-b from-gray-900 to-black">
         <div className="max-w-7xl mx-auto">
           <motion.div
@@ -339,7 +322,6 @@ export default function PartnershipPage() {
           </motion.div>
 
           <div className="relative">
-            {/* Timeline Line */}
             <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-fabriiq-primary to-fabriiq-teal rounded-full"></div>
 
             <div className="space-y-16">
@@ -401,7 +383,6 @@ export default function PartnershipPage() {
                     </div>
                   </div>
 
-                  {/* Timeline Node */}
                   <div className="relative z-10">
                     <div
                       className={`w-6 h-6 rounded-full bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal border-4 border-black`}
@@ -416,7 +397,6 @@ export default function PartnershipPage() {
         </div>
       </section>
 
-      {/* Balanced Investment Framework */}
       <section className="py-20 px-4 sm:px-6 bg-gradient-to-b from-black to-gray-900">
         <div className="max-w-7xl mx-auto">
           <motion.div
@@ -437,7 +417,6 @@ export default function PartnershipPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* For Educational Institutions */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -498,7 +477,6 @@ export default function PartnershipPage() {
               </div>
             </motion.div>
 
-            {/* For FabriiQ Development */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -561,7 +539,6 @@ export default function PartnershipPage() {
         </div>
       </section>
 
-      {/* Ideal Partner Profile */}
       <section className="py-20 px-4 sm:px-6 bg-gradient-to-b from-gray-900 to-black">
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -582,7 +559,6 @@ export default function PartnershipPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Institutional Characteristics */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -615,7 +591,6 @@ export default function PartnershipPage() {
               </div>
             </motion.div>
 
-            {/* Partnership Requirements */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -651,7 +626,6 @@ export default function PartnershipPage() {
         </div>
       </section>
 
-      {/* Partnership Charter Commitments */}
       <section className="py-20 px-4 sm:px-6 bg-gradient-to-b from-black to-gray-900">
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -669,7 +643,6 @@ export default function PartnershipPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Your Institution Commits To */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -702,7 +675,6 @@ export default function PartnershipPage() {
               </div>
             </motion.div>
 
-            {/* FabriiQ Commits To */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -738,7 +710,6 @@ export default function PartnershipPage() {
         </div>
       </section>
 
-      {/* Partnership Co-Creation Assessment Form */}
       <section className="py-20 px-4 sm:px-6 bg-gradient-to-b from-gray-900 to-black">
         <div className="max-w-4xl mx-auto">
           <motion.div
@@ -773,7 +744,6 @@ export default function PartnershipPage() {
                   </p>
                 </div>
 
-                {/* Institution Information */}
                 <div className="space-y-6">
                   <h4 className="text-xl font-semibold text-white border-b border-gray-700 pb-2">
                     {t('partnership.form.sections.institution')}
@@ -832,7 +802,6 @@ export default function PartnershipPage() {
                   </div>
                 </div>
 
-                {/* Strategic Contact Information */}
                 <div className="space-y-6">
                   <h4 className="text-xl font-semibold text-white border-b border-gray-700 pb-2">
                     {t('partnership.form.sections.contact')}
@@ -892,7 +861,6 @@ export default function PartnershipPage() {
                   </div>
                 </div>
 
-                {/* Co-Development Partnership Details */}
                 <div className="space-y-6">
                   <h4 className="text-xl font-semibold text-white border-b border-gray-700 pb-2">
                     {t('partnership.form.sections.partnership')}
@@ -1014,7 +982,6 @@ export default function PartnershipPage() {
         </div>
       </section>
 
-      {/* Beyond Alpha - Sustained Partnership Value */}
       <section className="py-20 px-4 sm:px-6 bg-gradient-to-b from-black to-gray-900">
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -1083,7 +1050,6 @@ export default function PartnershipPage() {
         </div>
       </section>
 
-      {/* Educational Intelligence Code Block */}
       <section className="py-20 px-4 sm:px-6 bg-gradient-to-b from-gray-900 to-black">
         <div className="max-w-4xl mx-auto">
           <motion.div
@@ -1098,7 +1064,7 @@ export default function PartnershipPage() {
             </div>
 
             <div className="bg-black/50 rounded-2xl p-6 font-mono text-sm overflow-x-auto">
-              <div className="text-gray-500 mb-4">// FabriiQ Educational Intelligence System</div>
+              <div className="text-gray-500 mb-4">{`// FabriiQ Educational Intelligence System`}</div>
               <div className="space-y-2">
                 <div>
                   <span className="text-purple-400">function</span>{" "}
@@ -1107,56 +1073,56 @@ export default function PartnershipPage() {
                 <div className="ml-4">
                   <span className="text-purple-400">const</span> <span className="text-blue-400">fabriiq</span> = {`{`}
                 </div>
-                <div className="ml-8 text-gray-400">// AIVY Multi-Agent System</div>
+                <div className="ml-8 text-gray-400">{`// AIVY Multi-Agent System`}</div>
                 <div className="ml-8">
                   <span className="text-red-400">aivy</span>: {`{`}
                 </div>
                 <div className="ml-12">
                   <span className="text-green-400">agents</span>: [
-                  <span className="text-orange-400">'Student Companion'</span>,{" "}
-                  <span className="text-orange-400">'Teacher Assistant'</span>],
+                  <span className="text-orange-400">{`'Student Companion'`}</span>,{" "}
+                  <span className="text-orange-400">{`'Teacher Assistant'`}</span>],
                 </div>
                 <div className="ml-12">
                   <span className="text-green-400">orchestration</span>:{" "}
-                  <span className="text-orange-400">'Real-time collaboration'</span>,
+                  <span className="text-orange-400">{`'Real-time collaboration'`}</span>,
                 </div>
                 <div className="ml-12">
                   <span className="text-green-400">memory</span>:{" "}
-                  <span className="text-orange-400">'Persistent cross-session context'</span>
+                  <span className="text-orange-400">{`'Persistent cross-session context'`}</span>
                 </div>
                 <div className="ml-8">{`},`}</div>
-                <div className="ml-8 text-gray-400 mt-4">// Bloom's Taxonomy Integration</div>
+                <div className="ml-8 text-gray-400 mt-4">{`// Bloom's Taxonomy Integration`}</div>
                 <div className="ml-8">
                   <span className="text-red-400">pedagogy</span>: {`{`}
                 </div>
                 <div className="ml-12">
                   <span className="text-green-400">framework</span>:{" "}
-                  <span className="text-orange-400">'Six cognitive levels'</span>,
+                  <span className="text-orange-400">{`'Six cognitive levels'`}</span>,
                 </div>
                 <div className="ml-12">
                   <span className="text-green-400">classification</span>:{" "}
-                  <span className="text-orange-400">'Automated content analysis'</span>,
+                  <span className="text-orange-400">{`'Automated content analysis'`}</span>,
                 </div>
                 <div className="ml-12">
                   <span className="text-green-400">tracking</span>:{" "}
-                  <span className="text-orange-400">'Real-time mastery measurement'</span>
+                  <span className="text-orange-400">{`'Real-time mastery measurement'`}</span>
                 </div>
                 <div className="ml-8">{`},`}</div>
-                <div className="ml-8 text-gray-400 mt-4">// Custom Branding & Workflows</div>
+                <div className="ml-8 text-gray-400 mt-4">{`// Custom Branding & Workflows`}</div>
                 <div className="ml-8">
                   <span className="text-red-400">customization</span>: {`{`}
                 </div>
                 <div className="ml-12">
                   <span className="text-green-400">branding</span>:{" "}
-                  <span className="text-orange-400">'Institution identity integration'</span>,
+                  <span className="text-orange-400">{`'Institution identity integration'`}</span>,
                 </div>
                 <div className="ml-12">
                   <span className="text-green-400">workflows</span>:{" "}
-                  <span className="text-orange-400">'Personalized operational processes'</span>,
+                  <span className="text-orange-400">{`'Personalized operational processes'`}</span>,
                 </div>
                 <div className="ml-12">
                   <span className="text-green-400">compliance</span>:{" "}
-                  <span className="text-orange-400">'Regional standards adaptation'</span>
+                  <span className="text-orange-400">{`'Regional standards adaptation'`}</span>
                 </div>
                 <div className="ml-8">{`}`}</div>
                 <div className="ml-4">{`};`}</div>

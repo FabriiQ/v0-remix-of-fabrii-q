@@ -106,7 +106,10 @@ export function TechnicalCodeSection() {
                         {line.includes("//") ? (
                           <>
                             {line.split("//")[0]}
-                            <span className="text-green-400">//{line.split("//")[1]}</span>
+                            <span className="text-green-400">
+                              {"//"}
+                              {line.split("//")[1]}
+                            </span>
                           </>
                         ) : line.includes("'") ? (
                           line.split("'").map((part, i) =>
@@ -116,7 +119,7 @@ export function TechnicalCodeSection() {
                               </span>
                             ) : (
                               <span key={i} className="text-yellow-400">
-                                '{part}'
+                                &apos;{part}&apos;
                               </span>
                             ),
                           )
@@ -146,7 +149,7 @@ export function TechnicalCodeSection() {
             <div>
               <h3 className="text-3xl font-bold text-white mb-6">Technical Excellence</h3>
               <p className="text-lg text-gray-300 leading-relaxed mb-8">
-                Every component of FabriiQ is designed with educational workflows in mind, from AIVY's multi-agent
+                Every component of FabriiQ is designed with educational workflows in mind, from AIVY&apos;s multi-agent
                 intelligence to FERPA-native privacy architecture.
               </p>
             </div>

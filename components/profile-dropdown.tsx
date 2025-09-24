@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
 import { Building, DollarSign, Users, Target, X, ChevronDown, ChevronUp } from "lucide-react"
@@ -84,7 +85,13 @@ export function ProfileDropdown() {
             {/* Header - Always Visible */}
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">
-                <img src="/images/weltivation-logo.png" alt="Weltivation" className="w-6 h-6" />
+                <Image
+                  src="/images/weltivation-logo.png"
+                  alt="Weltivation"
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
+                />
                 <div>
                   <h3 className="text-sm font-bold text-white">Business Profile</h3>
                   <p className="text-xs text-gray-400">

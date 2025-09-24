@@ -1,0 +1,15 @@
+{
+  "navigation": {
+    "capabilities": "Kemampuan",
+    "platform": "Platform",
+    "partnership": "Kemitraan",
+    "support": "Dukungan",
+    "about": "Tentang",
+    "process": "Proses",
+    "services": "Layanan",
+    "portfolio": "Portofolio",
+    "contact": "Kontak",
+    "corporate_login": "Login Korporat",
+    "projects": "Proyek"
+  }
+}

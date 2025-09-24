@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import { Terminal, BarChart3 } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -19,68 +19,71 @@ export function SkillsVisualization() {
   const [activeTab, setActiveTab] = useState("terminal")
 
   // Skills data with categories
-  const skills: Skill[] = [
-    {
-      name: "Penetration Testing",
-      level: 95,
-      category: "Offensive Security",
-      description: "Expert in identifying and exploiting vulnerabilities in networks, applications, and systems",
-    },
-    {
-      name: "Network Security",
-      level: 90,
-      category: "Defensive Security",
-      description: "Advanced knowledge of securing network infrastructure and detecting intrusions",
-    },
-    {
-      name: "Exploit Development",
-      level: 85,
-      category: "Offensive Security",
-      description: "Creation of custom exploits for various platforms and vulnerability types",
-    },
-    {
-      name: "Reverse Engineering",
-      level: 88,
-      category: "Analysis",
-      description: "Disassembly and analysis of binaries to understand functionality and identify vulnerabilities",
-    },
-    {
-      name: "Malware Analysis",
-      level: 82,
-      category: "Analysis",
-      description: "Static and dynamic analysis of malicious code to determine behavior and origin",
-    },
-    {
-      name: "Cryptography",
-      level: 78,
-      category: "Defensive Security",
-      description: "Implementation and analysis of encryption systems and cryptographic protocols",
-    },
-    {
-      name: "Social Engineering",
-      level: 80,
-      category: "Offensive Security",
-      description: "Psychological manipulation techniques to gain access to systems or information",
-    },
-    {
-      name: "Incident Response",
-      level: 87,
-      category: "Defensive Security",
-      description: "Rapid identification, containment, and remediation of security breaches",
-    },
-    {
-      name: "OSINT",
-      level: 92,
-      category: "Intelligence",
-      description: "Open-source intelligence gathering and analysis for target reconnaissance",
-    },
-    {
-      name: "Digital Forensics",
-      level: 84,
-      category: "Analysis",
-      description: "Recovery and investigation of material found in digital devices",
-    },
-  ]
+  const skills: Skill[] = useMemo(
+    () => [
+      {
+        name: "Penetration Testing",
+        level: 95,
+        category: "Offensive Security",
+        description: "Expert in identifying and exploiting vulnerabilities in networks, applications, and systems",
+      },
+      {
+        name: "Network Security",
+        level: 90,
+        category: "Defensive Security",
+        description: "Advanced knowledge of securing network infrastructure and detecting intrusions",
+      },
+      {
+        name: "Exploit Development",
+        level: 85,
+        category: "Offensive Security",
+        description: "Creation of custom exploits for various platforms and vulnerability types",
+      },
+      {
+        name: "Reverse Engineering",
+        level: 88,
+        category: "Analysis",
+        description: "Disassembly and analysis of binaries to understand functionality and identify vulnerabilities",
+      },
+      {
+        name: "Malware Analysis",
+        level: 82,
+        category: "Analysis",
+        description: "Static and dynamic analysis of malicious code to determine behavior and origin",
+      },
+      {
+        name: "Cryptography",
+        level: 78,
+        category: "Defensive Security",
+        description: "Implementation and analysis of encryption systems and cryptographic protocols",
+      },
+      {
+        name: "Social Engineering",
+        level: 80,
+        category: "Offensive Security",
+        description: "Psychological manipulation techniques to gain access to systems or information",
+      },
+      {
+        name: "Incident Response",
+        level: 87,
+        category: "Defensive Security",
+        description: "Rapid identification, containment, and remediation of security breaches",
+      },
+      {
+        name: "OSINT",
+        level: 92,
+        category: "Intelligence",
+        description: "Open-source intelligence gathering and analysis for target reconnaissance",
+      },
+      {
+        name: "Digital Forensics",
+        level: 84,
+        category: "Analysis",
+        description: "Recovery and investigation of material found in digital devices",
+      },
+    ],
+    [],
+  )
 
   // Group skills by category
   const categories = Array.from(new Set(skills.map((skill) => skill.category)))
