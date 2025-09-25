@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { StatusIndicatorsGroup } from "@/components/status-indicators"
+import { useLanguage } from "@/contexts/language-context"
 import {
   Brain,
   Building2,
@@ -19,30 +20,30 @@ import {
   BarChart,
 } from "lucide-react"
 
-const capabilities = [
+// Create capabilities configuration function that uses translations
+const createCapabilities = (t: (key: string) => string) => [
   {
     id: "aivy",
-    title: "AIVY Multi-Agent System",
-    subtitle: "Purpose-Built Educational AI",
-    description:
-      "Transform educational workflows with specialized agents designed specifically for learning environments. Student Companion, Teacher Assistant, Content Generation, Assessment Intelligence, and Compliance Monitoring - all working together seamlessly.",
+    title: t("capabilities.aivy.title"),
+    subtitle: t("capabilities.aivy.subtitle"),
+    description: t("capabilities.aivy.description"),
     icon: <Brain className="w-8 h-8" />,
     features: [
-      { icon: <Users className="w-5 h-5" />, text: "Personalized learning support" },
-      { icon: <Target className="w-5 h-5" />, text: "Intelligent lesson planning" },
-      { icon: <Zap className="w-5 h-5" />, text: "Automated content creation" },
-      { icon: <BarChart className="w-5 h-5" />, text: "Real-time analytics insights" },
+      { icon: <Users className="w-5 h-5" />, text: t("capabilities.aivy.features.personalized_support") },
+      { icon: <Target className="w-5 h-5" />, text: t("capabilities.aivy.features.lesson_planning") },
+      { icon: <Zap className="w-5 h-5" />, text: t("capabilities.aivy.features.content_creation") },
+      { icon: <BarChart className="w-5 h-5" />, text: t("capabilities.aivy.features.analytics_insights") },
     ],
     stats: [
-      { label: "Teacher Time Saved", value: "85%" },
-      { label: "Student Engagement", value: "92%" },
-      { label: "Assessment Accuracy", value: "97%" },
+      { label: t("capabilities.aivy.stats.time_saved"), value: "85%" },
+      { label: t("capabilities.aivy.stats.engagement"), value: "92%" },
+      { label: t("capabilities.aivy.stats.accuracy"), value: "97%" },
     ],
     technologies: ["Python", "TensorFlow", "OpenAI", "PostgreSQL", "Redis"],
     statusIndicators: [
-      { status: "active" as const, label: "Core agents" },
-      { status: "beta" as const, label: "Advanced collaboration" },
-      { status: "development" as const, label: "Multi-modal support" },
+      { status: "active" as const, label: t("status.active") },
+      { status: "beta" as const, label: t("status.beta") },
+      { status: "development" as const, label: t("status.development") },
     ],
     gradient: "from-fabriiq-primary via-fabriiq-teal to-fabriiq-primary",
     bgGradient: "from-fabriiq-primary/20 via-fabriiq-teal/10 to-fabriiq-primary/20",
@@ -50,27 +51,26 @@ const capabilities = [
   },
   {
     id: "operations",
-    title: "Unified Operations Hub",
-    subtitle: "Complete Institutional Management",
-    description:
-      "Replace fragmented systems with one comprehensive platform managing enrollment, finances, attendance, and analytics. Native multi-campus architecture with centralized governance and campus autonomy.",
+    title: t("capabilities.operations.title"),
+    subtitle: t("capabilities.operations.subtitle"),
+    description: t("capabilities.operations.description"),
     icon: <Building2 className="w-8 h-8" />,
     features: [
-      { icon: <Zap className="w-5 h-5" />, text: "Automated enrollment workflows" },
-      { icon: <Database className="w-5 h-5" />, text: "Multi-currency financial management" },
-      { icon: <BarChart className="w-5 h-5" />, text: "Predictive attendance analytics" },
-      { icon: <TrendingUp className="w-5 h-5" />, text: "Real-time reporting dashboards" },
+      { icon: <Zap className="w-5 h-5" />, text: t("capabilities.operations.features.enrollment_workflows") },
+      { icon: <Database className="w-5 h-5" />, text: t("capabilities.operations.features.financial_management") },
+      { icon: <BarChart className="w-5 h-5" />, text: t("capabilities.operations.features.attendance_analytics") },
+      { icon: <TrendingUp className="w-5 h-5" />, text: t("capabilities.operations.features.reporting_dashboards") },
     ],
     stats: [
-      { label: "Admin Time Reduction", value: "75%" },
-      { label: "Data Accuracy", value: "90%" },
-      { label: "System Uptime", value: "99.9%" },
+      { label: t("capabilities.operations.stats.admin_reduction"), value: "75%" },
+      { label: t("capabilities.operations.stats.data_accuracy"), value: "90%" },
+      { label: t("capabilities.operations.stats.system_uptime"), value: "99.9%" },
     ],
     technologies: ["Next.js", "Node.js", "PostgreSQL", "Redis", "Docker"],
     statusIndicators: [
-      { status: "active" as const, label: "Core operations" },
-      { status: "beta" as const, label: "Advanced analytics" },
-      { status: "development" as const, label: "Multi-campus sync" },
+      { status: "active" as const, label: t("status.active") },
+      { status: "beta" as const, label: t("status.beta") },
+      { status: "development" as const, label: t("status.development") },
     ],
     gradient: "from-fabriiq-teal via-fabriiq-primary to-fabriiq-teal",
     bgGradient: "from-fabriiq-teal/20 via-fabriiq-primary/10 to-fabriiq-teal/20",
@@ -78,115 +78,30 @@ const capabilities = [
   },
   {
     id: "pedagogy",
-    title: "Bloom's Taxonomy Integration",
-    subtitle: "Pedagogically Intelligent Learning",
-    description:
-      "Move beyond grades to genuine understanding with integrated Bloom's Taxonomy analytics. Track cognitive development from Remember to Create with real-time mastery measurement and intervention triggers.",
+    title: t("capabilities.pedagogy.title"),
+    subtitle: t("capabilities.pedagogy.subtitle"),
+    description: t("capabilities.pedagogy.description"),
     icon: <Target className="w-8 h-8" />,
     features: [
-      { icon: <Brain className="w-5 h-5" />, text: "Automatic cognitive level classification" },
-      { icon: <TrendingUp className="w-5 h-5" />, text: "Real-time mastery tracking" },
-      { icon: <BarChart className="w-5 h-5" />, text: "Learning progression analytics" },
-      { icon: <Target className="w-5 h-5" />, text: "Intervention recommendation engine" },
+      { icon: <Brain className="w-5 h-5" />, text: t("capabilities.pedagogy.features.cognitive_classification") },
+      { icon: <TrendingUp className="w-5 h-5" />, text: t("capabilities.pedagogy.features.mastery_tracking") },
+      { icon: <BarChart className="w-5 h-5" />, text: t("capabilities.pedagogy.features.progression_analytics") },
+      { icon: <Target className="w-5 h-5" />, text: t("capabilities.pedagogy.features.intervention_engine") },
     ],
     stats: [
-      { label: "Learning Outcome Improvement", value: "89%" },
-      { label: "Teacher Satisfaction", value: "94%" },
-      { label: "Faster Mastery", value: "78%" },
+      { label: t("capabilities.pedagogy.stats.outcome_improvement"), value: "89%" },
+      { label: t("capabilities.pedagogy.stats.teacher_satisfaction"), value: "94%" },
+      { label: t("capabilities.pedagogy.stats.faster_mastery"), value: "78%" },
     ],
     technologies: ["Python", "scikit-learn", "D3.js", "React", "GraphQL"],
     statusIndicators: [
-      { status: "active" as const, label: "Classification engine" },
-      { status: "beta" as const, label: "Mastery tracking" },
-      { status: "development" as const, label: "Intervention AI" },
+      { status: "active" as const, label: t("status.active") },
+      { status: "beta" as const, label: t("status.beta") },
+      { status: "development" as const, label: t("status.development") },
     ],
     gradient: "from-primary via-fabriiq-primary to-primary",
     bgGradient: "from-primary/20 via-fabriiq-primary/10 to-primary/20",
     accentColor: "text-primary",
-  },
-  {
-    id: "gamification",
-    title: "Gamification & Social Learning",
-    subtitle: "Engagement Through Achievement",
-    description:
-      "Transform learning into an engaging journey with comprehensive achievement systems, social learning walls, and intelligent motivation engines that adapt to individual student needs.",
-    icon: <Gamepad2 className="w-8 h-8" />,
-    features: [
-      { icon: <Star className="w-5 h-5" />, text: "Multi-source point systems" },
-      { icon: <TrendingUp className="w-5 h-5" />, text: "Progressive achievement levels" },
-      { icon: <Users className="w-5 h-5" />, text: "Class social collaboration" },
-      { icon: <Brain className="w-5 h-5" />, text: "Personalized motivation triggers" },
-    ],
-    stats: [
-      { label: "Engagement Increase", value: "156%" },
-      { label: "Assignment Completion", value: "88%" },
-      { label: "Student Satisfaction", value: "4.7★" },
-    ],
-    technologies: ["React", "Socket.IO", "Redis", "MongoDB", "WebRTC"],
-    statusIndicators: [
-      { status: "active" as const, label: "Achievement system" },
-      { status: "beta" as const, label: "Social features" },
-      { status: "development" as const, label: "AI motivation" },
-    ],
-    gradient: "from-purple-500 via-pink-400 to-purple-600",
-    bgGradient: "from-purple-500/20 via-pink-400/10 to-purple-600/20",
-    accentColor: "text-purple-400",
-  },
-  {
-    id: "offline",
-    title: "Offline-First Architecture",
-    subtitle: "Learning Never Stops",
-    description:
-      "Complete educational functionality without internet dependency. Teachers grade, students learn, coordinators manage - all offline. Intelligent synchronization when connectivity returns with conflict resolution.",
-    icon: <Wifi className="w-8 h-8" />,
-    features: [
-      { icon: <Zap className="w-5 h-5" />, text: "Complete offline functionality" },
-      { icon: <Database className="w-5 h-5" />, text: "Intelligent data synchronization" },
-      { icon: <Target className="w-5 h-5" />, text: "Conflict resolution automation" },
-      { icon: <Building2 className="w-5 h-5" />, text: "Progressive web app capabilities" },
-    ],
-    stats: [
-      { label: "Offline Functionality", value: "100%" },
-      { label: "Sync Accuracy", value: "99.7%" },
-      { label: "Continuous Operation", value: "24hrs" },
-    ],
-    technologies: ["Service Workers", "IndexedDB", "PWA", "WebAssembly"],
-    statusIndicators: [
-      { status: "active" as const, label: "Offline core" },
-      { status: "beta" as const, label: "Sync engine" },
-      { status: "development" as const, label: "Conflict resolution" },
-    ],
-    gradient: "from-emerald-500 via-teal-400 to-emerald-600",
-    bgGradient: "from-emerald-500/20 via-teal-400/10 to-emerald-600/20",
-    accentColor: "text-emerald-400",
-  },
-  {
-    id: "privacy",
-    title: "Privacy & Compliance Excellence",
-    subtitle: "FERPA-Native Architecture",
-    description:
-      "Privacy-by-design architecture with automated compliance monitoring, intelligent risk assessment, and comprehensive audit trails. Built-in protection, not retrofitted security.",
-    icon: <Shield className="w-8 h-8" />,
-    features: [
-      { icon: <Shield className="w-5 h-5" />, text: "Automated FERPA compliance" },
-      { icon: <Brain className="w-5 h-5" />, text: "AI-powered privacy protection" },
-      { icon: <BarChart className="w-5 h-5" />, text: "Comprehensive audit trails" },
-      { icon: <Target className="w-5 h-5" />, text: "Risk assessment automation" },
-    ],
-    stats: [
-      { label: "FERPA Compliance", value: "100%" },
-      { label: "Data Protection", value: "99.9%" },
-      { label: "Security Incidents", value: "0" },
-    ],
-    technologies: ["Node.js", "PostgreSQL", "Redis", "Encryption APIs"],
-    statusIndicators: [
-      { status: "active" as const, label: "FERPA compliance" },
-      { status: "beta" as const, label: "Risk assessment" },
-      { status: "development" as const, label: "Advanced monitoring" },
-    ],
-    gradient: "from-red-500 via-orange-400 to-red-600",
-    bgGradient: "from-red-500/20 via-orange-400/10 to-red-600/20",
-    accentColor: "text-red-400",
   },
 ]
 
@@ -194,6 +109,10 @@ export function CoreCapabilitiesSection() {
   const [activeCapability, setActiveCapability] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
   const capabilityRefs = useRef<(HTMLDivElement | null)[]>([])
+  const { t } = useLanguage()
+  
+  // Get dynamic capabilities with translations
+  const capabilities = createCapabilities(t)
 
   // Intersection observer for section visibility
   useEffect(() => {
@@ -282,17 +201,15 @@ export function CoreCapabilitiesSection() {
             transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
           >
             <div className="w-2 h-2 bg-fabriiq-primary rounded-full animate-pulse" />
-            <span className="text-sm font-medium text-fabriiq-primary">Core Capabilities</span>
+            <span className="text-sm font-medium text-fabriiq-primary">{t("capabilities.title")}</span>
           </motion.div>
 
           <h2 className="text-5xl sm:text-6xl font-black mb-6 leading-tight">
-            <span className="text-white">Capabilities That </span>
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal font-light italic">
-              Transform
-            </span>
+            <span className="text-white">{t("capabilities.subtitle")} </span>
           </h2>
 
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            {t("capabilities.description")}
             Comprehensive solutions designed to transform educational institutions and enhance learning outcomes
           </p>
         </motion.div>

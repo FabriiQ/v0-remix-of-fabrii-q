@@ -8,8 +8,10 @@ import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
 import { CodeRain } from "@/components/code-rain"
 import { SpinningEarth } from "@/components/spinning-earth"
+import { useLanguage } from "@/contexts/language-context"
 
 export default function AboutPage() {
+  const { t } = useLanguage()
   return (
     <main className="relative min-h-screen bg-black text-foreground overflow-x-hidden">
       {/* Background layers */}
@@ -34,17 +36,16 @@ export default function AboutPage() {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
               <div className="inline-flex items-center px-4 py-2 rounded-full bg-fabriiq-primary/10 border border-fabriiq-primary/20 text-fabriiq-primary text-sm font-medium mb-6">
                 <span className="w-2 h-2 bg-fabriiq-primary rounded-full mr-2 animate-pulse"></span>
-                Our Story
+                {t("pages.about.hero.badge")}
               </div>
               <h1 className="text-4xl md:text-6xl font-bold mb-6 text-balance">
-                <span className="text-foreground">Revolutionizing </span>
+                <span className="text-foreground">{t("pages.about.hero.title").split(" ")[0]} </span>
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
-                  Educational Technology
+                  {t("pages.about.hero.title").split(" ").slice(1).join(" ")}
                 </span>
               </h1>
               <p className="text-xl text-muted-foreground mb-8 text-pretty max-w-3xl mx-auto leading-relaxed">
-                Eight years of educational technology experience led us to one realization: institutions need a School
-                Operating System, not another fragmented tool.
+                {t("pages.about.hero.subtitle")}
               </p>
             </motion.div>
           </div>
@@ -63,12 +64,10 @@ export default function AboutPage() {
                   <CardContent className="p-8">
                     <div className="flex items-center mb-4">
                       <Target className="h-8 w-8 text-fabriiq-primary mr-3" />
-                      <h2 className="text-2xl font-bold text-foreground">Our Mission</h2>
+                      <h2 className="text-2xl font-bold text-foreground">{t("pages.about.mission.title")}</h2>
                     </div>
                     <p className="text-muted-foreground text-pretty leading-relaxed">
-                      To eliminate the complexity and fragmentation that prevents educational institutions from reaching
-                      their full potential by providing the first comprehensive School Operating System designed
-                      specifically for modern educational excellence.
+                      {t("pages.about.mission.description")}
                     </p>
                   </CardContent>
                 </Card>
@@ -83,11 +82,10 @@ export default function AboutPage() {
                   <CardContent className="p-8">
                     <div className="flex items-center mb-4">
                       <Lightbulb className="h-8 w-8 text-fabriiq-teal mr-3" />
-                      <h2 className="text-2xl font-bold text-foreground">Our Vision</h2>
+                      <h2 className="text-2xl font-bold text-foreground">{t("pages.about.vision.title")}</h2>
                     </div>
                     <p className="text-muted-foreground text-pretty leading-relaxed">
-                      A world where every educational institution has unified, intelligent, and intuitive technology
-                      that empowers educators, engages students, and enables institutional growth.
+                      {t("pages.about.vision.description")}
                     </p>
                   </CardContent>
                 </Card>
@@ -106,12 +104,12 @@ export default function AboutPage() {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-3xl font-bold mb-4">
-                <span className="text-foreground">The </span>
+                <span className="text-foreground">{t("pages.about.origin_story.title").split(" ").slice(0, 1).join(" ")} </span>
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
-                  FabriiQ Origin Story
+                  {t("pages.about.origin_story.title").split(" ").slice(1).join(" ")}
                 </span>
               </h2>
-              <p className="text-lg text-muted-foreground">How eight years of experience revealed the true problem</p>
+              <p className="text-lg text-muted-foreground">{t("pages.about.origin_story.subtitle")}</p>
             </motion.div>
 
             <div className="space-y-12">
@@ -127,16 +125,12 @@ export default function AboutPage() {
                     <span className="text-red-400 font-bold">1</span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-foreground mb-3">The Problem We Discovered</h3>
+                    <h3 className="text-xl font-semibold text-foreground mb-3">{t("pages.about.origin_story.problem.title")}</h3>
                     <p className="text-muted-foreground mb-4 text-pretty leading-relaxed">
-                      For eight years, we've been deeply embedded in the educational technology landscape, working with
-                      institutions across different scales and contexts. What started as enthusiasm for "improving
-                      education through technology" gradually revealed a troubling pattern.
+                      {t("pages.about.origin_story.problem.description_1")}
                     </p>
                     <p className="text-muted-foreground text-pretty leading-relaxed">
-                      We watched institutions struggle with 3-7 different systems that couldn't communicate. Student
-                      information lived in one place, learning management in another, financial data in a third, and
-                      communication scattered across multiple platforms.
+                      {t("pages.about.origin_story.problem.description_2")}
                     </p>
                   </div>
                 </div>
@@ -154,14 +148,12 @@ export default function AboutPage() {
                     <span className="text-yellow-400 font-bold">2</span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-foreground mb-3">The Revelation</h3>
+                    <h3 className="text-xl font-semibold text-foreground mb-3">{t("pages.about.origin_story.revelation.title")}</h3>
                     <p className="text-muted-foreground mb-4 text-pretty leading-relaxed">
-                      The breakthrough came when we realized we were asking the wrong question. Instead of "How can we
-                      build a better LMS?" we should have been asking: "Why are educational institutions forced to
-                      operate like a collection of disconnected departments?"
+                      {t("pages.about.origin_story.revelation.description_1")}
                     </p>
                     <p className="text-muted-foreground text-pretty leading-relaxed">
-                      No one was thinking about education as a complete, integrated ecosystem.
+                      {t("pages.about.origin_story.revelation.description_2")}
                     </p>
                   </div>
                 </div>
@@ -179,27 +171,26 @@ export default function AboutPage() {
                     <span className="text-fabriiq-primary font-bold">3</span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-foreground mb-3">Our Solution Philosophy</h3>
+                    <h3 className="text-xl font-semibold text-foreground mb-3">{t("pages.about.origin_story.solution.title")}</h3>
                     <p className="text-muted-foreground mb-4 text-pretty leading-relaxed">
-                      Rather than building another tool to add to the institutional technology stack, we designed
-                      something fundamentally different: the first comprehensive School Operating System.
+                      {t("pages.about.origin_story.solution.description")}
                     </p>
                     <div className="grid sm:grid-cols-3 gap-4">
                       <div className="bg-fabriiq-primary/10 p-4 rounded-lg border border-fabriiq-primary/20">
-                        <h4 className="font-semibold text-fabriiq-primary mb-2">Not an LMS Plus</h4>
+                        <h4 className="font-semibold text-fabriiq-primary mb-2">{t("pages.about.origin_story.solution.features.not_lms.title")}</h4>
                         <p className="text-sm text-muted-foreground">
-                          We started with the complete institutional mission
+                          {t("pages.about.origin_story.solution.features.not_lms.description")}
                         </p>
                       </div>
                       <div className="bg-fabriiq-teal/10 p-4 rounded-lg border border-fabriiq-teal/20">
-                        <h4 className="font-semibold text-fabriiq-teal mb-2">AI-Native Architecture</h4>
+                        <h4 className="font-semibold text-fabriiq-teal mb-2">{t("pages.about.origin_story.solution.features.ai_native.title")}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Built for educational relationships from the ground up
+                          {t("pages.about.origin_story.solution.features.ai_native.description")}
                         </p>
                       </div>
                       <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
-                        <h4 className="font-semibold text-primary mb-2">Multi-Campus First</h4>
-                        <p className="text-sm text-muted-foreground">Designed for complexity from day one</p>
+                        <h4 className="font-semibold text-primary mb-2">{t("pages.about.origin_story.solution.features.multi_campus.title")}</h4>
+                        <p className="text-sm text-muted-foreground">{t("pages.about.origin_story.solution.features.multi_campus.description")}</p>
                       </div>
                     </div>
                   </div>
@@ -220,10 +211,10 @@ export default function AboutPage() {
             >
               <h2 className="text-3xl font-bold mb-4">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
-                  Partnership Over Product
+                  {t('pages.about.development_philosophy.title')}
                 </span>
               </h2>
-              <p className="text-lg text-muted-foreground">Why we chose collaborative development</p>
+              <p className="text-lg text-muted-foreground">{t('pages.about.development_philosophy.subtitle')}</p>
             </motion.div>
 
             <div className="grid md:grid-cols-2 gap-8">
@@ -235,11 +226,9 @@ export default function AboutPage() {
                 <Card className="bg-card/50 backdrop-blur-sm border border-border/50 hover:border-fabriiq-primary/50 transition-all duration-300">
                   <CardContent className="p-6">
                     <Users className="h-8 w-8 text-fabriiq-primary mb-4" />
-                    <h3 className="text-xl font-semibold text-foreground mb-3">Alpha Phase Development</h3>
+                    <h3 className="text-xl font-semibold text-foreground mb-3">{t('pages.about.development_philosophy.alpha_development.title')}</h3>
                     <p className="text-muted-foreground text-pretty leading-relaxed">
-                      Most educational technology is built in boardrooms by people who haven't been in a classroom in
-                      years. We believe the best educational technology emerges from genuine collaboration with
-                      educators.
+                      {t('pages.about.development_philosophy.alpha_development.description')}
                     </p>
                   </CardContent>
                 </Card>
@@ -253,10 +242,9 @@ export default function AboutPage() {
                 <Card className="bg-card/50 backdrop-blur-sm border border-border/50 hover:border-fabriiq-teal/50 transition-all duration-300">
                   <CardContent className="p-6">
                     <Shield className="h-8 w-8 text-fabriiq-teal mb-4" />
-                    <h3 className="text-xl font-semibold text-foreground mb-3">Transparency Promise</h3>
+                    <h3 className="text-xl font-semibold text-foreground mb-3">{t('pages.about.development_philosophy.transparency.title')}</h3>
                     <p className="text-muted-foreground text-pretty leading-relaxed">
-                      We clearly communicate what works today versus what we're building tomorrow. No overselling. No
-                      false timelines. No hidden limitations.
+                      {t('pages.about.development_philosophy.transparency.description')}
                     </p>
                   </CardContent>
                 </Card>
@@ -276,15 +264,15 @@ export default function AboutPage() {
             >
               <div className="inline-flex items-center px-4 py-2 rounded-full bg-fabriiq-primary/10 border border-fabriiq-primary/20 text-fabriiq-primary text-sm font-medium mb-4">
                 <span className="w-2 h-2 bg-fabriiq-primary rounded-full mr-2 animate-pulse"></span>
-                Current Status
+                {t('pages.about.alpha_journey.badge')}
               </div>
               <h2 className="text-3xl font-bold mb-4">
-                <span className="text-foreground">One Year Journey to </span>
+                <span className="text-foreground">{t('pages.about.alpha_journey.title').split(' ').slice(0, -1).join(' ')} </span>
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
-                  Alpha
+                  {t('pages.about.alpha_journey.title').split(' ').slice(-1)[0]}
                 </span>
               </h2>
-              <p className="text-lg text-muted-foreground">From concept to operational School Operating System</p>
+              <p className="text-lg text-muted-foreground">{t('pages.about.alpha_journey.subtitle')}</p>
             </motion.div>
 
             <div className="space-y-6">
@@ -296,9 +284,9 @@ export default function AboutPage() {
               >
                 <div className="w-3 h-3 bg-fabriiq-primary rounded-full mr-4"></div>
                 <div>
-                  <h4 className="font-semibold text-fabriiq-primary">Core Systems Operational</h4>
+                  <h4 className="font-semibold text-fabriiq-primary">{t('pages.about.alpha_journey.milestones.core_systems.title')}</h4>
                   <p className="text-muted-foreground text-sm">
-                    All essential institutional operations function reliably
+                    {t('pages.about.alpha_journey.milestones.core_systems.description')}
                   </p>
                 </div>
               </motion.div>
@@ -311,9 +299,9 @@ export default function AboutPage() {
               >
                 <div className="w-3 h-3 bg-fabriiq-teal rounded-full mr-4"></div>
                 <div>
-                  <h4 className="font-semibold text-fabriiq-teal">AI Features Active</h4>
+                  <h4 className="font-semibold text-fabriiq-teal">{t('pages.about.alpha_journey.milestones.ai_features.title')}</h4>
                   <p className="text-muted-foreground text-sm">
-                    AIVY agents provide intelligent assistance across the platform
+                    {t('pages.about.alpha_journey.milestones.ai_features.description')}
                   </p>
                 </div>
               </motion.div>
@@ -326,9 +314,9 @@ export default function AboutPage() {
               >
                 <div className="w-3 h-3 bg-primary rounded-full mr-4"></div>
                 <div>
-                  <h4 className="font-semibold text-primary">Multi-Campus Proven</h4>
+                  <h4 className="font-semibold text-primary">{t('pages.about.alpha_journey.milestones.multi_campus.title')}</h4>
                   <p className="text-muted-foreground text-sm">
-                    Successfully managing complex institutional hierarchies
+                    {t('pages.about.alpha_journey.milestones.multi_campus.description')}
                   </p>
                 </div>
               </motion.div>
@@ -345,14 +333,13 @@ export default function AboutPage() {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-3xl font-bold mb-6">
-                <span className="text-foreground">Why </span>
+                <span className="text-foreground">{t('pages.about.school_os.title').split('"')[0]}</span>
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
-                  "School Operating System"?
+                  &quot;{t('pages.about.school_os.title').split('"')[1]}&quot;?
                 </span>
               </h2>
               <p className="text-xl mb-8 text-muted-foreground text-pretty leading-relaxed">
-                Like computer operating systems manage hardware resources and enable applications, educational operating
-                systems should manage institutional resources and enable educational excellence.
+                {t('pages.about.school_os.description')}
               </p>
             </motion.div>
 
@@ -360,26 +347,26 @@ export default function AboutPage() {
               {[
                 {
                   icon: Globe,
-                  title: "Unified Data Model",
-                  desc: "All institutional information connected",
+                  title: t('pages.about.school_os.features.unified_data.title'),
+                  desc: t('pages.about.school_os.features.unified_data.description'),
                   color: "text-fabriiq-primary",
                 },
                 {
                   icon: Brain,
-                  title: "Intelligent Automation",
-                  desc: "Humans focus on education",
+                  title: t('pages.about.school_os.features.intelligent_automation.title'),
+                  desc: t('pages.about.school_os.features.intelligent_automation.description'),
                   color: "text-fabriiq-teal",
                 },
                 {
                   icon: Building2,
-                  title: "Extensible Architecture",
-                  desc: "Platform grows with needs",
+                  title: t('pages.about.school_os.features.extensible_architecture.title'),
+                  desc: t('pages.about.school_os.features.extensible_architecture.description'),
                   color: "text-primary",
                 },
                 {
                   icon: Shield,
-                  title: "Resource Optimization",
-                  desc: "Efficient use of time and resources",
+                  title: t('pages.about.school_os.features.resource_optimization.title'),
+                  desc: t('pages.about.school_os.features.resource_optimization.description'),
                   color: "text-fabriiq-primary",
                 },
               ].map((item, index) => (
@@ -409,12 +396,11 @@ export default function AboutPage() {
             >
               <h2 className="text-3xl font-bold mb-6">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal">
-                  Partnership Invitation
+                  {t('pages.about.partnership_invitation.title')}
                 </span>
               </h2>
               <p className="text-xl text-muted-foreground mb-8 text-pretty leading-relaxed">
-                We're not looking for customers - we're looking for co-creators. Educational institutions who understand
-                that the future of education requires unified, intelligent technology.
+                {t('pages.about.partnership_invitation.description')}
               </p>
             </motion.div>
 
@@ -424,10 +410,9 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <h3 className="text-lg font-semibold text-foreground mb-4">Limited Partnership Positions Available</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">{t('pages.about.partnership_invitation.limited_positions.title')}</h3>
               <p className="text-muted-foreground mb-6 text-pretty leading-relaxed">
-                We're accepting a maximum of 12 development partners to ensure meaningful collaboration and
-                comprehensive customization for each institution.
+                {t('pages.about.partnership_invitation.limited_positions.description')}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -437,7 +422,7 @@ export default function AboutPage() {
                   className="bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal hover:from-fabriiq-teal hover:to-fabriiq-primary text-white"
                 >
                   <Link href="/partnership">
-                    Explore Partnership <ArrowRight className="ml-2 h-4 w-4" />
+                    {t('pages.about.partnership_invitation.cta.explore')} <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
                 <Button
@@ -446,7 +431,7 @@ export default function AboutPage() {
                   size="lg"
                   className="border-border/50 hover:border-primary/50 bg-transparent"
                 >
-                  <Link href="/contact">Contact Us</Link>
+                  <Link href="/contact">{t('pages.about.partnership_invitation.cta.contact')}</Link>
                 </Button>
               </div>
             </motion.div>
@@ -457,8 +442,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              The future of educational technology isn't about better tools - it's about unified intelligence that
-              empowers educational excellence.
+              {t('pages.about.partnership_invitation.footer_text')}
             </motion.p>
           </div>
         </section>

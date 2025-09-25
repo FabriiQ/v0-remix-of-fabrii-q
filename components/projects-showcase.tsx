@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
+import Image from "next/image"
 import { motion, AnimatePresence, useInView } from "framer-motion"
 import { Code, Globe, Lock, Shield, Terminal, ExternalLink, X, ChevronRight, Tag, Play } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
@@ -324,9 +325,11 @@ export function ProjectsShowcase() {
 
                   {/* Project image */}
                   <div className="relative h-48 overflow-hidden">
-                    <img
+                    <Image
                       src={project.image || "/placeholder.svg"}
                       alt={project.title}
+                      width={600}
+                      height={400}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div
@@ -411,9 +414,11 @@ export function ProjectsShowcase() {
             <div className="space-y-8">
               {/* Project image */}
               <div className="relative h-64 rounded-xl overflow-hidden">
-                <img
+                <Image
                   src={selectedProject.image || "/placeholder.svg"}
                   alt={selectedProject.title}
+                  width={600}
+                  height={400}
                   className="w-full h-full object-cover"
                 />
                 <div

@@ -3,25 +3,37 @@
 import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
 import { Github, Mail, MessageSquare, Linkedin, ExternalLink } from "lucide-react"
+import { useLanguage } from "@/contexts/language-context"
 
 export function ContactLinks() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.2 })
+  const { t } = useLanguage()
 
   const links = [
-    { name: "GitHub", icon: <Github className="w-5 h-5" />, url: "#", description: "View projects and contributions" },
-    { name: "Email", icon: <Mail className="w-5 h-5" />, url: "#", description: "Direct contact for inquiries" },
-    {
-      name: "Telegram",
-      icon: <MessageSquare className="w-5 h-5" />,
-      url: "#",
-      description: "Secure messaging platform",
+    { 
+      name: t("contact.links.github.name"), 
+      icon: <Github className="w-5 h-5" />, 
+      url: "#", 
+      description: t("contact.links.github.description") 
+    },
+    { 
+      name: t("contact.links.email.name"), 
+      icon: <Mail className="w-5 h-5" />, 
+      url: "#", 
+      description: t("contact.links.email.description") 
     },
     {
-      name: "LinkedIn",
+      name: t("contact.links.telegram.name"),
+      icon: <MessageSquare className="w-5 h-5" />,
+      url: "#",
+      description: t("contact.links.telegram.description"),
+    },
+    {
+      name: t("contact.links.linkedin.name"),
       icon: <Linkedin className="w-5 h-5" />,
       url: "#",
-      description: "Professional profile and network",
+      description: t("contact.links.linkedin.description"),
     },
   ]
 
@@ -57,11 +69,10 @@ export function ContactLinks() {
           className="space-y-12"
         >
           <motion.div variants={itemVariants} className="space-y-6 text-center">
-            <h2 className="text-3xl font-bold text-primary">Connect</h2>
+            <h2 className="text-3xl font-bold text-primary">{t("contact.title")}</h2>
             <div className="h-px w-20 bg-primary/50 mx-auto"></div>
             <p className="text-foreground max-w-2xl mx-auto">
-              Interested in discussing security solutions or professional collaboration? Reach out through any of the
-              channels below.
+              {t("contact.description")}
             </p>
           </motion.div>
 
@@ -90,7 +101,7 @@ export function ContactLinks() {
 
           <motion.div variants={itemVariants} className="text-center pt-8">
             <p className="text-muted-foreground text-sm">
-              All communications are encrypted and handled with the highest level of confidentiality.
+              {t("contact.confidentiality_note")}
             </p>
           </motion.div>
         </motion.div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, ChevronDown, ChevronUp, Sparkles, TrendingUp, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useLanguage } from "@/contexts/language-context"
 
 type ProfileData = {
   service?: string
@@ -17,6 +18,7 @@ type ProfileData = {
 }
 
 export function BusinessProfileHeader() {
+  const { t } = useLanguage()
   const [isVisible, setIsVisible] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [profileData, setProfileData] = useState<ProfileData>({})
@@ -209,10 +211,10 @@ export function BusinessProfileHeader() {
                           />
                           <span>
                             {completionPercentage >= 100
-                              ? "Complete"
+                              ? t("common.complete")
                               : completionPercentage >= 50
-                                ? "In Progress"
-                                : "Starting"}
+                                ? t("common.in_progress")
+                                : t("common.starting")}
                           </span>
                         </motion.div>
 
@@ -223,7 +225,7 @@ export function BusinessProfileHeader() {
                             className="flex items-center space-x-1 text-emerald-400"
                           >
                             <TrendingUp className="w-3 h-3" />
-                            <span className="text-xs font-medium">Ready</span>
+                            <span className="text-xs font-medium">{t("common.ready")}</span>
                           </motion.div>
                         )}
                       </div>
@@ -246,7 +248,7 @@ export function BusinessProfileHeader() {
                       className="border-gray-600/30 bg-gray-800/20 text-gray-300 hover:bg-gray-700/30 text-xs backdrop-blur-sm h-7 px-3 flex items-center space-x-1"
                       onClick={() => (window.location.href = "/consultation")}
                     >
-                      <span>Schedule</span>
+                      <span>{t("cta.schedule")}</span>
                       <ArrowRight className="w-3 h-3" />
                     </Button>
 

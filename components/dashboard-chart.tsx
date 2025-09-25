@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import Image from "next/image"
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import { TrendingUp, DollarSign, Users, Award, Building, Zap, Target, ArrowUpRight } from "lucide-react"
 
@@ -161,7 +162,7 @@ export function DashboardChart() {
       {/* Powered by badge */}
       <div className="absolute bottom-4 right-4 flex items-center space-x-2 px-3 py-1.5 bg-gray-800/80 backdrop-blur-sm rounded-full border border-gray-700/50">
         <span className="text-xs text-gray-400">powered by</span>
-        <img src="/images/weltivation-logo.png" alt="Weltivation" className="h-4" />
+        <Image src="/images/weltivation-logo.png" alt="Weltivation" width={100} height={24} className="h-4" />
       </div>
 
       {/* Floating Elements */}

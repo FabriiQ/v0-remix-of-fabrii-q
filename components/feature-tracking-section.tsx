@@ -443,7 +443,7 @@ export function FeatureTrackingSection() {
                     </div>
                     <div className="text-xs">
                       <span className="font-medium">
-                        "Love the new invite button, makes it so much easier to get started!"
+                        &quot;Love the new invite button, makes it so much easier to get started!&quot;
                       </span>
                       <span className="text-gray-500 ml-2">3 hours ago</span>
                     </div>
