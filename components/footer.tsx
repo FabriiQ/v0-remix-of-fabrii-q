@@ -24,7 +24,6 @@ export function Footer() {
       items: [
         { name: t("footer.platform.capabilities"), href: "/projects" },
         { name: t("footer.platform.about"), href: "/about" },
-        { name: t("footer.platform.process"), href: "/process" },
       ],
     },
     {

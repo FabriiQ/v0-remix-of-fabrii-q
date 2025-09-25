@@ -20,6 +20,7 @@
     "complete": "مكتمل",
     "in_progress": "قيد التنفيذ",
     "starting": "بداية",
-    "ready": "جاهز"
+    "ready": "جاهز",
+    "email_placeholder": "أدخل عنوان البريد الإلكتروني"
   }
 }

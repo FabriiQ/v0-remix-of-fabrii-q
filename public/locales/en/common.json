@@ -20,6 +20,7 @@
     "complete": "Complete",
     "in_progress": "In Progress",
     "starting": "Starting",
-    "ready": "Ready"
+    "ready": "Ready",
+    "email_placeholder": "Enter email address"
   }
 }

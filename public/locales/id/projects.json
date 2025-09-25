@@ -1,8 +1,53 @@
 {
   "pages": {
+    "capabilities": {
+      "title": "Kemampuan Platform",
+      "subtitle": "Fitur komprehensif yang dirancang untuk institusi pendidikan modern",
+      "description": "Jelajahi kemampuan teknologi pendidikan komprehensif FabriiQ yang dirancang untuk institusi modern.",
+      "search_placeholder": "Cari kemampuan...",
+      "filters": {
+        "all": "Semua Kemampuan",
+        "system_admin": "Portal Administrator Sistem",
+        "teacher_portal": "Portal Guru",
+        "student_portal": "Portal Siswa",
+        "teacher": "Portal Guru",
+        "student": "Portal Siswa"
+      },
+      "select_capability": "Pilih Kemampuan",
+      "select_capability_desc": "Pilih kemampuan dari daftar untuk melihat informasi detail dan demonstrasi.",
+      "interactive_demo": "Demo Interaktif",
+      "interactive_demos": "Demo Interaktif",
+      "key_features": "Fitur Utama",
+      "expected_benefits": "Manfaat yang Diharapkan (Fase Alfa)",
+      "alpha_performance": "Ekspektasi Kinerja Alfa",
+      "tags": "Tag",
+      "status": {
+        "alpha": "Tahap Alfa",
+        "beta": "Tahap Beta",
+        "development": "Dalam Pengembangan",
+        "coming_soon": "Segera Hadir"
+      },
+      "performance_metrics": {
+        "coordination": "Koordinasi",
+        "time_reduction": "Pengurangan Waktu",
+        "accuracy": "Akurasi",
+        "efficiency": "Efisiensi"
+      },
+      "categories": {
+        "system_admin_portal": "Portal Administrator Sistem",
+        "teacher_portal": "Portal Guru",
+        "student_portal": "Portal Siswa"
+      },
+      "expected_prefix": "Diharapkan",
+      "demo": {
+        "creation": "Proses Pembuatan",
+        "grading": "Penilaian & Analitik"
+      }
+    },
     "projects": {
       "title": "Kemampuan Platform",
       "subtitle": "Fitur komprehensif yang dirancang untuk institusi pendidikan modern",
+      "description": "Jelajahi kemampuan teknologi pendidikan komprehensif FabriiQ yang dirancang untuk institusi modern.",
       "search_placeholder": "Cari kemampuan...",
       "filters": {
         "all": "Semua Kemampuan",
@@ -10,6 +55,14 @@
         "teacher_portal": "Portal Guru",
         "student_portal": "Portal Siswa"
       },
+      "select_capability": "Pilih Kemampuan",
+      "select_capability_desc": "Pilih kemampuan dari daftar untuk melihat informasi detail dan demonstrasi.",
+      "interactive_demo": "Demo Interaktif",
+      "interactive_demos": "Demo Interaktif",
+      "key_features": "Fitur Utama",
+      "expected_benefits": "Manfaat yang Diharapkan (Fase Alfa)",
+      "alpha_performance": "Ekspektasi Kinerja Alfa",
+      "tags": "Tag",
       "status": {
         "alpha": "Tahap Alfa",
         "beta": "Tahap Beta",
@@ -309,6 +362,438 @@
             "engagement": "+85%",
             "retention": "75%",
             "completion": "88%"
+          }
+        },
+        "user-management": {
+          "name": "Manajemen Pengguna Lanjutan",
+          "subtitle": "Kontrol Akses Komprehensif",
+          "description": "Kelola hierarki pengguna, peran, dan izin lintas kampus dengan otomatisasi cerdas.",
+          "features": [
+            "Manajemen peran hierarkis multi-kampus",
+            "Izin granular dan kontrol akses",
+            "Otomatisasi siklus hidup pengguna",
+            "Autentikasi SSO dan federasi",
+            "Jejak audit real-time"
+          ],
+          "benefits": [
+            "Proyeksi pengurangan 80% tugas administratif",
+            "Antisipasi peningkatan kepatuhan keamanan",
+            "Ekspektasi kontrol akses yang disederhanakan",
+            "Rencana manajemen pengguna terpadu"
+          ],
+          "tags": ["Manajemen Pengguna", "Keamanan", "Kontrol Akses", "Multi-Kampus"],
+          "performance": {
+            "efficiency": "+80%",
+            "security": "45%",
+            "compliance": "95%"
+          }
+        },
+        "system-monitoring": {
+          "name": "Pemantauan Sistem Cerdas",
+          "subtitle": "Observabilitas Operasional",
+          "description": "Pantau kesehatan, kinerja, dan keamanan sistem dengan peringatan prediktif dan laporan otomatis.",
+          "features": [
+            "Dashboard kesehatan sistem real-time",
+            "Analitik prediktif dan peringatan dini",
+            "Pemantauan kinerja otomatis",
+            "Pelacakan kepatuhan keamanan",
+            "Laporan status multi-kampus"
+          ],
+          "benefits": [
+            "Proyeksi pengurangan 90% waktu henti",
+            "Antisipasi deteksi masalah proaktif",
+            "Ekspektasi peningkatan reliabilitas sistem",
+            "Rencana pemeliharaan prediktif"
+          ],
+          "tags": ["Pemantauan Sistem", "Analitik Prediktif", "Peringatan", "Kinerja"],
+          "performance": {
+            "uptime": "+90%",
+            "detection": "30%",
+            "reliability": "98%"
+          }
+        },
+        "audit-trails": {
+          "name": "Jejak Audit Komprehensif",
+          "subtitle": "Pelacakan Tindakan Lengkap",
+          "description": "Pertahankan catatan detail semua tindakan sistem dengan pencarian cerdas dan analisis kepatuhan.",
+          "features": [
+            "Pencatatan otomatis semua tindakan sistem",
+            "Pencarian lanjutan dan kemampuan penyaringan",
+            "Laporan kepatuhan otomatis",
+            "Deteksi anomali bertenaga AI",
+            "Pengarsipan aman dan tidak berubah"
+          ],
+          "benefits": [
+            "Proyeksi kepatuhan 100% dengan standar audit",
+            "Antisipasi transparensi tindakan lengkap",
+            "Ekspektasi investigasi insiden yang disederhanakan",
+            "Rencana persiapan audit otomatis"
+          ],
+          "tags": ["Jejak Audit", "Kepatuhan", "Pelacakan", "Keamanan"],
+          "performance": {
+            "compliance": "100%",
+            "searchSpeed": "60%",
+            "completeness": "99%"
+          }
+        },
+        "automated-backups": {
+          "name": "Pencadangan Otomatis Cerdas",
+          "subtitle": "Kontinuitas Data Terjamin",
+          "description": "Kelola pencadangan otomatis dengan pemulihan cerdas dan verifikasi integritas data.",
+          "features": [
+            "Pencadangan terjadwal otomatis",
+            "Verifikasi integritas data",
+            "Pemulihan bencana satu klik",
+            "Enkripsi dan penyimpanan aman",
+            "Pemantauan kesehatan pencadangan"
+          ],
+          "benefits": [
+            "Proyeksi perlindungan data 99,9%",
+            "Antisipasi pemulihan bencana cepat",
+            "Ekspektasi ketenangan pikiran data",
+            "Rencana kontinuitas operasional tanpa gangguan"
+          ],
+          "tags": ["Pencadangan Data", "Pemulihan Bencana", "Integritas Data", "Otomatisasi"],
+          "performance": {
+            "protection": "99.9%",
+            "recovery": "75%",
+            "reliability": "99%"
+          }
+        },
+        "security-compliance": {
+          "name": "Kerangka Kepatuhan Keamanan",
+          "subtitle": "Perlindungan Privasi Asli",
+          "description": "Pastikan kepatuhan FERPA dan standar privasi dengan pemantauan otomatis dan penilaian risiko.",
+          "features": [
+            "Kepatuhan FERPA otomatis",
+            "Penilaian risiko privasi berkelanjutan",
+            "Enkripsi data dan kontrol akses",
+            "Kebijakan retensi otomatis",
+            "Laporan kepatuhan reguler"
+          ],
+          "benefits": [
+            "Proyeksi kepatuhan 100% dengan FERPA",
+            "Antisipasi pengurangan risiko keamanan",
+            "Ekspektasi perlindungan privasi otomatis",
+            "Rencana persiapan audit yang disederhanakan"
+          ],
+          "tags": ["Kepatuhan FERPA", "Privasi Data", "Penilaian Risiko", "Keamanan"],
+          "performance": {
+            "compliance": "100%",
+            "riskReduction": "85%",
+            "protection": "99%"
+          }
+        },
+        "assessment-creation": {
+          "name": "Pembuatan Penilaian",
+          "subtitle": "Pembuat Penilaian Komprehensif",
+          "description": "Buat berbagai jenis penilaian dengan dukungan multimedia dan penyelarasan tingkat kognitif.",
+          "features": [
+            "Berbagai format dan template penilaian",
+            "Integrasi dan dukungan media kaya",
+            "Penyelarasan kognitif Taksonomi Bloom",
+            "Penilaian dan umpan balik otomatis",
+            "Analitik dan wawasan kinerja"
+          ],
+          "benefits": [
+            "Proyeksi pembuatan penilaian 70% lebih cepat",
+            "Antisipasi peningkatan kualitas penilaian",
+            "Ekspektasi evaluasi pembelajaran yang ditingkatkan",
+            "Rencana rekomendasi penilaian cerdas"
+          ],
+          "tags": ["Penilaian", "Alat Guru", "Penyelarasan Kognitif", "Analitik"],
+          "performance": {
+            "efficiency": "+70%",
+            "quality": "90%",
+            "alignment": "95%"
+          }
+        },
+        "reading-activities": {
+          "name": "Aktivitas Membaca",
+          "subtitle": "Pemahaman Membaca Interaktif",
+          "description": "Libatkan siswa dengan aktivitas membaca interaktif dan pelacakan pemahaman.",
+          "features": [
+            "Perpustakaan materi bacaan interaktif",
+            "Pelacakan dan analitik pemahaman",
+            "Latihan pembangunan kosakata",
+            "Pemantauan kemajuan membaca",
+            "Penyesuaian tingkat kesulitan adaptif"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan pemahaman membaca sebesar 65%",
+            "Antisipasi pengembangan kosakata yang ditingkatkan",
+            "Ekspektasi peningkatan keterlibatan membaca",
+            "Rencana jalur membaca yang dipersonalisasi"
+          ],
+          "tags": ["Membaca", "Pemahaman", "Alat Guru", "Keterlibatan Siswa"],
+          "performance": {
+            "comprehension": "+65%",
+            "engagement": "80%",
+            "vocabulary": "75%"
+          }
+        },
+        "reward-system": {
+          "name": "Sistem Penghargaan",
+          "subtitle": "Platform Pengakuan Prestasi",
+          "description": "Motivasi siswa melalui sistem penghargaan dan pengakuan yang komprehensif.",
+          "features": [
+            "Lencana dan sertifikat digital",
+            "Sistem penghargaan berbasis poin",
+            "Peringkat pencapaian",
+            "Pembuatan penghargaan kustom",
+            "Integrasi notifikasi orang tua"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan motivasi siswa sebesar 85%",
+            "Antisipasi peningkatan penyelesaian tugas",
+            "Ekspektasi peningkatan partisipasi kelas",
+            "Rencana penguatan perilaku positif"
+          ],
+          "tags": ["Penghargaan", "Motivasi", "Alat Guru", "Keterlibatan Siswa"],
+          "performance": {
+            "motivation": "+85%",
+            "completion": "90%",
+            "participation": "78%"
+          }
+        },
+        "student-profiles": {
+          "name": "Profil Siswa",
+          "subtitle": "Manajemen Siswa Komprehensif",
+          "description": "Kelola profil siswa yang detail dengan pelacakan akademik dan wawasan yang dipersonalisasi.",
+          "features": [
+            "Pelacakan kinerja akademik terperinci",
+            "Identifikasi gaya belajar",
+            "Analisis pola perilaku",
+            "Integrasi komunikasi orang tua",
+            "Pembuatan rencana belajar individual"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan pembelajaran yang dipersonalisasi sebesar 75%",
+            "Antisipasi peningkatan hubungan guru-siswa",
+            "Ekspektasi peningkatan hasil akademik",
+            "Rencana peningkatan keterlibatan keluarga"
+          ],
+          "tags": ["Manajemen Siswa", "Personalisasi", "Alat Guru", "Analitik"],
+          "performance": {
+            "personalization": "+75%",
+            "outcomes": "82%",
+            "engagement": "88%"
+          }
+        },
+        "aivy-assistant": {
+          "name": "Asisten Aivy",
+          "subtitle": "Asisten AI Cerdas",
+          "description": "Akses bantuan personal bertenaga AI untuk navigasi, dukungan, dan rekomendasi pembelajaran.",
+          "features": [
+            "Bantuan navigasi cerdas",
+            "Rekomendasi pembelajaran yang dipersonalisasi",
+            "Dukungan kontekstual waktu nyata",
+            "Integrasi pemrosesan bahasa alami",
+            "Analisis pola pembelajaran"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan pengalaman pengguna sebesar 80%",
+            "Antisipasi navigasi platform yang disederhanakan",
+            "Ekspektasi dukungan pembelajaran yang dipersonalisasi",
+            "Rencana peningkatan keterlibatan siswa"
+          ],
+          "tags": ["Asisten AI", "Portal Siswa", "Personalisasi", "Dukungan"],
+          "performance": {
+            "efficiency": "+80%",
+            "satisfaction": "90%",
+            "engagement": "85%"
+          }
+        },
+        "calendar-management": {
+          "name": "Manajemen Kalender",
+          "subtitle": "Organisasi Jadwal Personal",
+          "description": "Kelola jadwal personal dan akademik dengan sinkronisasi cerdas dan pengingat otomatis.",
+          "features": [
+            "Visualisasi kalender personal",
+            "Integrasi jadwal akademik",
+            "Pengingat dan notifikasi otomatis",
+            "Sinkronisasi dengan kalender eksternal",
+            "Perencanaan studi dan tugas"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan organisasi personal sebesar 70%",
+            "Antisipasi pengurangan konflik jadwal",
+            "Ekspektasi peningkatan manajemen waktu",
+            "Rencana peningkatan produktivitas akademik"
+          ],
+          "tags": ["Kalender", "Portal Siswa", "Organisasi", "Manajemen Waktu"],
+          "performance": {
+            "organization": "+70%",
+            "efficiency": "65%",
+            "punctuality": "85%"
+          }
+        },
+        "teacher-communication": {
+          "name": "Komunikasi Guru",
+          "subtitle": "Saluran Komunikasi Langsung",
+          "description": "Fasilitasi komunikasi langsung antara siswa dan guru dengan pesan terorganisir dan pelacakan.",
+          "features": [
+            "Sistem pesan guru-siswa",
+            "Organisasi percakapan berdasarkan mata pelajaran",
+            "Notifikasi baca dan respons",
+            "Berbagi file dan sumber daya",
+            "Riwayat komunikasi"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan komunikasi akademik sebesar 85%",
+            "Antisipasi waktu respons yang dikurangi",
+            "Ekspektasi peningkatan hubungan guru-siswa",
+            "Rencana dukungan akademik yang dipersonalisasi"
+          ],
+          "tags": ["Komunikasi", "Portal Siswa", "Dukungan Akademik", "Pesan"],
+          "performance": {
+            "communication": "+85%",
+            "responseTime": "60%",
+            "satisfaction": "90%"
+          }
+        },
+        "social-wall": {
+          "name": "Dinding Sosial",
+          "subtitle": "Platform Keterlibatan Komunitas",
+          "description": "Terlibat dalam diskusi komunitas dengan konten pendidikan dan moderasi cerdas.",
+          "features": [
+            "Umpan berita komunitas pendidikan",
+            "Berbagi pencapaian dan tonggak",
+            "Diskusi tematik yang dimoderasi",
+            "Integrasi multimedia untuk postingan",
+            "Sistem suka dan komentar"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan keterlibatan komunitas sebesar 90%",
+            "Antisipasi peningkatan rasa memiliki",
+            "Ekspektasi peningkatan pembelajaran kolaboratif",
+            "Rencana penguatan budaya sekolah"
+          ],
+          "tags": ["Media Sosial", "Portal Siswa", "Komunitas", "Keterlibatan"],
+          "performance": {
+            "engagement": "+90%",
+            "participation": "85%",
+            "community": "88%"
+          }
+        },
+        "attendance-tracking": {
+          "name": "Pelacakan Kehadiran",
+          "subtitle": "Pemantauan Kehadiran Personal",
+          "description": "Lacak kehadiran personal ke kelas dengan analisis pola dan peringatan otomatis.",
+          "features": [
+            "Pelacakan kehadiran otomatis",
+            "Visualisasi pola kehadiran",
+            "Peringatan ketidakhadiran berlebihan",
+            "Integrasi dengan notifikasi orang tua",
+            "Laporan kehadiran yang dipersonalisasi"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan ketepatan waktu sebesar 75%",
+            "Antisipasi peningkatan kesadaran kehadiran",
+            "Ekspektasi intervensi dini untuk ketidakhadiran",
+            "Rencana peningkatan akuntabilitas siswa"
+          ],
+          "tags": ["Kehadiran", "Portal Siswa", "Pemantauan", "Analitik"],
+          "performance": {
+            "punctuality": "+75%",
+            "awareness": "80%",
+            "accountability": "85%"
+          }
+        },
+        "learning-activities": {
+          "name": "Aktivitas Pembelajaran",
+          "subtitle": "Pengalaman Pembelajaran yang Dipersonalisasi",
+          "description": "Akses aktivitas pembelajaran interaktif yang disesuaikan dengan tingkat dan gaya belajar individu Anda.",
+          "features": [
+            "Aktivitas pembelajaran yang dipersonalisasi",
+            "Jalur pembelajaran adaptif",
+            "Konten multimedia interaktif",
+            "Pelacakan kemajuan waktu nyata",
+            "Rekomendasi aktivitas cerdas"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan retensi pembelajaran sebesar 80%",
+            "Antisipasi pengalaman pembelajaran yang dipersonalisasi",
+            "Ekspektasi peningkatan keterlibatan siswa",
+            "Rencana optimalisasi hasil pembelajaran"
+          ],
+          "tags": ["Pembelajaran yang Dipersonalisasi", "Portal Siswa", "Aktivitas Interaktif", "Sistem Adaptif"],
+          "performance": {
+            "retention": "+80%",
+            "engagement": "85%",
+            "personalization": "90%"
+          }
+        },
+        "personal-profile": {
+          "name": "Profil Personal",
+          "subtitle": "Manajemen Identitas Digital",
+          "description": "Kelola profil personal Anda dengan informasi akademik, preferensi, dan pengaturan yang dipersonalisasi.",
+          "features": [
+            "Manajemen informasi personal",
+            "Pengaturan privasi dan preferensi",
+            "Riwayat akademik dan pencapaian",
+            "Personalisasi antarmuka",
+            "Integrasi dengan jejaring sosial akademik"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan pengalaman yang dipersonalisasi sebesar 70%",
+            "Antisipasi peningkatan kontrol privasi",
+            "Ekspektasi identitas digital profesional",
+            "Rencana manajemen reputasi akademik"
+          ],
+          "tags": ["Profil Personal", "Portal Siswa", "Privasi", "Personalisasi"],
+          "performance": {
+            "personalization": "+70%",
+            "privacy": "95%",
+            "satisfaction": "85%"
+          }
+        },
+        "aivy-companion": {
+          "name": "Teman Aivy",
+          "subtitle": "Asisten Pembelajaran Personal",
+          "description": "Teman pembelajaran personal bertenaga AI yang memberikan dukungan berkelanjutan dan motivasi.",
+          "features": [
+            "Pelatihan pembelajaran yang dipersonalisasi",
+            "Motivasi dan pengingat cerdas",
+            "Analisis pola studi",
+            "Rekomendasi perbaikan berkelanjutan",
+            "Dukungan emosional dan motivasional"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan motivasi belajar sebesar 85%",
+            "Antisipasi peningkatan kebiasaan belajar",
+            "Ekspektasi peningkatan kesejahteraan siswa",
+            "Rencana kesuksesan akademik yang berkelanjutan"
+          ],
+          "tags": ["Teman AI", "Portal Siswa", "Motivasi", "Pelatihan Personal"],
+          "performance": {
+            "motivation": "+85%",
+            "studyHabits": "80%",
+            "wellbeing": "75%"
+          }
+        },
+        "student-social": {
+          "name": "Jejaring Sosial Siswa",
+          "subtitle": "Koneksi Akademik dan Sosial",
+          "description": "Terhubung dengan teman sekelas, bentuk kelompok belajar, dan berpartisipasi dalam aktivitas sosial akademik.",
+          "features": [
+            "Jejaring sosial siswa",
+            "Pembentukan kelompok belajar",
+            "Pesan antar teman",
+            "Acara dan aktivitas siswa",
+            "Forum diskusi akademik"
+          ],
+          "benefits": [
+            "Proyeksi peningkatan kolaborasi siswa sebesar 90%",
+            "Antisipasi penguatan jejaring akademik",
+            "Ekspektasi peningkatan pembelajaran peer-to-peer",
+            "Rencana pengayaan kehidupan siswa"
+          ],
+          "tags": ["Media Sosial", "Portal Siswa", "Kolaborasi", "Kehidupan Siswa"],
+          "performance": {
+            "collaboration": "+90%",
+            "networking": "85%",
+            "engagement": "88%"
           }
         }
       }

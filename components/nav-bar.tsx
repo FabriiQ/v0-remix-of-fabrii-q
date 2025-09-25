@@ -28,7 +28,6 @@ export function NavBar() {
     { name: t("navigation.capabilities"), href: "/projects" },
     { name: t("navigation.partnership"), href: "/partnership", icon: <Handshake className="w-4 h-4" /> },
     { name: t("navigation.about"), href: "/about" },
-    { name: t("navigation.process"), href: "/process" },
   ]
 
   const scrollToTop = () => {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Search, ChevronRight, Star, TrendingUp, Users, Zap, Shield, Brain } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
@@ -116,6 +116,20 @@ export default function CapabilitiesPage() {
 
     return matchesSearch && matchesFilter
   })
+
+  // Auto-select first capability when page loads or filters change
+  useEffect(() => {
+    if (filteredCapabilities.length > 0 && !selectedCapability) {
+      setSelectedCapability(filteredCapabilities[0])
+    }
+  }, [filteredCapabilities, selectedCapability])
+
+  // Reset selection when filter changes and current selection is no longer in filtered list
+  useEffect(() => {
+    if (selectedCapability && !filteredCapabilities.find(cap => cap.id === selectedCapability.id)) {
+      setSelectedCapability(filteredCapabilities.length > 0 ? filteredCapabilities[0] : null)
+    }
+  }, [filteredCapabilities, selectedCapability])
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -457,7 +471,7 @@ export default function CapabilitiesPage() {
                       {selectedCapability.videoUrls.map((videoUrl, videoIndex) => (
                         <div key={videoIndex}>
                           <h4 className="text-md font-medium text-gray-300 mb-2">
-                            Demo {videoIndex + 1}: {videoIndex === 0 ? "Creation Process" : "Grading & Analytics"}
+                            Demo {videoIndex + 1}: {videoIndex === 0 ? t("pages.capabilities.demo.creation") || "Creation Process" : t("pages.capabilities.demo.grading") || "Grading & Analytics"}
                           </h4>
                           <VideoPlayer src={videoUrl} title={`${selectedCapability.name} Demo ${videoIndex + 1}`} />
                         </div>
@@ -535,8 +549,8 @@ export default function CapabilitiesPage() {
                         whileHover={{ scale: 1.05, y: -2 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <p className="text-2xl font-bold text-primary mb-1">Expected {value}</p>
-                        <p className="text-sm text-gray-400 capitalize">{key.replace(/([A-Z])/g, " $1").trim()}</p>
+                        <p className="text-2xl font-bold text-primary mb-1">{t("pages.capabilities.expected_prefix")} {value}</p>
+                        <p className="text-sm text-gray-400">{t(`pages.capabilities.performance_metrics.${key}`) || key.replace(/([A-Z])/g, " $1").trim()}</p>
                       </motion.div>
                     ))}
                   </div>

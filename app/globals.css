@@ -1,6 +1,74 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* Custom CSS Variables for theme system */
+:root {
+  /* Light theme background uses light mint for softer feel */
+  --background: 174 25% 98%;
+  --foreground: 174 44% 15%;
+  --card: 0 0% 100%;
+  --card-foreground: 174 44% 15%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 174 44% 15%;
+  /* Primary green #1F504B */
+  --primary: 174 44% 22%;
+  --primary-foreground: 0 0% 98%;
+  /* Secondary uses light mint */
+  --secondary: 174 25% 90%;
+  --secondary-foreground: 174 44% 20%;
+  --muted: 174 25% 85%;
+  --muted-foreground: 174 25% 35%;
+  --accent: 174 25% 87%;
+  --accent-foreground: 174 44% 22%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 174 25% 80%;
+  --input: 174 25% 85%;
+  --ring: 174 44% 22%;
+  --radius: 0.5rem;
+  /* FabriiQ brand colors for light theme */
+  --fabriiq-primary: 174 44% 22%;
+  --fabriiq-teal: 174 25% 45%;
+  --fabriiq-mint: 174 25% 87%;
+  --fabriiq-orange: 38 92% 50%;
+  --fabriiq-blue: 217 91% 60%;
+  --fabriiq-red: 0 84% 60%;
+}
+
+.dark {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  /* Updated dark mode primary to FabriiQ green */
+  --primary: 174 44% 22%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  /* Dark mode FabriiQ colors with proper contrast */
+  --fabriiq-primary: 174 44% 22%;
+  --fabriiq-teal: 174 25% 55%;
+  --fabriiq-mint: 174 25% 77%;
+  --fabriiq-orange: 38 92% 50%;
+  --fabriiq-blue: 217 91% 60%;
+  --fabriiq-red: 0 84% 60%;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
 
 @layer base {
   :root {

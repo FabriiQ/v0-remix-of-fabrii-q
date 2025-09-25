@@ -20,6 +20,7 @@
     "complete": "Selesai",
     "in_progress": "Dalam Proses",
     "starting": "Memulai",
-    "ready": "Siap"
+    "ready": "Siap",
+    "email_placeholder": "Masukkan alamat email"
   }
 }
