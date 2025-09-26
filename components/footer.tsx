@@ -67,7 +67,7 @@ export function Footer() {
         {/* Desktop Footer */}
         <div className="hidden md:flex flex-col sm:flex-row justify-between items-center gap-8">
           <div className="flex items-center space-x-4">
-            <Image src="/images/fabriiq-logo.png" alt="FabriiQ" width={224} height={56} className="h-14" />
+            <Image src="/fabriiQ-logo.svg" alt="FabriiQ" width={224} height={56} className="h-14" />
             <FooterPopup />
           </div>
 
@@ -118,7 +118,7 @@ export function Footer() {
         <div className="md:hidden space-y-6">
           {/* Logo and main info */}
           <div className="text-center space-y-4">
-            <Image src="/images/fabriiq-logo.png" alt="FabriiQ" width={192} height={48} className="h-12 mx-auto" />
+            <Image src="/fabriiQ-logo.svg" alt="FabriiQ" width={192} height={48} className="h-12 mx-auto" />
 
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center justify-center gap-1">

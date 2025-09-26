@@ -2,13 +2,11 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { CodeRain } from "@/components/code-rain"
 import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
-import { SpinningEarth } from "@/components/spinning-earth"
 import { TypingHero } from "@/components/typing-hero"
 import { motion } from "framer-motion"
-import { Zap, Users, Brain, Shield, Building2, Lightbulb, Target, Trophy, Wifi, Lock } from "lucide-react"
+import { Users, Brain, Building2, Lightbulb, Trophy, Wifi, Lock, Zap } from "lucide-react"
 import { ProfileDropdown } from "@/components/profile-dropdown"
 import { useLanguage } from "@/contexts/language-context"
 import { useDynamicMetadata } from "@/hooks/use-dynamic-metadata"
@@ -20,41 +18,9 @@ export default function Home() {
   
   return (
     <main className="relative min-h-screen bg-black text-foreground overflow-x-hidden">
-      {/* Background layers */}
+      {/* Simplified Background */}
       <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 opacity-5">
-          <Image
-            src="/abstract-educational-technology-network-with-inter.jpg"
-            alt="Educational Technology Background"
-            width={1920}
-            height={1080}
-            className="w-full h-full object-cover"
-          />
-        </div>
-        {/* Spinning Earth */}
-        <div className="opacity-10">
-          <SpinningEarth />
-        </div>
-        {/* Code rain */}
-        <div className="opacity-10">
-          <CodeRain />
-        </div>
-      </div>
-
-      {/* Hero Video - Full screen background */}
-      <div className="fixed inset-0 z-[1] pointer-events-none">
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-fabriiq-primary/10 via-transparent to-fabriiq-teal/10">
-          <Image
-            src="/abstract-animation-showing-interconnected-educatio.jpg"
-            alt="Hero Animation"
-            width={1920}
-            height={1080}
-            className="w-full h-full object-cover opacity-25"
-            style={{
-              filter: "contrast(1.2) brightness(0.7)",
-            }}
-          />
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-br from-fabriiq-primary/5 via-background to-fabriiq-teal/5"></div>
       </div>
 
       {/* Content container */}
@@ -187,13 +153,14 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
-                  <div className="mb-4 rounded-lg overflow-hidden flex items-center justify-center">
+                  <div className="mb-4 rounded-lg overflow-hidden bg-gray-900/20">
                     <Image
                       src={feature.image || "/placeholder.svg"}
                       alt={t(`homepage.sections.key_cornerstones.features.${feature.key}.title`)}
                       width={400}
                       height={300}
-                      className="w-full h-48 object-contain object-center group-hover:scale-105 transition-transform duration-300 bg-gray-900/20 rounded-lg"
+                      className="w-full h-48 object-cover object-center group-hover:scale-105 transition-transform duration-300 rounded-lg"
+                      loading="lazy"
                     />
                   </div>
                   <div
@@ -430,23 +397,6 @@ export default function Home() {
                       </div>
                     </div>
 
-                    {/* Tech Stack */}
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">{t("homepage.sections.comprehensive_capabilities.labels.tech_stack")}</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {capability.techStack.map((tech, techIndex) => (
-                          <motion.div
-                            key={techIndex}
-                            initial={{ opacity: 0, scale: 0 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: techIndex * 0.05 }}
-                            className="px-3 py-1 bg-gray-800/50 text-gray-300 rounded-full text-xs font-medium border border-gray-700"
-                          >
-                            {tech}
-                          </motion.div>
-                        ))}
-                      </div>
-                    </div>
                   </div>
 
                   {/* Video Demo */}
@@ -497,95 +447,23 @@ export default function Home() {
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              {/* Platform Image */}
+            <div className="flex justify-center items-center">
+              {/* AIVY Image */}
               <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8 }}
-                className="relative"
+                className="relative max-w-4xl"
               >
                 <div className="relative rounded-2xl overflow-hidden">
                   <Image
-                    src="/blended-learning.png"
-                    alt={t("homepage.sections.platform_showcase.platform_name")}
-                    width={600}
-                    height={400}
-                    className="w-full h-96 object-contain object-center bg-gray-900/20 rounded-2xl"
+                    src="/AIVY.png"
+                    alt="Built for Education"
+                    width={800}
+                    height={600}
+                    className="w-full h-auto object-contain object-center bg-gray-900/20 rounded-2xl"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h4 className="text-white font-semibold mb-2">{t("homepage.sections.platform_showcase.platform_name")}</h4>
-                    <p className="text-gray-300 text-sm">{t("homepage.sections.platform_showcase.platform_tagline")}</p>
-                  </div>
                 </div>
-              </motion.div>
-
-              {/* Platform Features */}
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                className="space-y-8"
-              >
-                <div>
-                  <h3 className="text-3xl font-bold text-white mb-6">{t("homepage.sections.platform_showcase.title_built")} {t("homepage.sections.platform_showcase.title_education")}</h3>
-                  <p className="text-lg text-gray-300 leading-relaxed mb-8">
-                    {t("homepage.sections.platform_showcase.excellence.description")}
-                  </p>
-                </div>
-
-                <div className="space-y-6">
-                  {[
-                    {
-                      icon: Brain,
-                      key: "aivy_system",
-                      color: "text-fabriiq-primary",
-                    },
-                    {
-                      icon: Target,
-                      key: "blooms_native",
-                      color: "text-fabriiq-teal",
-                    },
-                    {
-                      icon: Shield,
-                      key: "privacy_design",
-                      color: "text-primary",
-                    },
-                  ].map((feature, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-start space-x-4"
-                    >
-                      <div
-                        className={`w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0`}
-                      >
-                        <feature.icon className={`w-5 h-5 ${feature.color}`} />
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-semibold text-white mb-2">{t(`homepage.sections.platform_showcase.excellence.features.${feature.key}.title`)}</h4>
-                        <p className="text-gray-300 leading-relaxed">{t(`homepage.sections.platform_showcase.excellence.features.${feature.key}.description`)}</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="pt-6"
-                >
-                  <div className="p-6 bg-gradient-to-r from-fabriiq-primary/10 to-fabriiq-teal/10 rounded-xl border border-fabriiq-primary/20">
-                    <h4 className="text-lg font-semibold text-white mb-2">{t("homepage.sections.platform_showcase.excellence.status.title")}</h4>
-                    <p className="text-gray-300 text-sm leading-relaxed">
-                      {t("homepage.sections.platform_showcase.excellence.status.description")}
-                    </p>
-                  </div>
-                </motion.div>
               </motion.div>
             </div>
           </div>

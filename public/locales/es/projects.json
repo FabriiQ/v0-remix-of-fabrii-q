@@ -76,8 +76,32 @@
         "efficiency": "Eficiencia"
       },
       "capabilities": {
+        "system-admin-dashboard": {
+          "name": "Panel de Control de Administrador del Sistema",
+          "subtitle": "Centro de Control Administrativo Integral",
+          "description": "Panel de control centralizado que proporciona a los administradores del sistema supervisión completa y control de todas las operaciones educativas en múltiples campus.",
+          "features": [
+            "Monitoreo del sistema multi-campus",
+            "Análisis operativos en tiempo real",
+            "Gestión de usuarios y permisos",
+            "Métricas de salud y rendimiento del sistema",
+            "Alertas y notificaciones automáticas"
+          ],
+          "benefits": [
+            "Mejora proyectada del 85% en eficiencia administrativa",
+            "Supervisión del sistema mejorada anticipada",
+            "Gestión de operaciones simplificada esperada",
+            "Resolución proactiva de problemas planificada"
+          ],
+          "tags": ["Administración", "Panel de Control", "Gestión del Sistema", "Análisis"],
+          "performance": {
+            "efficiency": "+85%",
+            "oversight": "95%",
+            "responseTime": "<30s"
+          }
+        },
         "academic-calendar": {
-          "name": "Gestión del Calendario Académico",
+          "name": "Gestión de Calendario Académico",
           "subtitle": "Programación Unificada Multi-Campus",
           "description": "Centralice la planificación académica en múltiples campus con detección inteligente de conflictos y sincronización automatizada.",
           "features": [
@@ -214,13 +238,37 @@
             "Validación pedagógica planificada"
           ],
           "tags": ["Currículo", "Taxonomía de Bloom", "Resultados de Aprendizaje", "Inteligencia Pedagógica"],
-          "performance": {
-            "alignment": "+65%",
-            "efficiency": "55%",
-            "correlation": "92%"
-          }
-        },
-        "class-analytics": {
+            "performance": {
+              "alignment": "+65%",
+              "efficiency": "55%",
+              "correlation": "92%"
+            }
+          },
+          "system-compliance": {
+            "name": "Gestión de Cumplimiento del Sistema",
+            "subtitle": "Excelencia en Cumplimiento FERPA y GDPR",
+            "description": "Gestión integral de cumplimiento que garantiza la adhesión a FERPA y GDPR con monitoreo y reportes automatizados.",
+            "features": [
+              "Monitoreo y cumplimiento de FERPA",
+              "Controles de protección de datos y privacidad GDPR",
+              "Reportes de cumplimiento automatizados",
+              "Evaluación y mitigación de riesgos",
+              "Gestión de pistas de auditoría y documentación"
+            ],
+            "benefits": [
+              "Tasa de cumplimiento FERPA proyectada del 100%",
+              "Protección de datos GDPR mejorada anticipada",
+              "Procesos de auditoría simplificados esperados",
+              "Gestión de riesgos proactiva planificada"
+            ],
+            "tags": ["FERPA", "GDPR", "Cumplimiento", "Protección de Datos", "Gestión de Riesgos"],
+            "performance": {
+              "compliance": "100%",
+              "riskReduction": "95%",
+              "auditReadiness": "98%"
+            }
+          },
+          "class-analytics": {
           "name": "Análisis Integral de Clases",
           "subtitle": "Perspectivas de Enseñanza Basadas en Datos",
           "description": "Acceda a análisis detallados del rendimiento de la clase con perspectivas de los estudiantes y recomendaciones de intervención.",
