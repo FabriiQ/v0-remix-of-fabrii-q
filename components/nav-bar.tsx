@@ -4,11 +4,11 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, Monitor, Handshake } from "lucide-react"
+import { Menu, X, Handshake } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { LanguageSelector } from "@/components/language-selector"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { useLanguage } from "@/contexts/language-context"
+import { FabriiQLogo } from "@/components/fabriiq-logo"
 
 export function NavBar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -46,16 +46,7 @@ export function NavBar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2" onClick={scrollToTop}>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-fabriiq-primary to-fabriiq-teal rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">F</span>
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal bg-clip-text text-transparent">
-                FabriiQ
-              </span>
-            </div>
-          </Link>
+          <FabriiQLogo onClick={scrollToTop} />
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8 nav-items">
@@ -69,39 +60,30 @@ export function NavBar() {
                 }`}
               >
                 {item.icon && item.icon}
-                <span>{item.name}</span>
+                <span className="rtl:text-right rtl:direction-rtl">{item.name}</span>
               </Link>
             ))}
           </div>
 
           {/* Right side items - Desktop */}
           <div className="hidden lg:flex items-center space-x-4">
-            <ThemeToggle />
             <LanguageSelector />
-            <Link
-              href="/corporate-login"
-              onClick={scrollToTop}
-              className="text-muted-foreground hover:text-fabriiq-teal transition-colors btn-micro"
-            >
-              <Monitor className="w-5 h-5" />
-            </Link>
             <Link href="/partnership" onClick={scrollToTop}>
               <Button className="btn-primary btn-micro">
                 <Handshake className="w-4 h-4 mr-2" />
-                {t("cta.lets_cocreate")}
+                <span className="rtl:text-center">{t("cta.lets_cocreate")}</span>
               </Button>
             </Link>
           </div>
 
           {/* Mobile menu button and Partnership Application */}
           <div className="lg:hidden flex items-center space-x-2">
-            <ThemeToggle />
             <LanguageSelector />
             <Link href="/partnership" onClick={scrollToTop}>
               <Button size="sm" className="btn-primary btn-micro text-xs px-2 py-1.5 h-8">
                 <Handshake className="w-3 h-3 mr-1" />
-                <span className="hidden xs:inline">{t("cta.cocreate_short")}</span>
-                <span className="xs:hidden">{t("cta.cocreate_letter")}</span>
+                <span className="hidden xs:inline rtl:text-center">{t("cta.cocreate_short")}</span>
+                <span className="xs:hidden rtl:text-center">{t("cta.cocreate_letter")}</span>
               </Button>
             </Link>
             <button
@@ -141,23 +123,11 @@ export function NavBar() {
                     }`}
                   >
                     {item.icon && <span className="w-5 h-5 flex items-center justify-center">{item.icon}</span>}
-                    <span>{item.name}</span>
+                    <span className="rtl:text-right">{item.name}</span>
                   </Link>
                 ))}
 
                 <div className="pt-4 border-t border-border space-y-4">
-                  <Link
-                    href="/corporate-login"
-                    onClick={() => {
-                      setIsOpen(false)
-                      scrollToTop()
-                    }}
-                    className="flex items-center space-x-3 text-muted-foreground hover:text-fabriiq-teal py-2 px-3 rounded-lg transition-all duration-200"
-                  >
-                    <Monitor className="w-5 h-5" />
-                    <span>{t("navigation.corporate_login")}</span>
-                  </Link>
-
                   <Link
                     href="/partnership"
                     onClick={() => {
@@ -168,7 +138,7 @@ export function NavBar() {
                   >
                     <Button className="btn-primary btn-micro w-full justify-center">
                       <Handshake className="w-4 h-4 mr-2" />
-                      {t("cta.lets_cocreate")}
+                      <span className="rtl:text-center">{t("cta.lets_cocreate")}</span>
                     </Button>
                   </Link>
                 </div>

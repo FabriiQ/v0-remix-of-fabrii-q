@@ -17,17 +17,34 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%236366f1;stop-opacity:1' /><stop offset='100%25' style='stop-color:%234338ca;stop-opacity:1' /></linearGradient></defs><rect width='100' height='100' rx='20' fill='url(%23grad)'/><g transform='translate(20,20)'><rect x='10' y='15' width='40' height='6' rx='3' fill='white'/><rect x='10' y='25' width='30' height='4' rx='2' fill='white' opacity='0.8'/><rect x='10' y='32' width='35' height='4' rx='2' fill='white' opacity='0.6'/><circle cx='45' cy='45' r='8' fill='white'/><path d='M41 45 L44 48 L49 42' stroke='%236366f1' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></g></svg>",
+        url: "/favicon.ico",
+        type: "image/x-icon",
+        sizes: "32x32",
+      },
+      {
+        url: "/favicon-32x32.png",
+        type: "image/png",
+        sizes: "32x32",
+      },
+      {
+        url: "/favicon-16x16.png",
+        type: "image/png",
+        sizes: "16x16",
+      },
+      {
+        url: "/fabriiQ-logo.svg",
         type: "image/svg+xml",
       },
     ],
     apple: [
       {
-        url: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%236366f1;stop-opacity:1' /><stop offset='100%25' style='stop-color:%234338ca;stop-opacity:1' /></linearGradient></defs><rect width='100' height='100' rx='20' fill='url(%23grad)'/><g transform='translate(20,20)'><rect x='10' y='15' width='40' height='6' rx='3' fill='white'/><rect x='10' y='25' width='30' height='4' rx='2' fill='white' opacity='0.8'/><rect x='10' y='32' width='35' height='4' rx='2' fill='white' opacity='0.6'/><circle cx='45' cy='45' r='8' fill='white'/><path d='M41 45 L44 48 L49 42' stroke='%236366f1' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></g></svg>",
-        type: "image/svg+xml",
+        url: "/apple-touch-icon.png",
+        type: "image/png",
+        sizes: "180x180",
       },
     ],
   },
+  manifest: "/manifest.json",
 }
 
 export default function RootLayout({

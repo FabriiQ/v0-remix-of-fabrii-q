@@ -190,6 +190,30 @@
         "efficiency": "Efficiency"
       },
       "capabilities": {
+        "system-admin-dashboard": {
+          "name": "System Admin Dashboard",
+          "subtitle": "Comprehensive Administrative Control Center",
+          "description": "Centralized dashboard providing system administrators with complete oversight and control of all educational operations across multiple campuses.",
+          "features": [
+            "Multi-campus system monitoring",
+            "Real-time operational analytics",
+            "User management and permissions",
+            "System health and performance metrics",
+            "Automated alerts and notifications"
+          ],
+          "benefits": [
+            "Projected 85% improvement in administrative efficiency",
+            "Anticipated enhanced system oversight",
+            "Expected streamlined operations management",
+            "Planned proactive issue resolution"
+          ],
+          "tags": ["Administration", "Dashboard", "System Management", "Analytics"],
+          "performance": {
+            "efficiency": "+85%",
+            "oversight": "95%",
+            "responseTime": "<30s"
+          }
+        },
         "academic-calendar": {
           "name": "Academic Calendar Management",
           "subtitle": "Unified Multi-Campus Scheduling",
@@ -328,13 +352,37 @@
             "Planned pedagogical validation"
           ],
           "tags": ["Curriculum", "Bloom's Taxonomy", "Learning Outcomes", "Pedagogical Intelligence"],
-          "performance": {
-            "alignment": "+65%",
-            "efficiency": "55%",
-            "correlation": "92%"
-          }
-        },
-        "class-analytics": {
+            "performance": {
+              "alignment": "+65%",
+              "efficiency": "55%",
+              "correlation": "92%"
+            }
+          },
+          "system-compliance": {
+            "name": "System Compliance Management",
+            "subtitle": "FERPA & GDPR Compliance Excellence",
+            "description": "Comprehensive compliance management ensuring FERPA and GDPR adherence with automated monitoring and reporting.",
+            "features": [
+              "FERPA compliance monitoring and enforcement",
+              "GDPR data protection and privacy controls",
+              "Automated compliance reporting",
+              "Risk assessment and mitigation",
+              "Audit trail and documentation management"
+            ],
+            "benefits": [
+              "Projected 100% FERPA compliance rate",
+              "Anticipated enhanced GDPR data protection",
+              "Expected streamlined audit processes",
+              "Planned proactive risk management"
+            ],
+            "tags": ["FERPA", "GDPR", "Compliance", "Data Protection", "Risk Management"],
+            "performance": {
+              "compliance": "100%",
+              "riskReduction": "95%",
+              "auditReadiness": "98%"
+            }
+          },
+          "class-analytics": {
           "name": "Comprehensive Class Analytics",
           "subtitle": "Data-Driven Teaching Insights",
           "description": "Access detailed class performance analytics with student insights and intervention recommendations.",

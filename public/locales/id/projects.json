@@ -76,6 +76,30 @@
         "efficiency": "Efisiensi"
       },
       "capabilities": {
+        "system-admin-dashboard": {
+          "name": "Dashboard Administrator Sistem",
+          "subtitle": "Pusat Kontrol Administratif Komprehensif",
+          "description": "Dashboard terpusat yang memberikan administrator sistem pengawasan lengkap dan kontrol semua operasi pendidikan di multiple kampus.",
+          "features": [
+            "Monitoring sistem multi-kampus",
+            "Analitik operasional real-time",
+            "Manajemen pengguna dan izin",
+            "Metrik kesehatan dan performa sistem",
+            "Peringatan dan notifikasi otomatis"
+          ],
+          "benefits": [
+            "Peningkatan efisiensi administratif yang diproyeksikan 85%",
+            "Pengawasan sistem yang ditingkatkan yang diantisipasi",
+            "Manajemen operasi yang disederhanakan yang diharapkan",
+            "Resolusi masalah proaktif yang direncanakan"
+          ],
+          "tags": ["Administrasi", "Dashboard", "Manajemen Sistem", "Analitik"],
+          "performance": {
+            "efficiency": "+85%",
+            "oversight": "95%",
+            "responseTime": "<30s"
+          }
+        },
         "academic-calendar": {
           "name": "Manajemen Kalender Akademik",
           "subtitle": "Penjadwalan Multi-Kampus Terpadu",
@@ -214,13 +238,37 @@
             "Validasi pedagogis yang direncanakan"
           ],
           "tags": ["Kurikulum", "Taksonomi Bloom", "Hasil Pembelajaran", "Kecerdasan Pedagogis"],
-          "performance": {
-            "alignment": "+65%",
-            "efficiency": "55%",
-            "correlation": "92%"
-          }
-        },
-        "class-analytics": {
+            "performance": {
+              "alignment": "+65%",
+              "efficiency": "55%",
+              "correlation": "92%"
+            }
+          },
+          "system-compliance": {
+            "name": "Manajemen Kepatuhan Sistem",
+            "subtitle": "Keunggulan Kepatuhan FERPA & GDPR",
+            "description": "Manajemen kepatuhan komprehensif memastikan kepatuhan FERPA dan GDPR dengan monitoring dan pelaporan otomatis.",
+            "features": [
+              "Monitoring dan penegakan kepatuhan FERPA",
+              "Kontrol perlindungan data dan privasi GDPR",
+              "Pelaporan kepatuhan otomatis",
+              "Penilaian dan mitigasi risiko",
+              "Manajemen jejak audit dan dokumentasi"
+            ],
+            "benefits": [
+              "Tingkat kepatuhan FERPA yang diproyeksikan 100%",
+              "Perlindungan data GDPR yang ditingkatkan yang diantisipasi",
+              "Proses audit yang disederhanakan yang diharapkan",
+              "Manajemen risiko proaktif yang direncanakan"
+            ],
+            "tags": ["FERPA", "GDPR", "Kepatuhan", "Perlindungan Data", "Manajemen Risiko"],
+            "performance": {
+              "compliance": "100%",
+              "riskReduction": "95%",
+              "auditReadiness": "98%"
+            }
+          },
+          "class-analytics": {
           "name": "Analitik Kelas Komprehensif",
           "subtitle": "Wawasan Mengajar Berbasis Data",
           "description": "Akses analitik kinerja kelas yang terperinci dengan wawasan siswa dan rekomendasi intervensi.",

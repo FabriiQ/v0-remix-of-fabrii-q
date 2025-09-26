@@ -13,7 +13,7 @@
       "unified_platform": "unified platform"
     },
     "alpha_status": "Alpha Development Phase - Partnership Opportunities Available",
-    "description_detailed": "FabriiQ isn't just another Learning Management System - it's a comprehensive School Operating System that unifies all aspects of educational institution management into one intelligent, AI-powered platform."
+    "description_detailed": "One platform. All operations. Purpose-built for education."
   },
   "homepage": {
     "sections": {
@@ -47,33 +47,33 @@
         "features": {
           "aivy": {
             "title": "AIVY Multi-Agent Intelligence",
-            "description": "Not generic AI, but specialized agents designed specifically for education. Student Companion, Teacher Assistant, Content Generation, Assessment Intelligence, and Compliance Monitoring - all working together seamlessly.",
-            "status": "Core agents active, advanced collaboration in beta"
+            "description": "Educational AI agents (Student Companion, Teacher Assistant, Content Creator) working together seamlessly.",
+            "status": "Alpha"
           },
           "pedagogical": {
             "title": "Pedagogically Sound",
-            "description": "Every question, assessment, and activity is automatically aligned with Bloom's Taxonomy. Track cognitive development from Remember to Create with real-time mastery analytics and intervention triggers.",
-            "status": "Classification engine active, balance analytics in development"
+            "description": "Auto-aligned Bloom's Taxonomy tracking from Remember to Create with real-time mastery analytics.",
+            "status": "Alpha"
           },
           "gamification": {
             "title": "Gamification & Social Learning",
-            "description": "Comprehensive points system, achievement unlocks, class social walls, and intelligent motivation engine. Transform learning into an engaging journey with peer recognition and collaborative growth.",
-            "status": "Core gamification complete, social features complete"
+            "description": "Points, achievements, and class social walls that transform learning into an engaging journey.",
+            "status": "Alpha"
           },
           "multi_campus": {
             "title": "Multi-Campus Operations",
-            "description": "Native multi-campus architecture managing enrollment, fees, attendance, and analytics across unlimited locations. Centralized governance with campus autonomy - designed from the ground up, not retrofitted.",
-            "status": "Core operations active, advanced analytics in development"
+            "description": "Native architecture managing enrollment, fees, and analytics across unlimited locations.",
+            "status": "Alpha"
           },
           "offline_first": {
             "title": "Offline-First Learning",
-            "description": "Complete offline functionality with intelligent synchronization. Teachers grade, students learn, coordinators manage - all without internet. When connection returns, everything syncs seamlessly with conflict resolution.",
-            "status": "Offline core complete, advanced sync features in beta"
+            "description": "Complete functionality without internet - grade, learn, manage - syncs when connected.",
+            "status": "Alpha"
           },
           "privacy_compliance": {
             "title": "Privacy-by-Design Compliance",
-            "description": "Not compliance added later, but privacy designed from the first line of code. Automated retention, intelligent redaction, comprehensive audit trails, and AI-powered risk assessment built into every feature.",
-            "status": "Compliance engine active, advanced features in development"
+            "description": "FERPA compliance built from first line of code, not added later.",
+            "status": "Alpha"
           }
         },
         "status_prefix": "Alpha Status:"
@@ -82,107 +82,31 @@
         "badge": "Comprehensive Platform Capabilities",
         "title_capabilities": "Capabilities That",
         "title_transform": "Transform",
-        "description": "Five comprehensive capabilities designed to revolutionize educational operations and enhance learning outcomes",
+        "description": "Streamlined capabilities designed to enhance educational operations",
         "capabilities": {
           "enrollment_mgmt": {
             "title": "Intelligent Enrollment Management",
-            "description": "Streamline student lifecycle management with automated processing and multi-campus coordination. Single and bulk enrollment creation, real-time CSV validation, and predictive analytics transform administrative efficiency across institutional hierarchies.",
-            "features": {
-              "multi_campus": "Multi-campus enrollment coordination",
-              "automated_workflows": "Automated status management workflows",
-              "validation": "Real-time validation and error handling",
-              "forecasting": "Predictive enrollment forecasting"
-            },
-            "benefits": {
-              "task_reduction": "75% Manual Task Reduction",
-              "data_accuracy": "98% Data Accuracy",
-              "time_savings": "65% Time Savings"
-            },
-            "status": {
-              "active": "Core operations",
-              "development": "Advanced analytics",
-              "planned": "AI-powered forecasting"
-            }
+            "description": "Automated student lifecycle with bulk processing, CSV validation, and predictive analytics across campuses."
           },
           "financial_ops": {
             "title": "Financial Operations Automation",
-            "description": "Transform fee management with intelligent automation, multi-currency support, and comprehensive financial analytics. Automated challan generation, payment processing, and policy-based late fee management streamline institutional financial operations.",
-            "features": {
-              "fee_structure": "Flexible fee structure management",
-              "payment_methods": "Multi-payment method processing",
-              "compliance": "Automated compliance reporting",
-              "analytics": "Real-time financial analytics"
-            },
-            "benefits": {
-              "efficiency": "80% Financial Task Efficiency",
-              "accuracy": "99% Calculation Accuracy",
-              "speed": "50% Processing Speed Improvement"
-            },
-            "status": {
-              "complete": "Core functionality",
-              "development": "Advanced reporting",
-              "planned": "Predictive financial analytics"
-            }
+            "description": "Complete fee management with multi-currency support, automated challans, and policy-based late fees."
           },
           "pedagogical_intel": {
             "title": "Pedagogical Intelligence Framework",
-            "description": "Align curriculum with learning outcomes using Bloom's Taxonomy integration and cognitive balance analysis. Learning outcome mapping, curriculum alignment verification, and performance correlation tracking enhance educational effectiveness.",
-            "features": {
-              "blooms_framework": "Six-level Bloom's Taxonomy framework",
-              "curriculum_alignment": "Automated curriculum alignment",
-              "cognitive_balance": "Cognitive balance analysis",
-              "performance_tracking": "Performance correlation tracking"
-            },
-            "benefits": {
-              "alignment_accuracy": "65% Curriculum Alignment Accuracy",
-              "outcome_correlation": "92% Outcome Correlation",
-              "planning_efficiency": "55% Planning Efficiency"
-            },
-            "status": {
-              "complete": "Core framework",
-              "development": "Advanced analytics",
-              "beta": "Cognitive balance optimization"
-            }
+            "description": "Curriculum-outcome alignment with Bloom's Taxonomy integration and cognitive balance analysis."
           },
           "communication_intel": {
             "title": "Strategic Communication Intelligence",
-            "description": "Coordinate institutional communications with FERPA-compliant messaging, emergency broadcasting, and intelligent routing. Multi-channel delivery, automated prioritization, and comprehensive analytics ensure effective stakeholder engagement.",
-            "features": {
-              "ferpa_messaging": "FERPA-compliant messaging system",
-              "emergency_broadcast": "Emergency broadcast capabilities",
-              "intelligent_routing": "Intelligent routing and prioritization",
-              "analytics_insights": "Communication analytics insights"
-            },
-            "benefits": {
-              "communication_efficiency": "85% Communication Efficiency",
-              "compliance_adherence": "100% Compliance Adherence",
-              "response_time": "60% Response Time Improvement"
-            },
-            "status": {
-              "active": "Core messaging",
-              "planned": "Advanced features",
-              "beta": "Analytics dashboard"
-            }
+            "description": "FERPA-compliant messaging with emergency broadcasting, intelligent routing, and multi-channel delivery."
           },
           "teaching_analytics": {
             "title": "Data-Driven Teaching Analytics",
-            "description": "Access comprehensive class performance insights with predictive student outcome analysis and intervention recommendations. Real-time dashboards, Bloom's Taxonomy cognitive tracking, and at-risk student identification enhance teaching effectiveness.",
-            "features": {
-              "performance_dashboards": "Real-time performance dashboards",
-              "predictive_analysis": "Predictive outcome analysis",
-              "risk_identification": "At-risk student identification",
-              "cognitive_tracking": "Bloom's cognitive level tracking"
-            },
-            "benefits": {
-              "prediction_accuracy": "70% Prediction Accuracy",
-              "intervention_reliability": "88% Intervention Reliability",
-              "risk_identification_speed": "50% Faster Risk Identification"
-            },
-            "status": {
-              "active": "Core reporting",
-              "development": "Predictive features",
-              "planned": "AI-powered interventions"
-            }
+            "description": "Predictive student outcomes with real-time dashboards, at-risk identification, and intervention recommendations."
+          },
+          "gamification_social": {
+            "title": "Gamification & Social Learning",
+            "description": "Points, achievements, and class social walls that transform learning into an engaging journey."
           }
         },
         "labels": {

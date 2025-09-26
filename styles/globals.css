@@ -100,13 +100,13 @@
   direction: ltr;
 }
 
-/* Fix Arabic text inversion issues */
+/* Fix Arabic text inversion issues - use normal bidi behavior */
 [dir="rtl"] .rtl-fix {
-  unicode-bidi: bidi-override;
+  unicode-bidi: normal;
   direction: rtl;
 }
 
-/* Ensure buttons and headers display correctly in RTL */
+/* Ensure buttons and headers display correctly in RTL without text inversion */
 [dir="rtl"] button,
 [dir="rtl"] .btn,
 [dir="rtl"] h1,
@@ -115,28 +115,29 @@
 [dir="rtl"] h4,
 [dir="rtl"] h5,
 [dir="rtl"] h6 {
-  unicode-bidi: embed;
+  unicode-bidi: normal;
   direction: rtl;
   text-align: right;
 }
 
-/* Additional fix for text inversion in buttons */
+/* Fix for text inversion in buttons - use normal bidi */
 [dir="rtl"] button span,
 [dir="rtl"] .btn span,
 [dir="rtl"] button p,
 [dir="rtl"] .btn p {
   direction: rtl;
-  unicode-bidi: embed;
+  unicode-bidi: normal;
   display: inline-block;
+  text-align: inherit;
 }
 
-/* Fix for navigation text */
+/* Fix for navigation text - prevent text inversion */
 [dir="rtl"] nav a,
 [dir="rtl"] nav button,
 [dir="rtl"] nav span {
   direction: rtl;
   text-align: right;
-  unicode-bidi: embed;
+  unicode-bidi: normal;
 }
 
 /* Fix text input fields in RTL */
@@ -169,4 +170,45 @@
 
 [dir="rtl"] .flex-row-reverse {
   flex-direction: row;
+}
+
+/* Additional fixes for Arabic text rendering */
+[dir="rtl"] * {
+  unicode-bidi: normal;
+}
+
+/* Ensure proper Arabic text display in all elements */
+[dir="rtl"] button,
+[dir="rtl"] .btn,
+[dir="rtl"] a,
+[dir="rtl"] span,
+[dir="rtl"] div,
+[dir="rtl"] p {
+  white-space: normal;
+  word-wrap: break-word;
+  text-rendering: optimizeLegibility;
+}
+
+/* Fix for navigation bar spacing in RTL */
+[dir="rtl"] .space-x-1 > * + *,
+[dir="rtl"] .space-x-2 > * + *,
+[dir="rtl"] .space-x-3 > * + *,
+[dir="rtl"] .space-x-4 > * + * {
+  margin-left: 0;
+}
+
+[dir="rtl"] .space-x-1 > :not(:first-child) {
+  margin-right: 0.25rem;
+}
+
+[dir="rtl"] .space-x-2 > :not(:first-child) {
+  margin-right: 0.5rem;
+}
+
+[dir="rtl"] .space-x-3 > :not(:first-child) {
+  margin-right: 0.75rem;
+}
+
+[dir="rtl"] .space-x-4 > :not(:first-child) {
+  margin-right: 1rem;
 }

@@ -14,6 +14,22 @@ export const languages = [
 // Translation cache to store loaded translations
 const translationCache: Record<string, any> = {}
 
+// Essential fallback translations to avoid loading delays
+const fallbackTranslations = {
+  'en': {
+    'hero.alpha_status': 'Alpha Development Phase - Partnership Opportunities Available',
+    'hero.description_detailed': 'One platform. All operations. Purpose-built for education.',
+    'cta.explore_core_capabilities': 'Explore Core Capabilities',
+    'cta.become_development_partner': 'Become a Development Partner',
+    'homepage.sections.key_cornerstones.title_key': '6 Key',
+    'homepage.sections.key_cornerstones.title_cornerstones': 'Cornerstones',
+    'homepage.sections.key_cornerstones.description': 'Purpose-built features designed specifically for educational institutions, not generic solutions adapted for schools.',
+    'homepage.sections.key_cornerstones.features.aivy.title': 'AIVY Multi-Agent Intelligence',
+    'homepage.sections.key_cornerstones.features.multi_campus.title': 'Multi-Campus Operations',
+    'homepage.sections.key_cornerstones.features.privacy_compliance.title': 'Privacy-by-Design Compliance'
+  }
+}
+
 // Deep merge function to properly combine nested objects
 const deepMerge = (target: any, source: any): any => {
   const result = { ...target }
@@ -47,24 +63,24 @@ const loadTranslations = async (languageCode: string): Promise<any> => {
         translations = await mainResponse.json()
       }
     } catch (e) {
-      console.log(`Main file /locales/${languageCode}.json not found, trying directory structure`)
+      // Main file not found, using directory structure
     }
     
-    // Always also load from directory structure and merge with main file
-    const files = ['common', 'navigation', 'homepage', 'footer', 'about', 'partnership', 'projects']
+    // Load only essential files initially for faster load times
+    const essentialFiles = ['common', 'navigation', 'homepage']
     
-    for (const file of files) {
+    for (const file of essentialFiles) {
       try {
         const response = await fetch(`/locales/${languageCode}/${file}.json`)
         if (response.ok) {
           const fileData = await response.json()
-          console.log(`Successfully loaded /locales/${languageCode}/${file}.json`)
+          // File loaded successfully
           // Deep merge to preserve existing nested structures
           translations = deepMerge(translations, fileData)
         }
       } catch (e) {
         // Continue if individual file fails with detailed logging
-        console.log(`File /locales/${languageCode}/${file}.json not found or failed to load:`, e)
+        // File not found, skipping
       }
     }
     
@@ -73,10 +89,7 @@ const loadTranslations = async (languageCode: string): Promise<any> => {
     }
     
     translationCache[languageCode] = translations
-    console.log(`Translation cache for ${languageCode}: ${Object.keys(translations).length} top-level keys loaded`)
-    if (translations.pages) {
-      console.log(`Pages keys available: ${Object.keys(translations.pages)}`)
-    }
+    // Translation cache updated
     return translations
   } catch (error) {
     console.error(`Error loading translations for ${languageCode}:`, error)
@@ -101,10 +114,7 @@ const getNestedTranslation = (obj: any, path: string): string => {
     if (current && typeof current === 'object' && key in current) {
       current = current[key]
     } else {
-      // Debug: log where the path breaks (only for first few about keys to reduce noise)
-      if (path.startsWith('pages.about.hero') || path.startsWith('pages.about.mission')) {
-        console.log(`Translation path broken at: ${debugPath}, available keys:`, current ? Object.keys(current) : 'null/undefined')
-      }
+      // Translation path not found
       return path // Return original key if path is broken
     }
   }
@@ -196,16 +206,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const t = (key: string, params?: Record<string, string | number>, options?: { returnObjects?: boolean }): any => {
     let translation = getNestedTranslation(currentTranslations, key)
     
-    // Reduced debug logging for missing translations
-    if (translation === key && currentLanguage.code !== 'en' && (key.startsWith('pages.about.hero') || key.startsWith('pages.about.mission'))) {
-      console.log(`Missing translation for key: ${key} in language: ${currentLanguage.code}`)
-    }
-    
-    // If translation not found, try to get from English as fallback
-    if (translation === key && currentLanguage.code !== 'en' && translationCache.en) {
-      translation = getNestedTranslation(translationCache.en, key)
-      if (translation !== key) {
-        console.log(`Using English fallback for key: ${key}`)
+    // If translation not found, try fallback translations first
+    if (translation === key) {
+      const fallback = fallbackTranslations['en'] as any
+      if (fallback && fallback[key]) {
+        translation = fallback[key]
+      } else if (currentLanguage.code !== 'en' && translationCache.en) {
+        translation = getNestedTranslation(translationCache.en, key)
       }
     }
     
