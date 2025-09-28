@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
-import { generateEmbedding } from '@/lib/embeddings/local-embeddings'
+import { generateEmbedding } from '@/lib/embeddings/openai-embeddings'
 
 // Configure route for server-side execution only
 // This prevents static analysis during build
@@ -47,21 +47,19 @@ export async function POST(request: NextRequest) {
     //   body: { documentId, content, settings }
     // })
 
-    // Process document in a separate context to avoid memory leaks
-    const processPromise = simulateDocumentProcessing(documentId, content, supabase);
-    
-    // Don't await the processing to complete before responding
-    processPromise.catch(error => {
-      console.error('Background processing failed:', error);
-      // Error is already handled in simulateDocumentProcessing
-    });
-    
-    // Return response immediately
-    return NextResponse.json({
-      success: true,
-      documentId,
-      message: 'Document processing started in background'
-    });
+    try {
+      // Process document with OpenAI embeddings
+      await simulateDocumentProcessing(documentId, content, supabase);
+      
+      return NextResponse.json({
+        success: true,
+        documentId,
+        message: 'Document processed successfully with OpenAI embeddings'
+      });
+    } catch (error) {
+      console.error('Document processing failed:', error);
+      throw error; // Will be caught by the outer catch block
+    }
 
     // This return is now unreachable due to the early return above
     // Keeping it as a fallback
