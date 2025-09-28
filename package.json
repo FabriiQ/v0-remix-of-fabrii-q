@@ -7,6 +7,9 @@
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start",
+    "clean": "if exist .next rmdir /s /q .next && if exist .cache rmdir /s /q .cache",
+    "clean:install": "npm run clean && npm install",
+    "clean:build": "npm run clean && npm run build",
     "upload-docs": "node scripts/upload-docs.js"
   },
   "dependencies": {
