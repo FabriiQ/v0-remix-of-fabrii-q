@@ -2,11 +2,29 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
 import { generateEmbedding } from '@/lib/embeddings/local-embeddings'
 
-// Force Node.js runtime and dynamic rendering; this route performs server-side processing
-export const runtime = 'nodejs'
-export const dynamic = 'force-dynamic'
+// Configure route for server-side execution only
+// This prevents static analysis during build
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const runtime = 'nodejs';
+
+// Add a check to prevent execution during build
+const isBuild = process.env.NEXT_PHASE === 'phase-production-build';
+
+// Simple response for build-time analysis
+const buildTimeResponse = () => {
+  return NextResponse.json(
+    { error: 'This API route is not available during build' },
+    { status: 200 }
+  );
+};
 
 export async function POST(request: NextRequest) {
+  // Return early during build
+  if (isBuild) {
+    return buildTimeResponse();
+  }
+
   try {
     const body = await request.json()
     const { documentId, content, settings } = body
@@ -29,14 +47,24 @@ export async function POST(request: NextRequest) {
     //   body: { documentId, content, settings }
     // })
 
-    // Simulate document processing
-    await simulateDocumentProcessing(documentId, content, supabase)
-
+    // Process document in a separate context to avoid memory leaks
+    const processPromise = simulateDocumentProcessing(documentId, content, supabase);
+    
+    // Don't await the processing to complete before responding
+    processPromise.catch(error => {
+      console.error('Background processing failed:', error);
+      // Error is already handled in simulateDocumentProcessing
+    });
+    
+    // Return response immediately
     return NextResponse.json({
       success: true,
       documentId,
-      message: 'Document processing initiated successfully'
-    })
+      message: 'Document processing started in background'
+    });
+
+    // This return is now unreachable due to the early return above
+    // Keeping it as a fallback
 
   } catch (error) {
     console.error('Document processing API error:', error)

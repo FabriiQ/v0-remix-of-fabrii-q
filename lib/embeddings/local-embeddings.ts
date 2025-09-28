@@ -1,8 +1,10 @@
 import { pipeline, env } from '@xenova/transformers';
 
-// Disable remote models and set cache directory
+// Configure environment for transformers
 env.allowRemoteModels = true;
 env.allowLocalModels = true;
+// Set a specific cache directory to avoid permission issues
+env.cacheDir = './.cache/transformers';
 
 class LocalEmbeddingService {
   private static instance: LocalEmbeddingService;
@@ -20,10 +22,10 @@ class LocalEmbeddingService {
 
   public async initialize(): Promise<void> {
     if (this.isInitialized) return;
-    
+
     try {
       console.log('Initializing local embedding model (Supabase/gte-small)...');
-      
+
       // Initialize the embedding pipeline
       this.pipeline = await pipeline(
         'feature-extraction',
@@ -35,7 +37,7 @@ class LocalEmbeddingService {
           revision: 'main'
         }
       );
-      
+
       this.isInitialized = true;
       console.log('Local embedding model initialized successfully');
     } catch (error) {
@@ -44,10 +46,19 @@ class LocalEmbeddingService {
     }
   }
 
-  public async generateEmbedding(text: string): Promise<number[]> {
+  private async ensureInitialized(): Promise<void> {
     if (!this.isInitialized) {
-      await this.initialize();
+      try {
+        await this.initialize();
+      } catch (error) {
+        console.error('Failed to initialize embedding service:', error);
+        throw new Error(`Embedding service initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
     }
+  }
+
+  public async generateEmbedding(text: string): Promise<number[]> {
+    await this.ensureInitialized();
 
     try {
       // Generate embeddings
@@ -58,7 +69,7 @@ class LocalEmbeddingService {
 
       // Convert to regular array
       const embedding = Array.from(output.data) as number[];
-      
+
       // Validate embedding dimensions (gte-small should produce 384-dimensional vectors)
       if (embedding.length !== 384) {
         console.warn(`Unexpected embedding dimension: ${embedding.length}, expected 384`);
@@ -72,13 +83,11 @@ class LocalEmbeddingService {
   }
 
   public async generateEmbeddings(texts: string[]): Promise<number[][]> {
-    if (!this.isInitialized) {
-      await this.initialize();
-    }
+    await this.ensureInitialized();
 
     try {
       const embeddings: number[][] = [];
-      
+
       // Process in batches to avoid memory issues
       const batchSize = 10;
       for (let i = 0; i < texts.length; i += batchSize) {
