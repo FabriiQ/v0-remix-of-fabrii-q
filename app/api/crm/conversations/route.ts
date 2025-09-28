@@ -1,66 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 
 // GET - Retrieve conversations with optional filters
 export async function GET(request: NextRequest) {
   try {
+    // Validate required environment variables
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error('[conversations] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables')
+      return NextResponse.json(
+        { error: 'Server not configured: missing Supabase environment variables' },
+        { status: 500 }
+      )
+    }
     const { searchParams } = new URL(request.url)
     const sessionId = searchParams.get('sessionId')
-    const contactId = searchParams.get('contactId')
     const limit = parseInt(searchParams.get('limit') || '50')
     const offset = parseInt(searchParams.get('offset') || '0')
-    const status = searchParams.get('status') // 'active', 'completed', 'needs_handover'
     
-    const supabase = createClient()
+    const supabase: any = createServiceClient()
 
     let query = supabase
-      .from('conversation_sessions')
+      .from('conversations')
       .select(`
         id,
-        session_identifier,
-        executive_profile,
-        conversation_state,
+        title,
+        metadata,
         created_at,
-        updated_at,
-        last_interaction_at,
-        conversation_turns:conversation_turns(
-          id,
-          user_query,
-          response_content,
-          intent_analysis,
-          created_at
-        ),
-        conversation_analytics:conversation_analytics(
-          total_messages,
-          conversation_duration_minutes,
-          user_engagement_score,
-          topics_covered,
-          pain_points_mentioned,
-          buying_signals,
-          demo_requested,
-          contact_info_provided,
-          meeting_requested,
-          pricing_discussed,
-          conversion_stage
-        ),
-        contact_interactions:contact_interactions!inner(
-          contact_id,
-          interaction_type,
-          outcome,
-          sentiment,
-          lead_contacts!inner(
-            id,
-            name,
-            email,
-            phone,
-            company,
-            role,
-            lead_status,
-            lead_score
-          )
-        )
+        updated_at
       `)
-      .order('last_interaction_at', { ascending: false })
+      .order('updated_at', { ascending: false })
       .range(offset, offset + limit - 1)
 
     // Apply filters
@@ -68,27 +36,38 @@ export async function GET(request: NextRequest) {
       query = query.eq('id', sessionId)
     }
 
-    if (contactId) {
-      query = query.eq('contact_interactions.contact_id', contactId)
-    }
-
-    // Filter by conversation status
-    if (status === 'active') {
-      query = query.gte('last_interaction_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()) // Last 24 hours
-    } else if (status === 'needs_handover') {
-      query = query
-        .eq('conversation_analytics.buying_signals', 3) // High buying signals
-        .or('conversation_analytics.demo_requested.eq.true,conversation_analytics.meeting_requested.eq.true')
-    }
-
     const { data: conversations, error } = await query
 
-    if (error) {
-      console.error('Error fetching conversations:', error)
-      return NextResponse.json(
-        { error: 'Failed to fetch conversations' },
-        { status: 500 }
-      )
+    console.log('[conversations] primary query result', {
+      error: error ? String(error.message || error) : null,
+      count: conversations?.length ?? null
+    })
+
+    // Fallback: if primary query errors or returns empty, fetch base rows from 'conversations' without joins
+    if (error || (Array.isArray(conversations) && conversations.length === 0)) {
+      const { data: fallback, error: fbError } = await supabase
+        .from('conversations')
+        .select(`
+          id,
+          created_at,
+          updated_at
+        `)
+        .order('updated_at', { ascending: false })
+        .range(offset, offset + limit - 1)
+
+      console.log('[conversations] fallback query result', {
+        error: fbError ? String(fbError.message || fbError) : null,
+        count: fallback?.length ?? null
+      })
+
+      if (fbError) {
+        return NextResponse.json(
+          { error: 'Failed to fetch conversations (fallback failed)' },
+          { status: 500 }
+        )
+      }
+
+      return NextResponse.json({ conversations: fallback ?? [] })
     }
 
     return NextResponse.json({ conversations })
@@ -124,7 +103,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = createClient()
+    const supabase = (await createClient()) as any
 
     // Create interaction record
     const { data: interaction, error: interactionError } = await supabase

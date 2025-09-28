@@ -3,6 +3,10 @@ import { createServiceClient } from '@/lib/supabase/server'
 import * as fs from 'fs'
 import * as path from 'path'
 
+// Force Node.js runtime and dynamic rendering since this route uses the filesystem
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -18,7 +22,7 @@ export async function POST(request: NextRequest) {
     console.log(`Starting bulk upload from ${sourcePath}...`)
 
     // Initialize Supabase client
-    const supabase = createServiceClient()
+    const supabase = createServiceClient() as any
 
     // Get absolute path
     const fullPath = path.resolve(process.cwd(), sourcePath)
