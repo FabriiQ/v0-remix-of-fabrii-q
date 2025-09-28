@@ -9,7 +9,6 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
       defaultTheme="dark"
       enableSystem={false}
       disableTransitionOnChange
-      suppressHydrationWarning
       {...props}
     >
       {children}

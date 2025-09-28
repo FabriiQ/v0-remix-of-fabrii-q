@@ -17,6 +17,7 @@ interface Document {
 }
 
 export default function AdminDocumentsPage() {
+  const supabase = createClient()
   const [documents, setDocuments] = useState<Document[]>([])
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
@@ -29,8 +30,6 @@ export default function AdminDocumentsPage() {
   const [bulkUploading, setBulkUploading] = useState(false)
   const [availableFiles, setAvailableFiles] = useState<any[]>([])
   const [bulkUploadResults, setBulkUploadResults] = useState<any[]>([])
-
-  const supabase = createClient()
 
   useEffect(() => {
     loadDocuments()
@@ -45,7 +44,7 @@ export default function AdminDocumentsPage() {
         .order('created_at', { ascending: false })
 
       if (error) throw error
-      setDocuments(data || [])
+      setDocuments(data as Document[] || [])
     } catch (error) {
       console.error('Error loading documents:', error)
       setError('Failed to load documents')
@@ -68,16 +67,20 @@ export default function AdminDocumentsPage() {
       const content = await readFileContent(uploadFile)
 
       // Create document record
-      const { data: newDoc, error: insertError } = await supabase
+      const docData = {
+        title: uploadTitle.trim(),
+        content,
+        source_type: 'upload' as const,
+        file_size: uploadFile.size,
+        file_type: uploadFile.type || 'text/plain',
+        processing_status: 'pending' as const,
+        metadata: {},
+        source_url: null
+      };
+
+      const { data: newDoc, error: insertError } = await (supabase as any)
         .from('documents')
-        .insert({
-          title: uploadTitle.trim(),
-          content,
-          source_type: 'upload',
-          file_size: uploadFile.size,
-          file_type: uploadFile.type || 'text/plain',
-          processing_status: 'pending'
-        })
+        .insert(docData)
         .select()
         .single()
 
@@ -103,6 +106,7 @@ export default function AdminDocumentsPage() {
   }
 
   const readFileContent = (file: File): Promise<string> => {
+    if (!file) return Promise.resolve('')
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
       reader.onload = (e) => resolve(e.target?.result as string)
@@ -149,9 +153,9 @@ export default function AdminDocumentsPage() {
 
   const reprocessDocument = async (document: Document) => {
     try {
-      await supabase
+      await (supabase as any)
         .from('documents')
-        .update({ processing_status: 'pending' })
+        .update({ processing_status: 'pending' as const })
         .eq('id', document.id)
 
       await processDocument(document.id, document.content)

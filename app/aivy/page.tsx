@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { ContactCollection } from "@/components/aivy/contact-collection"
 import { AIVYChatInterface } from "@/components/aivy/aivy-chat-interface"
 import { NavBar } from "@/components/nav-bar"
-import CookieConsent from "@/components/cookie-consent"
 
 interface ContactInfo {
   name: string
@@ -111,7 +110,6 @@ export default function AIVYPage() {
         </div>
         
       </div>
-      <CookieConsent />
     </main>
   )
 }

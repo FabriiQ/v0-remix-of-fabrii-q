@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { AIVYConversationMemory } from '@/lib/ai/conversation-memory'
-import type { LeadContact } from '@/lib/ai/conversation-memory'
+import type { LeadContact } from '@/lib/ai/conversation-memory.types'
 
 export async function POST(request: NextRequest) {
   try {

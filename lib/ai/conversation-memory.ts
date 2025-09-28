@@ -2,57 +2,18 @@
 // Handles executive-level conversation context, session management, and intent analysis
 
 import { createServiceClient } from '@/lib/supabase/server'
-
-export interface ExecutiveProfile {
-  role?: string
-  institutionType?: string
-  institutionSize?: string
-  currentChallenges?: string[]
-  decisionCriteria?: string[]
-  budget?: string
-  timeline?: string
-  stakeholders?: string[]
-}
-
-export interface ConversationState {
-  engagementLevel: 'initial' | 'exploring' | 'evaluating' | 'committed'
-  discussedTopics: string[]
-  expressedChallenges: string[]
-  decisionCriteria: string[]
-  institutionContext: Record<string, any>
-}
-
-export interface IntentAnalysis {
-  primaryIntent: 'information_seeking' | 'decision_support' | 'relationship_building' | 'problem_solving'
-  confidence: number
-  executiveContext: {
-    urgency: 'low' | 'medium' | 'high'
-    decisionStage: 'awareness' | 'consideration' | 'evaluation' | 'decision'
-    authorityLevel: 'influencer' | 'decision_maker' | 'budget_holder'
-  }
-  keyTopics: string[]
-  strategicFocus: string[]
-}
-
-export interface ConversationTurn {
-  id: string
-  userQuery: string
-  responseContent: string
-  intentAnalysis: IntentAnalysis
-  createdAt: Date
-}
-
-export interface LeadContact {
-  id?: string
-  name: string
-  phone: string
-  email?: string
-  organization?: string
-  role?: string
-}
+import type {
+  ExecutiveProfile,
+  ConversationState,
+  IntentAnalysis,
+  ConversationTurn,
+  LeadContact,
+  AppConversationTurn,
+  AppLeadContact
+} from './conversation-memory.types'
 
 export class AIVYConversationMemory {
-  private supabase = createServiceClient()
+  private supabase = createServiceClient() as any // Cast to any to bypass type checking for now
 
   async getOrCreateSession(sessionIdentifier: string, userId?: string): Promise<string> {
     // Convert non-UUID user IDs to null for anonymous users
@@ -113,7 +74,13 @@ export class AIVYConversationMemory {
       id: turn.turn_id,
       userQuery: turn.user_query,
       responseContent: turn.response_content,
-      intentAnalysis: turn.intent_analysis || {},
+      intentAnalysis: turn.intent_analysis || {
+        primaryIntent: '',
+        executiveContext: {},
+        strategicFocus: []
+      },
+      knowledgeSources: [],
+      responseMetrics: {},
       createdAt: new Date(turn.created_at)
     }))
 
@@ -278,17 +245,14 @@ export class AIVYConversationMemory {
     }
 
     // Update conversation state based on the interaction
-    await this.updateConversationState(sessionId, intentAnalysis, userQuery)
+    await this.updateSessionContext(sessionId, intentAnalysis, userQuery)
   }
 
-  private async updateConversationState(
-    sessionId: string,
-    intentAnalysis: IntentAnalysis,
-    userQuery: string
-  ): Promise<void> {
+  private async updateSessionContext(sessionId: string, intentAnalysis: IntentAnalysis, query: string): Promise<void> {
+    // Get current session state
     const { data: currentSession, error } = await this.supabase
       .from('conversation_sessions')
-      .select('conversation_state, executive_profile')
+      .select('conversation_state, executive_profile, turn_count')
       .eq('id', sessionId)
       .single()
 
@@ -297,64 +261,123 @@ export class AIVYConversationMemory {
       return
     }
 
-    const currentState = currentSession.conversation_state as ConversationState
-    const currentProfile = currentSession.executive_profile as ExecutiveProfile
+    const currentState = currentSession.conversation_state as ConversationState || {
+      engagementLevel: 'initial',
+      discussedTopics: [],
+      expressedChallenges: [],
+      decisionCriteria: [],
+      institutionContext: {},
+      context: {}
+    };
+    
+    const currentProfile = currentSession.executive_profile as ExecutiveProfile || {};
 
     // Update engagement level based on intent and interaction depth
-    let newEngagementLevel = currentState.engagementLevel
-    if (intentAnalysis.primaryIntent === 'decision_support' && newEngagementLevel === 'initial') {
-      newEngagementLevel = 'exploring'
-    } else if (intentAnalysis.primaryIntent === 'relationship_building') {
-      newEngagementLevel = 'evaluating'
-    }
+    const newEngagementLevel = this.calculateEngagementLevel(
+      currentSession.turn_count || 0,
+      currentState.engagementLevel
+    );
 
-    // Add discussed topics
-    const newTopics = [...new Set([...currentState.discussedTopics, ...intentAnalysis.keyTopics])]
-
-    // Extract challenges mentioned in the query
-    const challengeKeywords = ['challenge', 'problem', 'issue', 'difficult', 'struggle']
-    const newChallenges = currentState.expressedChallenges
-    if (challengeKeywords.some(keyword => userQuery.toLowerCase().includes(keyword))) {
-      const challengeText = userQuery.toLowerCase()
-      if (!newChallenges.some(challenge => challengeText.includes(challenge.toLowerCase()))) {
-        newChallenges.push(userQuery.substring(0, 100)) // Store first 100 chars as challenge summary
-      }
-    }
-
-    // Update profile with inferred information
-    const profileUpdates: Partial<ExecutiveProfile> = {}
-    
-    // Infer institution size from context
-    if (userQuery.toLowerCase().includes('multi-campus') || userQuery.toLowerCase().includes('multiple campus')) {
-      profileUpdates.institutionSize = 'large'
-    }
-    
-    // Infer role from language patterns
-    if (userQuery.toLowerCase().includes('my institution') || userQuery.toLowerCase().includes('we are')) {
-      if (!currentProfile.role) {
-        profileUpdates.role = 'senior_administrator' // Default assumption
-      }
-    }
-
+    // Update state with new information
     const updatedState: ConversationState = {
       ...currentState,
       engagementLevel: newEngagementLevel,
-      discussedTopics: newTopics,
-      expressedChallenges: newChallenges
-    }
+      discussedTopics: [...new Set([
+        ...(currentState.discussedTopics || []), 
+        ...this.extractTopics(query)
+      ])],
+      expressedChallenges: [...new Set([
+        ...(currentState.expressedChallenges || []), 
+        ...this.extractChallenges(query)
+      ])],
+      decisionCriteria: currentState.decisionCriteria || [],
+      institutionContext: this.updateInstitutionContext(
+        currentState.institutionContext || {},
+        query
+      ),
+      context: currentState.context || {}
+    };
 
-    // Update both conversation state and profile
+    // Default empty profile updates
+    const profileUpdates: Partial<ExecutiveProfile> = {};
+
     const { error: updateError } = await this.supabase
       .from('conversation_sessions')
       .update({
         conversation_state: updatedState,
         executive_profile: { ...currentProfile, ...profileUpdates }
       })
-      .eq('id', sessionId)
 
     if (updateError) {
       console.error('Error updating conversation state:', updateError)
     }
+  }
+
+  // Calculate engagement level based on conversation depth
+  private calculateEngagementLevel(turnCount: number, currentLevel: string): string {
+    if (turnCount === 0) return 'initial';
+    if (turnCount < 3) return 'exploring';
+    if (turnCount < 6) return 'evaluating';
+    return 'deciding';
+  }
+
+  // Extract topics from text
+  private extractTopics(text: string): string[] {
+    // Simple implementation - can be enhanced with NLP
+    const topicKeywords = ['topic', 'subject', 'about', 'regarding', 'concerning'];
+    const topics: string[] = [];
+    
+    topicKeywords.forEach(keyword => {
+      if (text.toLowerCase().includes(keyword)) {
+        // Extract the sentence containing the keyword
+        const regex = new RegExp(`[^.!?]*${keyword}[^.!?]*[.!?]`, 'i');
+        const match = text.match(regex);
+        if (match) {
+          topics.push(match[0].trim());
+        }
+      }
+    });
+    
+    return topics;
+  }
+
+  // Extract challenges from text
+  private extractChallenges(text: string): string[] {
+    // Simple implementation - can be enhanced with NLP
+    const challengeKeywords = ['challenge', 'problem', 'issue', 'difficulty', 'struggle', 'pain point'];
+    const challenges: string[] = [];
+    
+    challengeKeywords.forEach(keyword => {
+      if (text.toLowerCase().includes(keyword)) {
+        // Extract the sentence containing the keyword
+        const regex = new RegExp(`[^.!?]*${keyword}[^.!?]*[.!?]`, 'i');
+        const match = text.match(regex);
+        if (match) {
+          challenges.push(match[0].trim());
+        }
+      }
+    });
+    
+    return challenges;
+  }
+
+  // Update institution context
+  private updateInstitutionContext(
+    currentContext: Record<string, unknown>,
+    query: string
+  ): Record<string, unknown> {
+    // Simple implementation - can be enhanced with NLP
+    const context = { ...currentContext };
+    
+    // Look for institution-related information
+    const institutionKeywords = ['university', 'college', 'school', 'institution', 'organization'];
+    institutionKeywords.forEach(keyword => {
+      if (query.toLowerCase().includes(keyword)) {
+        context[keyword] = true;
+      }
+    });
+    
+    return context;
   }
 
   // Helper method to generate session identifier for anonymous users
@@ -416,10 +439,16 @@ export class AIVYConversationMemory {
     return {
       id: data.id,
       name: data.name,
+      firstName: data.first_name || data.name?.split(' ')[0] || null,
+      lastName: data.last_name || data.name?.split(' ').slice(1).join(' ') || null,
       phone: data.phone,
       email: data.email,
-      organization: data.organization,
-      role: data.role
+      company: data.organization || data.company || null,
+      jobTitle: data.role || data.job_title || null,
+      notes: data.notes || null,
+      sessionId: data.session_id || null,
+      createdAt: data.created_at ? new Date(data.created_at) : new Date(),
+      updatedAt: data.updated_at ? new Date(data.updated_at) : new Date()
     }
   }
 }

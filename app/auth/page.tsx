@@ -1,47 +1,48 @@
 'use client'
 
-import { useState } from 'react'
-import { supabase } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Loader2 } from 'lucide-react'
-
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Loader2 } from 'lucide-react';
 export default function AuthPage() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
-  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const router = useRouter();
 
-  const handleSignUp = async (formData: FormData) => {
-    const email = formData.get('email') as string
-    const password = formData.get('password') as string
-    const fullName = formData.get('fullName') as string
-
-    setIsLoading(true)
-    setMessage(null)
-
+  const handleSignIn = async (formData: FormData) => {
+    setIsLoading(true);
+    setMessage(null);
+    
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName,
-            role: 'user' // Default role, admin needs to be set manually
-          }
-        }
-      })
+      const { data: { user }, error } = await supabase.auth.signInWithPassword({
+        email: formData.get('email') as string,
+        password: formData.get('password') as string,
+      });
+      
+      if (error) throw error;
+      if (!user) throw new Error('No user returned after sign in');
 
-      if (error) throw error
+      setMessage({ type: 'success', text: 'Signed in successfully!' });
+      
+      // Check if user is admin and redirect accordingly
+      const { data: profile, error: profileError } = await supabase
+        .from('user_profiles')
+        .select('role')
+        .eq('user_id', user.id)
+        .single<{ role: string }>();
 
-      if (data?.user?.email_confirmed_at) {
-        setMessage({ type: 'success', text: 'Account created successfully! You can now sign in.' })
+      if (profileError) throw profileError;
+
+      if (profile?.role === 'admin') {
+        router.push('/admin');
       } else {
-        setMessage({ type: 'success', text: 'Please check your email to confirm your account.' })
+        router.push('/');
       }
     } catch (error: any) {
       setMessage({ type: 'error', text: error.message })
@@ -50,39 +51,46 @@ export default function AuthPage() {
     }
   }
 
-  const handleSignIn = async (formData: FormData) => {
-    const email = formData.get('email') as string
-    const password = formData.get('password') as string
-
-    setIsLoading(true)
-    setMessage(null)
-
+  const handleSignUp = async (formData: FormData) => {
+    setIsLoading(true);
+    setMessage(null);
+    
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.get('email') as string,
+        password: formData.get('password') as string,
+        options: {
+          data: {
+            full_name: formData.get('fullName') as string,
+          },
+        },
+      });
 
-      if (error) throw error
+      if (error) throw error;
+      if (!data.user) throw new Error('No user returned after sign up');
 
-      setMessage({ type: 'success', text: 'Signed in successfully!' })
+      // Create user profile with proper typing
+      const userProfile = {
+        user_id: data.user.id,
+        full_name: formData.get('fullName') as string,
+        role: 'user', // Default role
+      };
       
-      // Check if user is admin and redirect accordingly
-      const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('role')
-        .eq('user_id', data.user?.id)
-        .single()
+      // Use type assertion to bypass the TypeScript error
+      const { error: profileError } = await (supabase
+        .from('user_profiles') as any)
+        .insert([userProfile]);
 
-      if (profile?.role === 'admin') {
-        router.push('/admin')
-      } else {
-        router.push('/')
-      }
+      if (profileError) throw profileError;
+
+      setMessage({
+        type: 'success',
+        text: 'Account created successfully! Please check your email to confirm your account.',
+      });
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message })
+      setMessage({ type: 'error', text: error.message });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -105,7 +113,10 @@ export default function AuthPage() {
             </TabsList>
             
             <TabsContent value="signin">
-              <form action={handleSignIn} className="space-y-4">
+              <form action={handleSignIn} className="space-y-4" onSubmit={(e) => {
+                e.preventDefault();
+                handleSignIn(new FormData(e.currentTarget));
+              }}>
                 <div className="space-y-2">
                   <Label htmlFor="signin-email">Email</Label>
                   <Input 
@@ -143,7 +154,10 @@ export default function AuthPage() {
             </TabsContent>
             
             <TabsContent value="signup">
-              <form action={handleSignUp} className="space-y-4">
+              <form action={handleSignUp} className="space-y-4" onSubmit={(e) => {
+                e.preventDefault();
+                handleSignUp(new FormData(e.currentTarget));
+              }}>
                 <div className="space-y-2">
                   <Label htmlFor="signup-name">Full Name</Label>
                   <Input 

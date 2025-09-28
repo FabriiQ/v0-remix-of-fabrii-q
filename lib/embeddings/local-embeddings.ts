@@ -40,7 +40,7 @@ class LocalEmbeddingService {
       console.log('Local embedding model initialized successfully');
     } catch (error) {
       console.error('Failed to initialize embedding model:', error);
-      throw new Error(`Embedding model initialization failed: ${error.message}`);
+      throw new Error(`Embedding model initialization failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -67,7 +67,7 @@ class LocalEmbeddingService {
       return embedding;
     } catch (error) {
       console.error('Error generating embedding:', error);
-      throw new Error(`Embedding generation failed: ${error.message}`);
+      throw new Error(`Embedding generation failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -92,7 +92,7 @@ class LocalEmbeddingService {
       return embeddings;
     } catch (error) {
       console.error('Error generating batch embeddings:', error);
-      throw new Error(`Batch embedding generation failed: ${error.message}`);
+      throw new Error(`Batch embedding generation failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 

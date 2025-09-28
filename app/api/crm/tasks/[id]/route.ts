@@ -1,25 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
+// Define the task update data type
+type TaskUpdateData = {
+  id?: string;
+  title?: string;
+  description?: string | null;
+  due_date?: string | null;
+  status?: string;
+  priority?: string;
+  completed_at?: string | null;
+  assigned_to?: string | null;
+  lead_contact_id?: string | null;
+  created_at?: string;
+  updated_at?: string;
+  created_by?: string | null;
+};
+
 // PATCH /api/crm/tasks/[id] - Update task
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = createServerSupabaseClient();
     const data = await request.json();
-    const taskId = params.id;
+    const { id: taskId } = await params;
     
-    // Prepare update data
-    const updateData: any = { ...data };
+    // Prepare update data with proper typing
+    const updateData: Partial<TaskUpdateData> = { ...data };
     
     // Set completed_at if marking as completed
     if (data.status === 'completed' && !updateData.completed_at) {
       updateData.completed_at = new Date().toISOString();
     }
     
-    const { data: task, error } = await supabase
+    const { data: task, error } = await (supabase as any)
       .from('follow_up_tasks')
       .update(updateData)
       .eq('id', taskId)
@@ -54,11 +70,11 @@ export async function PATCH(
 // DELETE /api/crm/tasks/[id] - Delete task
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = createServerSupabaseClient();
-    const taskId = params.id;
+    const { id: taskId } = await params;
     
     const { error } = await supabase
       .from('follow_up_tasks')

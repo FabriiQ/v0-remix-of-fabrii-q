@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { BarChart3, Database, Settings, RefreshCw, Zap, Brain, Users, Clock } from 'lucide-react'
+import { BarChart3, Database as DatabaseIcon, Settings, RefreshCw, Zap, Brain, Users, Clock } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import type { Database, Json } from '@/lib/supabase/database.types'
 
 interface KnowledgeBaseStats {
   totalDocuments: number
@@ -15,15 +16,11 @@ interface KnowledgeBaseStats {
   pendingDocuments: number
 }
 
-interface AISettings {
-  id: string
-  setting_key: string
-  setting_value: any
-  description: string
-  is_active: boolean
-}
-
-export default function AdminKnowledgeBasePage() {
+export default function KnowledgeBasePage() {
+  const [loading, setLoading] = useState(true)
+  const [processing, setProcessing] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
   const [stats, setStats] = useState<KnowledgeBaseStats>({
     totalDocuments: 0,
     totalChunks: 0,
@@ -34,25 +31,17 @@ export default function AdminKnowledgeBasePage() {
     processingDocuments: 0,
     pendingDocuments: 0
   })
-  const [settings, setSettings] = useState<AISettings[]>([])
-  const [loading, setLoading] = useState(true)
-  const [processing, setProcessing] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
-
+  const [settings, setSettings] = useState<any[]>([])
   const supabase = createClient()
-
-  useEffect(() => {
-    loadData()
-  }, [])
 
   const loadData = async () => {
     try {
       setLoading(true)
+      setError(null)
       await Promise.all([loadStats(), loadSettings()])
-    } catch (error) {
-      console.error('Error loading data:', error)
-      setError('Failed to load knowledge base data')
+    } catch (e) {
+      console.error('Error loading data:', e)
+      setError('Failed to load data')
     } finally {
       setLoading(false)
     }
@@ -61,34 +50,38 @@ export default function AdminKnowledgeBasePage() {
   const loadStats = async () => {
     try {
       // Get document stats
-      const { data: documents } = await supabase
+      type DocRow = Pick<Database['public']['Tables']['documents']['Row'], 'id' | 'processing_status' | 'file_size'>
+      type ChunkRow = Pick<Database['public']['Tables']['document_chunks']['Row'], 'token_count'>
+      type AnalyticsRow = Pick<Database['public']['Tables']['ai_analytics']['Row'], 'metadata'>
+
+      const { data: documents } = await (supabase
         .from('documents')
-        .select('id, processing_status, file_size')
+        .select('id, processing_status, file_size') as unknown as Promise<{ data: DocRow[] | null }>)
 
       // Get chunks stats
-      const { data: chunks } = await supabase
+      const { data: chunks } = await (supabase
         .from('document_chunks')
-        .select('token_count')
+        .select('token_count') as unknown as Promise<{ data: ChunkRow[] | null }>)
 
       // Get analytics for processing times
-      const { data: analytics } = await supabase
+      const { data: analytics } = await (supabase
         .from('ai_analytics')
         .select('metadata')
-        .eq('event_type', 'document_processed')
+        .eq('event_type', 'document_processed') as unknown as Promise<{ data: AnalyticsRow[] | null }>)
 
       const totalDocuments = documents?.length || 0
       const totalChunks = chunks?.length || 0
-      const totalTokens = chunks?.reduce((sum, chunk) => sum + (chunk.token_count || 0), 0) || 0
+      const totalTokens = (chunks?.reduce((sum, chunk) => sum + (chunk.token_count || 0), 0) ?? 0)
       
-      const processingTimes = analytics
-        ?.map(a => a.metadata?.processing_time_ms)
-        .filter(Boolean) || []
-      const avgProcessingTime = processingTimes.length > 0 
-        ? processingTimes.reduce((sum, time) => sum + time, 0) / processingTimes.length 
+      const processingTimes = (analytics
+        ?.map(a => (a.metadata as any)?.processing_time_ms as number | undefined)
+        .filter((v): v is number => typeof v === 'number') || [])
+      const avgProcessingTime = processingTimes.length > 0
+        ? processingTimes.reduce((sum, time) => sum + time, 0) / processingTimes.length
         : 0
 
       const statusCounts = documents?.reduce((acc, doc) => {
-        acc[doc.processing_status] = (acc[doc.processing_status] || 0) + 1
+        acc[doc.processing_status as string] = (acc[doc.processing_status as string] || 0) + 1
         return acc
       }, {} as Record<string, number>) || {}
 
@@ -123,14 +116,15 @@ export default function AdminKnowledgeBasePage() {
 
   const updateSetting = async (id: string, newValue: any) => {
     try {
-      const { error } = await supabase
-        .from('ai_settings')
-        .update({ setting_value: newValue })
-        .eq('id', id)
+      const { error } = await (
+        (supabase.from('ai_settings') as any)
+          .update({ setting_value: newValue as Json })
+          .eq('id', id)
+      )
 
       if (error) throw error
 
-      setSettings(prev => prev.map(setting => 
+      setSettings((prev: any[]) => prev.map((setting: any) => 
         setting.id === id 
           ? { ...setting, setting_value: newValue }
           : setting
@@ -152,10 +146,13 @@ export default function AdminKnowledgeBasePage() {
       setProcessing(true)
       setError(null)
 
-      const { data: failedDocs } = await supabase
-        .from('documents')
-        .select('id, content')
-        .eq('processing_status', 'failed')
+      type FailedDoc = Pick<Database['public']['Tables']['documents']['Row'], 'id' | 'content'>
+      const { data: failedDocs } = await (
+        supabase
+          .from('documents')
+          .select('id, content')
+          .eq('processing_status', 'failed') as unknown as Promise<{ data: FailedDoc[] | null }>
+      )
 
       if (!failedDocs || failedDocs.length === 0) {
         setError('No failed documents found')
@@ -163,10 +160,11 @@ export default function AdminKnowledgeBasePage() {
       }
 
       // Reset status to pending
-      await supabase
-        .from('documents')
-        .update({ processing_status: 'pending' })
-        .eq('processing_status', 'failed')
+      await (
+        (supabase.from('documents') as any)
+          .update({ processing_status: 'pending' })
+          .eq('processing_status', 'failed')
+      )
 
       // Trigger processing for each document
       for (const doc of failedDocs) {
@@ -236,6 +234,11 @@ export default function AdminKnowledgeBasePage() {
     </div>
   )
 
+  useEffect(() => {
+    loadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
@@ -274,7 +277,7 @@ export default function AdminKnowledgeBasePage() {
           <StatCard
             title="Total Documents"
             value={stats.totalDocuments}
-            icon={Database}
+            icon={DatabaseIcon}
             color="bg-[#1F504B]"
             subtitle="In knowledge base"
           />
@@ -364,19 +367,21 @@ export default function AdminKnowledgeBasePage() {
             </div>
           ) : (
             <div className="divide-y divide-gray-200">
-              {settings.map((setting) => (
+              {settings.map((setting: { id: string, setting_key: string, setting_value: any, description?: string }) => (
                 <div key={setting.id} className="px-6 py-4">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <h4 className="text-sm font-medium text-gray-900">
                         {setting.setting_key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                       </h4>
-                      <p className="text-sm text-gray-500 mt-1">{setting.description}</p>
+                      {setting.description && (
+                        <p className="text-sm text-gray-500 mt-1">{setting.description}</p>
+                      )}
                     </div>
-                    <div className="ml-4">
+                    <div className="ml-6 flex items-center">
                       {setting.setting_key === 'embedding_model' ? (
                         <select
-                          value={setting.setting_value}
+                          value={setting.setting_value as string}
                           onChange={(e) => updateSetting(setting.id, e.target.value)}
                           className="border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:border-[#1F504B]"
                         >
@@ -385,7 +390,7 @@ export default function AdminKnowledgeBasePage() {
                         </select>
                       ) : setting.setting_key === 'system_prompt' ? (
                         <textarea
-                          value={setting.setting_value}
+                          value={setting.setting_value as string}
                           onChange={(e) => updateSetting(setting.id, e.target.value)}
                           className="border border-gray-300 rounded px-3 py-2 text-sm w-80 h-20 focus:outline-none focus:border-[#1F504B]"
                           placeholder="Enter system prompt..."
@@ -393,7 +398,7 @@ export default function AdminKnowledgeBasePage() {
                       ) : (
                         <input
                           type="number"
-                          value={setting.setting_value}
+                          value={setting.setting_value as number}
                           onChange={(e) => updateSetting(setting.id, parseFloat(e.target.value))}
                           className="border border-gray-300 rounded px-3 py-1 text-sm w-20 focus:outline-none focus:border-[#1F504B]"
                           min="0"
@@ -409,5 +414,5 @@ export default function AdminKnowledgeBasePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

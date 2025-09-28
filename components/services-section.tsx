@@ -178,9 +178,10 @@ export function ServicesSection() {
       opacity: 1,
       transition: {
         staggerChildren: 0.2,
+        when: "beforeChildren"
       },
     },
-  }
+  } as const;
 
   const itemVariants = {
     hidden: { y: 50, opacity: 0 },
@@ -189,10 +190,10 @@ export function ServicesSection() {
       opacity: 1,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
+        ease: [0.16, 1, 0.3, 1], // cubic-bezier(0.16, 1, 0.3, 1)
       },
     },
-  }
+  } as const;
 
   const currentService = services[activeService]
 

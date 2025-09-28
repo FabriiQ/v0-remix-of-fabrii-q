@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 // GET /api/crm/contacts/[id] - Get specific contact with full details
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+interface ContactParams {
+  id: string;
+}
+
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = createServerSupabaseClient();
-    const { id } = params;
+    const { id } = await params;
     
     // Get contact with all related data
     const { data: contact, error } = await supabase
@@ -41,7 +45,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         conversation_analytics(*)
       `)
       .in('id', 
-        contact.contact_interactions?.map((interaction: any) => interaction.session_id).filter(Boolean) || []
+        (contact as any)?.contact_interactions?.map((interaction: any) => interaction.session_id)?.filter(Boolean) || []
       )
       .order('created_at', { ascending: false });
     
@@ -74,14 +78,14 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // PATCH /api/crm/contacts/[id] - Update specific contact
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = createServerSupabaseClient();
-    const { id } = params;
+    const { id } = await params;
     const data = await request.json();
     
     // Update contact
-    const { data: contact, error } = await supabase
+    const { data: contact, error } = await (supabase as any)
       .from('lead_contacts')
       .update({
         ...data,
@@ -101,7 +105,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     const shouldRecalculateScore = scoreFields.some(field => data.hasOwnProperty(field));
     
     if (shouldRecalculateScore) {
-      await supabase.rpc('calculate_lead_score', { p_contact_id: id });
+      await (supabase as any).rpc('calculate_lead_score', { p_contact_id: id });
     }
     
     return NextResponse.json({ contact });
@@ -113,10 +117,10 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 }
 
 // DELETE /api/crm/contacts/[id] - Delete contact
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = createServerSupabaseClient();
-    const { id } = params;
+    const { id } = await params;
     
     const { error } = await supabase
       .from('lead_contacts')

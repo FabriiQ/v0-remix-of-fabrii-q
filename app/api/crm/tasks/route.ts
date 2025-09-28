@@ -1,6 +1,46 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
+type TaskStatus = 'pending' | 'in_progress' | 'completed' | 'deferred' | 'cancelled';
+type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
+type TaskType = 'call' | 'email' | 'meeting' | 'follow_up' | 'other';
+
+interface Task {
+  id: string;
+  contact_id: string;
+  task_type: TaskType;
+  task_title: string;
+  task_description: string | null;
+  due_date: string;
+  priority: TaskPriority;
+  status: TaskStatus;
+  assigned_to: string | null;
+  created_by: string;
+  completed_at: string | null;
+  result: string | null;
+  created_at: string;
+  updated_at: string;
+  lead_contacts?: {
+    id: string;
+    name: string;
+    email: string;
+    phone: string | null;
+    organization: string | null;
+    role: string | null;
+    lead_status: string | null;
+    lead_score: number | null;
+  };
+}
+
+interface TaskStats {
+  total: number;
+  pending: number;
+  in_progress: number;
+  completed: number;
+  overdue: number;
+  high_priority: number;
+}
+
 // GET /api/crm/tasks - Get all follow-up tasks with filtering
 export async function GET(request: NextRequest) {
   try {
@@ -91,17 +131,33 @@ export async function GET(request: NextRequest) {
       .select('*', { count: 'exact', head: true });
     
     // Get task statistics
-    const { data: stats, error: statsError } = await supabase
+    const { data: stats, error: statsError } = await (supabase as any)
       .from('follow_up_tasks')
-      .select('status, priority, due_date');
+      .select('status, priority, due_date, completed_at');
     
-    let taskStats = {
-      total: stats?.length || 0,
-      pending: stats?.filter(t => t.status === 'pending').length || 0,
-      in_progress: stats?.filter(t => t.status === 'in_progress').length || 0,
-      completed: stats?.filter(t => t.status === 'completed').length || 0,
-      overdue: stats?.filter(t => t.status !== 'completed' && new Date(t.due_date) < now).length || 0,
-      high_priority: stats?.filter(t => t.priority === 'high' || t.priority === 'urgent').length || 0
+    // Initialize stats with default values
+    const taskStats: TaskStats = {
+      total: 0,
+      pending: 0,
+      in_progress: 0,
+      completed: 0,
+      overdue: 0,
+      high_priority: 0
+    };
+    
+    if (stats && Array.isArray(stats)) {
+      taskStats.total = stats.length;
+      taskStats.pending = stats.filter((t: any) => t.status === 'pending').length;
+      taskStats.in_progress = stats.filter((t: any) => t.status === 'in_progress').length;
+      taskStats.completed = stats.filter((t: any) => t.status === 'completed').length;
+      taskStats.overdue = stats.filter((t: any) => 
+        t.status !== 'completed' && 
+        t.due_date && 
+        new Date(t.due_date) < now
+      ).length;
+      taskStats.high_priority = stats.filter((t: any) => 
+        t.priority === 'high' || t.priority === 'urgent'
+      ).length;
     };
     
     return NextResponse.json({
@@ -127,19 +183,21 @@ export async function POST(request: NextRequest) {
     const supabase = createServerSupabaseClient();
     const data = await request.json();
     
-    const { data: task, error } = await supabase
+    const taskData: Omit<Task, 'id' | 'created_at' | 'updated_at' | 'completed_at' | 'result'> = {
+      contact_id: data.contact_id,
+      task_type: data.task_type,
+      task_title: data.task_title,
+      task_description: data.task_description,
+      due_date: data.due_date,
+      priority: (data.priority || 'medium') as TaskPriority,
+      status: (data.status || 'pending') as TaskStatus,
+      assigned_to: data.assigned_to,
+      created_by: data.created_by
+    };
+    
+    const { data: task, error } = await (supabase as any)
       .from('follow_up_tasks')
-      .insert([{
-        contact_id: data.contact_id,
-        task_type: data.task_type,
-        task_title: data.task_title,
-        task_description: data.task_description,
-        due_date: data.due_date,
-        priority: data.priority || 'medium',
-        status: data.status || 'pending',
-        assigned_to: data.assigned_to,
-        created_by: data.created_by
-      }])
+      .insert([taskData])
       .select(`
         *,
         lead_contacts!inner(name, email, organization)
@@ -167,17 +225,17 @@ export async function PATCH(request: NextRequest) {
     const url = new URL(request.url);
     const taskId = url.pathname.split('/').pop();
     
-    // Prepare update data
-    const updateData: any = { ...data };
+    // Prepare update data with proper typing
+    const updateData: Partial<Omit<Task, 'id' | 'created_at' | 'updated_at'>> = { ...data };
     
     // Set completed_at if marking as completed
     if (data.status === 'completed' && !updateData.completed_at) {
       updateData.completed_at = new Date().toISOString();
     }
     
-    const { data: task, error } = await supabase
+    const { data: task, error } = await (supabase as any)
       .from('follow_up_tasks')
-      .update(updateData)
+      .update(updateData as any)
       .eq('id', taskId)
       .select(`
         *,

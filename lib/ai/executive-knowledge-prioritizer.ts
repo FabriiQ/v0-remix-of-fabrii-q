@@ -1,7 +1,7 @@
 // AIVY Executive Knowledge Prioritization Service
 // Filters and prioritizes knowledge chunks for executive-level decision making
 
-import { IntentAnalysis, ExecutiveProfile, ConversationState } from './conversation-memory'
+import type { IntentAnalysis, ExecutiveProfile, ConversationState } from './conversation-memory.types'
 
 interface KnowledgeChunk {
   content: string
@@ -131,14 +131,14 @@ export class ExecutiveKnowledgePrioritizer {
     }
     
     // Previously discussed topics bonus
-    context.state.discussedTopics.forEach(topic => {
+    context.state.discussedTopics.forEach((topic: string) => {
       if (content.includes(topic)) {
         score += 0.05 // Small bonus for continuity
       }
     })
     
     // Strategic focus areas
-    context.intent.strategicFocus.forEach(focus => {
+    context.intent.strategicFocus.forEach((focus: string) => {
       const focusKeywords = {
         'scalability': ['scale', 'growth', 'expansion', 'multiple', 'campus'],
         'operational_efficiency': ['efficiency', 'streamline', 'optimize', 'automate'],

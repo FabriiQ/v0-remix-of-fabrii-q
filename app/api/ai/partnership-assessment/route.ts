@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
 import { AIVYConversationMemory } from '@/lib/ai/conversation-memory'
+import type { LeadContact } from '@/lib/ai/conversation-memory.types'
 
 interface PartnershipAssessmentData {
   // Institution Information
@@ -51,78 +52,103 @@ export async function POST(request: NextRequest) {
     const sessionId = await conversationMemory.getOrCreateSession(sessionIdentifier, userId)
     
     // Get or determine contact ID
-    let finalContactId = contactId
+    let finalContactId: string | undefined = contactId || undefined;
+    
     if (!finalContactId) {
       // Try to get existing contact from session
-      const existingContact = await conversationMemory.getLeadContact(sessionId)
-      if (existingContact) {
-        finalContactId = existingContact.id
+      const existingContact = await conversationMemory.getLeadContact(sessionId);
+      if (existingContact && typeof existingContact === 'object' && 'id' in existingContact) {
+        finalContactId = existingContact.id as string;
       } else {
         // Create new lead contact from assessment data
-        const newContactData = {
-          name: assessmentData.primaryContactName,
-          phone: assessmentData.primaryContactPhone || 'Not provided',
+        const [firstName, ...lastNameParts] = assessmentData.primaryContactName.split(' ');
+        const lastName = lastNameParts.join(' ') || null;
+        const now = new Date().toISOString();
+        
+        // Create a partial contact object that matches the LeadContact type
+        const contactData: Partial<LeadContact> & { 
+          email: string;
+          company: string;
+          sessionId: string;
+        } = {
           email: assessmentData.primaryContactEmail,
-          organization: assessmentData.institutionName,
-          role: assessmentData.primaryContactRole
+          phone: assessmentData.primaryContactPhone || null,
+          firstName: firstName || null,
+          lastName: lastName,
+          company: assessmentData.institutionName,
+          jobTitle: assessmentData.primaryContactRole || null,
+          notes: `Created from partnership assessment on ${now}`,
+          sessionId: sessionId,
+          // These will be set by the database
+          id: '',
+          createdAt: new Date(now),
+          updatedAt: new Date(now)
+        };
+        const newContactId = await conversationMemory.createLeadContact(sessionId, contactData as LeadContact);
+        if (!newContactId) {
+          throw new Error('Failed to create contact');
         }
-        finalContactId = await conversationMemory.createLeadContact(sessionId, newContactData)
+        finalContactId = newContactId;
       }
     }
 
     if (!finalContactId) {
-      throw new Error('Failed to determine or create contact')
+      throw new Error('No contact ID available for assessment');
     }
 
     // Create partnership assessment using database function
-    const { data: assessmentId, error } = await supabase
-      .rpc('create_partnership_assessment', {
-        p_contact_id: finalContactId,
-        p_session_id: sessionId,
-        p_assessment_data: {
-          institution_name: assessmentData.institutionName,
-          institution_type: assessmentData.institutionType,
-          campus_count: assessmentData.campusCount,
-          student_population: assessmentData.studentPopulation,
-          primary_contact_name: assessmentData.primaryContactName,
-          primary_contact_email: assessmentData.primaryContactEmail,
-          primary_contact_phone: assessmentData.primaryContactPhone,
-          primary_contact_role: assessmentData.primaryContactRole,
-          current_tech_ecosystem: assessmentData.currentTechEcosystem,
-          strategic_challenges: assessmentData.strategicChallenges,
-          investment_timeline: assessmentData.investmentTimeline,
-          partnership_commitment_level: assessmentData.partnershipCommitmentLevel,
-          custom_requirements: assessmentData.customRequirements || null,
-          vision_statement: assessmentData.visionStatement || null
-        }
-      })
+    const { data: assessmentResult, error } = await (supabase as any).rpc('create_partnership_assessment', {
+      p_contact_id: finalContactId,
+      p_session_id: sessionId,
+      p_assessment_data: {
+        institution_name: assessmentData.institutionName,
+        institution_type: assessmentData.institutionType,
+        campus_count: assessmentData.campusCount,
+        student_population: assessmentData.studentPopulation,
+        primary_contact_name: assessmentData.primaryContactName,
+        primary_contact_email: assessmentData.primaryContactEmail,
+        primary_contact_phone: assessmentData.primaryContactPhone || null,
+        primary_contact_role: assessmentData.primaryContactRole || null,
+        current_tech_ecosystem: assessmentData.currentTechEcosystem,
+        strategic_challenges: assessmentData.strategicChallenges,
+        investment_timeline: assessmentData.investmentTimeline,
+        partnership_commitment_level: assessmentData.partnershipCommitmentLevel,
+        custom_requirements: assessmentData.customRequirements || null,
+        vision_statement: assessmentData.visionStatement || null
+      }
+    })
+      
+    const assessmentId = (assessmentResult as { id?: string })?.id || null;
 
     if (error) {
       throw new Error(`Failed to create assessment: ${error.message}`)
     }
 
-    // Get the created assessment with calculated score
-    const { data: assessment, error: fetchError } = await supabase
+    // Get the assessment results
+    const { data: assessment, error: fetchError } = await (supabase as any)
       .from('partnership_assessments')
-      .select('*, assessment_score, readiness_level, partnership_priority')
+      .select('*')
       .eq('id', assessmentId)
       .single()
 
-    if (fetchError) {
-      console.warn('Failed to fetch assessment details:', fetchError)
+    if (fetchError || !assessment) {
+      console.error('Failed to fetch assessment results:', fetchError)
+      return NextResponse.json(
+        { error: 'Failed to fetch assessment results' },
+        { status: 500 }
+      )
+    } else {
+      return NextResponse.json({
+        success: true,
+        assessmentId,
+        contactId: finalContactId,
+        sessionId,
+        assessmentScore: assessment?.assessment_score || 0,
+        readinessLevel: assessment?.readiness_level || 'initial',
+        partnershipPriority: assessment?.partnership_priority || 'medium',
+        message: 'Partnership assessment created successfully'
+      })
     }
-
-    return NextResponse.json({
-      success: true,
-      assessmentId,
-      contactId: finalContactId,
-      sessionId,
-      assessmentScore: assessment?.assessment_score || 0,
-      readinessLevel: assessment?.readiness_level || 'initial',
-      partnershipPriority: assessment?.partnership_priority || 'medium',
-      message: 'Partnership assessment created successfully'
-    })
-
   } catch (error) {
     console.error('Partnership assessment creation error:', error)
     

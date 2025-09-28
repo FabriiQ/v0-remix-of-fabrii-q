@@ -61,7 +61,6 @@ export default function AdminDashboard() {
   const checkAuth = async () => {
     try {
       const { data: { user }, error } = await supabase.auth.getUser()
-      
       if (error || !user) {
         router.push('/auth')
         return
@@ -74,7 +73,8 @@ export default function AdminDashboard() {
         .eq('user_id', user.id)
         .single()
 
-      if (profileError || !profile || profile.role !== 'admin') {
+      const isAdmin = profile && (profile as any)?.role === 'admin'
+      if (profileError || !profile || !isAdmin) {
         router.push('/')
         return
       }

@@ -1,4 +1,9 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { 
+  GoogleGenerativeAI, 
+  HarmCategory, 
+  HarmBlockThreshold,
+  SafetySetting 
+} from '@google/generative-ai';
 
 class GeminiService {
   private static instance: GeminiService;
@@ -19,6 +24,10 @@ class GeminiService {
       throw new Error('GOOGLE_API_KEY environment variable is required');
     }
     this.genAI = new GoogleGenerativeAI(apiKey);
+    
+    // Log the values of HarmCategory and HarmBlockThreshold for debugging
+    console.log('HarmCategory:', HarmCategory);
+    console.log('HarmBlockThreshold:', HarmBlockThreshold);
   }
 
   public async initialize(): Promise<void> {
@@ -27,6 +36,26 @@ class GeminiService {
     try {
       // Initialize Gemini model with configurable version
       const modelName = process.env.GEMINI_MODEL || "gemini-flash-latest"
+      // Define safety settings with string literals and type assertions
+      const safetySettings = [
+        {
+          category: 'HARM_CATEGORY_HARASSMENT' as any,
+          threshold: 'BLOCK_MEDIUM_AND_ABOVE' as any,
+        },
+        {
+          category: 'HARM_CATEGORY_HATE_SPEECH' as any,
+          threshold: 'BLOCK_MEDIUM_AND_ABOVE' as any,
+        },
+        {
+          category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT' as any,
+          threshold: 'BLOCK_MEDIUM_AND_ABOVE' as any,
+        },
+        {
+          category: 'HARM_CATEGORY_DANGEROUS_CONTENT' as any,
+          threshold: 'BLOCK_MEDIUM_AND_ABOVE' as any,
+        },
+      ] as SafetySetting[];
+
       this.model = this.genAI.getGenerativeModel({ 
         model: modelName,
         generationConfig: {
@@ -35,31 +64,15 @@ class GeminiService {
           topP: 0.95,
           maxOutputTokens: 1024,
         },
-        safetySettings: [
-          {
-            category: "HARM_CATEGORY_HARASSMENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE",
-          },
-          {
-            category: "HARM_CATEGORY_HATE_SPEECH",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE",
-          },
-          {
-            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE",
-          },
-          {
-            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE",
-          },
-        ],
+        safetySettings,
       });
 
       this.isInitialized = true;
       console.log('Gemini AI service initialized successfully');
     } catch (error) {
       console.error('Failed to initialize Gemini service:', error);
-      throw new Error(`Gemini initialization failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      throw new Error(`Gemini initialization failed: ${errorMessage}`);
     }
   }
 

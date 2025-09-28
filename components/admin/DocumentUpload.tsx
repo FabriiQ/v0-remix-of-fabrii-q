@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+// Database types are now imported through the supabase client
 import { useDropzone } from 'react-dropzone'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,6 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Loader2, Upload, File, X, CheckCircle, AlertCircle } from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
+import type { Database } from '@/lib/supabase/database.types'
 
 interface UploadedFile {
   file: File
@@ -80,31 +82,37 @@ export default function DocumentUpload() {
       ))
 
       // Create document record
-      const { data: documentData, error: documentError } = await supabase
-        .from('documents')
-        .insert({
-          title: file.name,
-          content: '', // Will be processed later
-          source_type: 'upload' as const,
-          source_url: filePath,
-          file_size: file.size,
-          file_type: file.type || 'application/octet-stream',
-          processing_status: 'pending' as const
-        })
-        .select()
-        .single()
+      const payload: Database['public']['Tables']['documents']['Insert'] = {
+        title: file.name,
+        content: '', // Will be processed later
+        source_type: 'upload',
+        source_url: filePath,
+        file_size: file.size,
+        file_type: file.type || 'application/octet-stream',
+        processing_status: 'pending'
+      }
+
+      const { data: insertedDocument, error: documentError } = await supabase
+        // Cast to any here to avoid TS 'never' inference issues in some editors
+        .from('documents' as any)
+        .insert(payload as any)
+        .select('id')
+        .single<{ id: string }>()
+        
+      const documentId = insertedDocument?.id
 
       if (documentError) throw documentError
+      if (!documentId) throw new Error('Failed to create document record')
 
       // Update progress
       setFiles(prev => prev.map(f => 
-        f.id === id ? { ...f, progress: 75, documentId: documentData.id } : f
+        f.id === id ? { ...f, progress: 75, documentId } : f
       ))
 
       // Process document (extract text and create embeddings)
       const { error: processError } = await supabase.functions.invoke('process-document', {
         body: { 
-          documentId: documentData.id,
+          documentId: documentId,
           filePath: filePath 
         }
       })

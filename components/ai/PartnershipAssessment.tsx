@@ -62,7 +62,12 @@ export function PartnershipAssessment({
     visionStatement: ''
   })
 
-  const [errors, setErrors] = useState<Partial<PartnershipAssessmentData>>({})
+  // Define a type for form errors that maps field names to error messages
+  type FormErrors = {
+    [K in keyof PartnershipAssessmentData]?: string;
+  };
+  
+  const [errors, setErrors] = useState<FormErrors>({})
 
   const institutionTypes = [
     { value: 'public_university', label: 'Public University' },
@@ -105,38 +110,50 @@ export function PartnershipAssessment({
   ]
 
   const handleInputChange = (field: keyof PartnershipAssessmentData, value: string | number) => {
-    setAssessmentData(prev => ({ ...prev, [field]: value }))
+    // Convert string numbers to actual numbers for number fields
+    const processedValue = (field === 'campusCount' || field === 'studentPopulation')
+      ? typeof value === 'string' 
+        ? parseInt(value, 10) || 0 
+        : value
+      : value;
+      
+    setAssessmentData(prev => ({ ...prev, [field]: processedValue }));
+    
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }))
+      setErrors(prev => ({ ...prev, [field]: undefined }));
     }
   }
 
   const validateStep = (step: number): boolean => {
-    const newErrors: Partial<PartnershipAssessmentData> = {}
-
+    const newErrors: FormErrors = {};
+    
     switch (step) {
       case 1:
-        if (!assessmentData.institutionName.trim()) newErrors.institutionName = 'Institution name is required'
-        if (!assessmentData.institutionType) newErrors.institutionType = 'Institution type is required'
-        if (!assessmentData.campusCount || assessmentData.campusCount < 1) newErrors.campusCount = 'Campus count must be at least 1'
-        if (!assessmentData.studentPopulation || assessmentData.studentPopulation < 1) newErrors.studentPopulation = 'Student population is required'
-        break
+        if (!assessmentData.institutionName.trim()) newErrors.institutionName = 'Institution name is required';
+        if (!assessmentData.institutionType) newErrors.institutionType = 'Institution type is required';
+        if (isNaN(assessmentData.campusCount) || assessmentData.campusCount < 1) {
+          newErrors.campusCount = 'Campus count must be at least 1';
+        }
+        if (isNaN(assessmentData.studentPopulation) || assessmentData.studentPopulation < 1) {
+          newErrors.studentPopulation = 'Student population is required';
+        }
+        break;
       case 2:
-        if (!assessmentData.primaryContactName.trim()) newErrors.primaryContactName = 'Contact name is required'
-        if (!assessmentData.primaryContactEmail.trim()) newErrors.primaryContactEmail = 'Email is required'
-        if (!assessmentData.primaryContactRole) newErrors.primaryContactRole = 'Role is required'
-        break
+        if (!assessmentData.primaryContactName.trim()) newErrors.primaryContactName = 'Contact name is required';
+        if (!assessmentData.primaryContactEmail.trim()) newErrors.primaryContactEmail = 'Email is required';
+        if (!assessmentData.primaryContactRole) newErrors.primaryContactRole = 'Role is required';
+        break;
       case 3:
-        if (!assessmentData.currentTechEcosystem.trim()) newErrors.currentTechEcosystem = 'Current technology description is required'
-        if (!assessmentData.strategicChallenges.trim()) newErrors.strategicChallenges = 'Strategic challenges description is required'
-        if (!assessmentData.investmentTimeline) newErrors.investmentTimeline = 'Investment timeline is required'
-        if (!assessmentData.partnershipCommitmentLevel) newErrors.partnershipCommitmentLevel = 'Partnership commitment level is required'
-        break
+        if (!assessmentData.currentTechEcosystem.trim()) newErrors.currentTechEcosystem = 'Current technology description is required';
+        if (!assessmentData.strategicChallenges.trim()) newErrors.strategicChallenges = 'Strategic challenges description is required';
+        if (!assessmentData.investmentTimeline) newErrors.investmentTimeline = 'Investment timeline is required';
+        if (!assessmentData.partnershipCommitmentLevel) newErrors.partnershipCommitmentLevel = 'Partnership commitment level is required';
+        break;
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   }
 
   const handleNext = () => {

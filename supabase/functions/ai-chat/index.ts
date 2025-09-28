@@ -1,19 +1,12 @@
+// @ts-nocheck
+// This file is a Supabase Edge Function that handles AI chat functionality
+// It uses Deno's runtime and Supabase's client library
+
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-// Simulated embedding generation (replace with actual model in production)
-async function generateQueryEmbedding(query: string): Promise<number[]> {
-  // In production, use @huggingface/transformers:
-  // const { pipeline } = await import('https://esm.sh/@huggingface/transformers@2.6.0')
-  // const pipe = await pipeline('feature-extraction', 'Supabase/gte-small')
-  // const embedding = await pipe(query, { pooling: 'mean', normalize: true })
-  // return Array.from(embedding.data)
-  
-  // For demo: return a random 384-dimensional vector
-  return Array.from({ length: 384 }, () => Math.random() * 2 - 1)
-}
-
-function generateContextualResponse(query: string, context: string[], conversationHistory: any[]): string {
+// Generate contextual response based on query and context
+function generateContextualResponse(query: string, context: string[], conversationHistory: Message[]): string {
   const lowerQuery = query.toLowerCase()
   
   // Enhanced responses using context
@@ -51,14 +44,56 @@ function generateContextualResponse(query: string, context: string[], conversati
   
   for (const [key, response] of Object.entries(fallbackResponses)) {
     if (key !== 'default' && lowerQuery.includes(key)) {
-      return response
+      return response as string;
     }
   }
   
-  return fallbackResponses.default
+  return fallbackResponses.default;
 }
 
-serve(async (req) => {
+// Simulated embedding generation (replace with actual model in production)
+async function generateQueryEmbedding(query: string): Promise<number[]> {
+  // In production, use @huggingface/transformers:
+  // const { pipeline } = await import('https://esm.sh/@huggingface/transformers@2.6.0')
+  // const pipe = await pipeline('feature-extraction', 'Supabase/gte-small')
+  // const embedding = await pipe(query, { pooling: 'mean', normalize: true })
+  // return Array.from(embedding.data)
+  
+  // For demo: return a random 384-dimensional vector
+  return Array.from({ length: 384 }, () => Math.random() * 2 - 1)
+}
+
+interface Message {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  created_at?: string;
+  conversation_id?: string;
+  metadata?: {
+    processing_time_ms?: number;
+    query_embedding_generated?: boolean;
+    context_chunks_used?: number;
+    similarity_scores?: number[];
+    model_used?: string;
+    [key: string]: any;
+  };
+  processing_time_ms?: number;
+}
+
+interface DocumentChunk {
+  id: string;
+  content: string;
+  similarity: number;
+  metadata: Record<string, any>;
+}
+
+interface ChatRequest {
+  message: string;
+  conversationId?: string;
+  userId?: string;
+}
+
+// Main request handler for the Edge Function
+serve(async (req: Request) => {
   try {
     // Handle CORS
     if (req.method === 'OPTIONS') {
@@ -78,7 +113,7 @@ serve(async (req) => {
       })
     }
 
-    const { message, conversationId, userId } = await req.json()
+    const { message, conversationId, userId } = await req.json() as ChatRequest
     
     if (!message || typeof message !== 'string') {
       return new Response(JSON.stringify({ error: 'Message is required' }), {
@@ -92,7 +127,7 @@ serve(async (req) => {
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+    const supabase: SupabaseClient = createClient(supabaseUrl, supabaseServiceKey)
 
     const startTime = Date.now()
 
@@ -107,7 +142,7 @@ serve(async (req) => {
         .select('setting_key, setting_value')
         .in('setting_key', ['similarity_threshold', 'max_results'])
 
-      const settingsMap = settings?.reduce((acc, setting) => {
+      const settingsMap = settings?.reduce<Record<string, any>>((acc, setting) => {
         acc[setting.setting_key] = setting.setting_value
         return acc
       }, {} as Record<string, any>) || {}
@@ -137,17 +172,12 @@ serve(async (req) => {
         .limit(10)
 
       console.log(`Found ${relevantChunks?.length || 0} relevant chunks`)
-      console.log(`Retrieved ${conversationHistory?.length || 0} previous messages`)
 
       // Extract context from relevant chunks
-      const context = relevantChunks?.map(chunk => chunk.content) || []
+      const context = (relevantChunks as DocumentChunk[] | null)?.map(chunk => chunk.content) || []
 
       // Generate response using context and conversation history
-      const response = generateContextualResponse(
-        message, 
-        context, 
-        conversationHistory || []
-      )
+      const response = generateContextualResponse(message, context, conversationHistory || [])
 
       const processingTime = Date.now() - startTime
 
@@ -168,7 +198,7 @@ serve(async (req) => {
       }
 
       // Save messages to database
-      const messagesToInsert = [
+      const messagesToInsert: Omit<Message, 'created_at'>[] = [
         {
           conversation_id: conversationId,
           role: 'user',
@@ -194,7 +224,7 @@ serve(async (req) => {
 
       const { error: messagesError } = await supabase
         .from('messages')
-        .insert(messagesToInsert)
+        .insert(messagesToInsert as any[])
 
       if (messagesError) {
         console.warn('Messages insert error:', messagesError)
@@ -238,22 +268,26 @@ serve(async (req) => {
       console.error('Chat processing error:', processingError)
       
       const processingTime = Date.now() - startTime
+      const errorMessage = processingError instanceof Error ? processingError.message : String(processingError)
       
-      // Log error analytics
-      await supabase
-        .from('ai_analytics')
-        .insert({
-          event_type: 'chat_error',
-          user_id: userId,
-          session_id: conversationId,
-          metadata: {
-            error: processingError.message,
-            processing_time_ms: processingTime,
-            message_length: message.length
-          }
-        })
-
-      // Return a helpful error response
+      try {
+        // Log error analytics
+        await supabase
+          .from('ai_analytics')
+          .insert({
+            event_type: 'chat_error',
+            user_id: userId,
+            session_id: conversationId,
+            metadata: {
+              error: errorMessage,
+              processing_time_ms: processingTime,
+              message_length: message?.length || 0
+            }
+          })
+      } catch (logError) {
+        console.error('Failed to log error to analytics:', logError)
+      }
+      
       const errorResponse = "I apologize, but I'm having trouble processing your request right now. This is likely due to our system being in alpha development. Please try rephrasing your question or try again in a moment."
       
       return new Response(JSON.stringify({

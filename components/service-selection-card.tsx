@@ -76,7 +76,7 @@ export function ServiceSelectionCard() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<string[]>([])
   const [isCompleted, setIsCompleted] = useState(false)
-  const { showProfile } = useProfileDropdown()
+  const { showDropdown } = useProfileDropdown()
 
   const handleServiceSelect = (serviceId: string) => {
     setSelectedService(serviceId)

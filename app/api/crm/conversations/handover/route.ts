@@ -1,6 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+// Define types manually since the database types don't include all tables
+type FollowUpTask = {
+  id?: string
+  contact_id: string
+  task_type: string
+  task_title: string
+  task_description: string
+  due_date: string
+  priority: 'low' | 'medium' | 'high' | 'urgent'
+  status: string
+  created_by: string | null
+  created_at?: string
+  updated_at?: string
+}
+
+type ContactInteraction = {
+  id?: string
+  contact_id: string
+  session_id: string
+  interaction_type: string
+  interaction_date: string
+  outcome: string
+  sentiment: string
+  topics_covered?: string[]
+  action_items: string[]
+  next_steps: string
+  metadata?: Record<string, any>
+  created_at?: string
+  updated_at?: string
+}
+
+type ConversationAnalytics = {
+  session_id: string
+  conversion_stage?: string
+  last_updated: string
+  [key: string]: any
+}
+
+type LeadContact = {
+  id: string
+  lead_status?: string
+  last_contact_date?: string
+  [key: string]: any
+}
+
 // POST - Request handover from AIVY to human agent
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +65,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Get conversation history and analytics
     const [conversationHistory, analytics, contactInfo] = await Promise.all([
@@ -39,24 +84,23 @@ export async function POST(request: NextRequest) {
     // Create comprehensive handover task
     const handoverSummary = await createHandoverSummary(
       conversationHistory, 
-      analytics, 
       contactInfo,
       reason,
       specialInstructions
     )
 
-    const { data: handoverTask, error: taskError } = await supabase
+    const { data: handoverTask, error: taskError } = await (supabase as any)
       .from('follow_up_tasks')
       .insert({
         contact_id: contactId,
         task_type: 'follow_up',
-        task_title: `🤖 AIVY Handover: ${contactInfo.name} - ${reason}`,
+        task_title: `AIVY Handover: ${contactInfo.name} - ${reason}`,
         task_description: handoverSummary,
         due_date: calculateDueDate(urgency),
         priority: urgency === 'urgent' ? 'urgent' : urgency === 'high' ? 'high' : 'medium',
         status: 'pending',
         created_by: null // System created
-      })
+      } as any)
       .select()
       .single()
 
@@ -69,7 +113,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create handover interaction record
-    await supabase
+    await (supabase as any)
       .from('contact_interactions')
       .insert({
         contact_id: contactId,
@@ -93,32 +137,31 @@ export async function POST(request: NextRequest) {
           conversation_score: analytics?.user_engagement_score,
           buying_signals: analytics?.buying_signals
         }
-      })
+      } as any)
 
     // Update conversation analytics to mark as handed over
-    await supabase
+    await (supabase as any)
       .from('conversation_analytics')
       .update({
         conversion_stage: 'evaluation', // Move to next stage
         last_updated: new Date().toISOString()
-      })
+      } as any)
       .eq('session_id', sessionId)
 
     // Update contact lead status if high intent
     if (analytics?.buying_signals > 2 || analytics?.demo_requested || analytics?.meeting_requested) {
-      await supabase
+      await (supabase as any)
         .from('lead_contacts')
         .update({
           lead_status: 'qualified',
           last_contact_date: new Date().toISOString()
-        })
+        } as any)
         .eq('id', contactId)
     }
 
     return NextResponse.json({
       success: true,
       handoverTask,
-      message: 'Conversation successfully handed over to human agent',
       estimatedResponseTime: getEstimatedResponseTime(urgency)
     })
   } catch (error) {

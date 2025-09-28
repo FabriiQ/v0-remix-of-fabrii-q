@@ -9,12 +9,14 @@ import {
   CartesianGrid, 
   Tooltip, 
   Legend, 
-  PieChart, 
-  Pie, 
-  Cell, 
-  LineChart, 
-  Line,
   ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
   FunnelChart,
   Funnel,
   LabelList
@@ -179,7 +181,7 @@ export default function CRMAnalytics() {
         },
         topPerformingChannels: [
           { channel: 'AIVY Chat', leads: 145, conversion: 22 },
-          { channel: 'Partnership Assessment', value: 98, conversion: 28 },
+          { channel: 'Partnership Assessment', leads: 98, conversion: 28 },
           { channel: 'Direct Referral', leads: 62, conversion: 35 },
           { channel: 'Website Contact', leads: 38, conversion: 15 }
         ],
@@ -367,7 +369,11 @@ export default function CRMAnalytics() {
                 cy="50%"
                 outerRadius={100}
                 dataKey="value"
-                label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                label={({ name, percent }) => (
+                  <text x={0} y={0} dy={8} textAnchor="middle" fill="#666">
+                    {`${name} (${Math.round(percent * 100)}%)`}
+                  </text>
+                )}
               >
                 {analyticsData.leadsBySource.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
@@ -487,7 +493,11 @@ export default function CRMAnalytics() {
                 cy="50%"
                 outerRadius={80}
                 dataKey="count"
-                label={({ level, percent }) => `${level} (${(percent * 100).toFixed(0)}%)`}
+                label={({ level, percent }: { level: string, percent: number }) => (
+                  <text x={0} y={0} dy={8} textAnchor="middle" fill="#666">
+                    {`${level} (${(percent * 100).toFixed(0)}%)`}
+                  </text>
+                )}
               >
                 {analyticsData.partnershipReadiness.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />

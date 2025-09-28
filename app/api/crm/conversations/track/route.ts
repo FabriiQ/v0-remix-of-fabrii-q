@@ -1,6 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+type ConversationTurn = {
+  id?: string;
+  session_id: string;
+  user_query: string;
+  response_content: string;
+  intent_analysis: {
+    timestamp: string;
+    platform: string;
+    [key: string]: any;
+  };
+  knowledge_sources: any[];
+  response_metrics: {
+    wordCount: number;
+    executiveAppropriate: number;
+    conversationalFlow: number;
+    actionOriented: number;
+    strategicInsight: number;
+  };
+  created_at?: string;
+  updated_at?: string;
+};
+
+type ConversationAnalytics = {
+  id?: string;
+  session_id: string;
+  total_messages: number;
+  topics_covered: string[];
+  pain_points_mentioned: string[];
+  buying_signals: number;
+  contact_info_provided: boolean;
+  meeting_requested: boolean;
+  pricing_discussed: boolean;
+  technical_questions: number;
+  business_questions: number;
+  last_updated: string;
+  conversation_duration_minutes: number;
+  user_engagement_score: number;
+};
+
 export async function POST(request: NextRequest) {
   try {
     const { sessionId, userMessage, botResponse, timestamp, metadata = {} } = await request.json()
@@ -15,7 +54,7 @@ export async function POST(request: NextRequest) {
     const supabase = createClient()
 
     // First, get or create conversation session
-    const { data: sessionData, error: sessionError } = await supabase
+    const { data: sessionData, error: sessionError } = await (supabase as any)
       .rpc('get_or_create_conversation_session', {
         p_session_identifier: sessionId,
         p_user_id: null // Will be null for anonymous AIVY sessions initially
@@ -32,26 +71,28 @@ export async function POST(request: NextRequest) {
     const conversationSessionId = sessionData
 
     // Save the conversation turn
-    const { data: conversationTurn, error: turnError } = await supabase
+    const conversationTurn: Omit<ConversationTurn, 'id' | 'created_at' | 'updated_at'> = {
+      session_id: conversationSessionId,
+      user_query: userMessage,
+      response_content: botResponse,
+      intent_analysis: {
+        timestamp: timestamp || new Date().toISOString(),
+        platform: 'aivy',
+        ...metadata
+      },
+      knowledge_sources: [],
+      response_metrics: {
+        wordCount: botResponse.split(' ').length,
+        executiveAppropriate: 1,
+        conversationalFlow: 1,
+        actionOriented: botResponse.includes('demo') || botResponse.includes('schedule') ? 1 : 0,
+        strategicInsight: botResponse.includes('partnership') || botResponse.includes('AI') ? 1 : 0
+      }
+    };
+
+    const { data: savedTurn, error: turnError } = await (supabase as any)
       .from('conversation_turns')
-      .insert({
-        session_id: conversationSessionId,
-        user_query: userMessage,
-        response_content: botResponse,
-        intent_analysis: {
-          timestamp,
-          platform: 'aivy',
-          ...metadata
-        },
-        knowledge_sources: [],
-        response_metrics: {
-          wordCount: botResponse.split(' ').length,
-          executiveAppropriate: 1,
-          conversationalFlow: 1,
-          actionOriented: botResponse.includes('demo') || botResponse.includes('schedule') ? 1 : 0,
-          strategicInsight: botResponse.includes('partnership') || botResponse.includes('AI') ? 1 : 0
-        }
-      })
+      .insert(conversationTurn)
       .select('id')
       .single()
 
@@ -68,7 +109,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ 
       success: true, 
-      conversationTurnId: conversationTurn.id,
+      conversationTurnId: savedTurn?.id,
       sessionId: conversationSessionId
     })
   } catch (error) {
@@ -81,9 +122,9 @@ export async function POST(request: NextRequest) {
 }
 
 async function updateConversationAnalytics(
-  supabase: any, 
-  sessionId: string, 
-  userMessage: string, 
+  supabase: any,
+  sessionId: string,
+  userMessage: string,
   botResponse: string
 ) {
   try {
@@ -103,108 +144,143 @@ async function updateConversationAnalytics(
     const painPoints = extractPainPoints(userMessage)
     const buyingSignals = countBuyingSignals(userMessage, botResponse)
     
-    const analyticsData = {
+    const analyticsData: Omit<ConversationAnalytics, 'id'> = {
       session_id: sessionId,
       total_messages: (existingAnalytics?.total_messages || 0) + 1,
-      conversation_duration_minutes: Math.floor((Date.now() - new Date(existingAnalytics?.last_updated || Date.now()).getTime()) / 60000),
-      user_engagement_score: calculateEngagementScore(userMessage, botResponse),
-      topics_covered: [...new Set([...(existingAnalytics?.topics_covered || []), ...topics])],
-      pain_points_mentioned: [...new Set([...(existingAnalytics?.pain_points_mentioned || []), ...painPoints])],
+      topics_covered: Array.from(new Set([
+        ...(existingAnalytics?.topics_covered || []),
+        ...topics
+      ])),
+      pain_points_mentioned: Array.from(new Set([
+        ...(existingAnalytics?.pain_points_mentioned || []),
+        ...painPoints
+      ])),
       buying_signals: (existingAnalytics?.buying_signals || 0) + buyingSignals,
-      demo_requested: (existingAnalytics?.demo_requested || false) || userMessage.toLowerCase().includes('demo'),
-      contact_info_provided: (existingAnalytics?.contact_info_provided || false), // Will be set when contact is created
-      meeting_requested: (existingAnalytics?.meeting_requested || false) || userMessage.toLowerCase().includes('meeting') || userMessage.toLowerCase().includes('schedule'),
-      pricing_discussed: (existingAnalytics?.pricing_discussed || false) || userMessage.toLowerCase().includes('price') || userMessage.toLowerCase().includes('cost'),
-      technical_questions: (existingAnalytics?.technical_questions || 0) + (userMessage.toLowerCase().includes('how') || userMessage.toLowerCase().includes('integrate') ? 1 : 0),
-      business_questions: (existingAnalytics?.business_questions || 0) + (userMessage.toLowerCase().includes('business') || userMessage.toLowerCase().includes('roi') ? 1 : 0),
+      user_engagement_score: calculateEngagementScore(userMessage, botResponse),
+      contact_info_provided: existingAnalytics?.contact_info_provided || false,
+      meeting_requested: (existingAnalytics?.meeting_requested || false) || 
+        userMessage.toLowerCase().includes('meeting') || 
+        userMessage.toLowerCase().includes('schedule'),
+      pricing_discussed: (existingAnalytics?.pricing_discussed || false) || 
+        userMessage.toLowerCase().includes('price') || 
+        userMessage.toLowerCase().includes('cost'),
+      technical_questions: (existingAnalytics?.technical_questions || 0) + 
+        (userMessage.toLowerCase().includes('how') || userMessage.toLowerCase().includes('integrate') ? 1 : 0),
+      business_questions: (existingAnalytics?.business_questions || 0) + 
+        (userMessage.toLowerCase().includes('business') || userMessage.toLowerCase().includes('roi') ? 1 : 0),
+      conversation_duration_minutes: existingAnalytics?.conversation_duration_minutes || 0,
       last_updated: new Date().toISOString()
-    }
+    };
 
-    if (existingAnalytics) {
-      await supabase
-        .from('conversation_analytics')
-        .update(analyticsData)
-        .eq('session_id', sessionId)
-    } else {
-      await supabase
-        .from('conversation_analytics')
-        .insert(analyticsData)
+    const { error: upsertError } = await supabase
+      .from('conversation_analytics')
+      .upsert({
+        ...analyticsData,
+        ...(existingAnalytics?.id && { id: existingAnalytics.id })
+      })
+
+    if (upsertError) {
+      console.error('Error updating conversation analytics:', upsertError)
     }
   } catch (error) {
-    console.error('Error updating conversation analytics:', error)
+    console.error('Error in updateConversationAnalytics:', error)
   }
 }
 
+// Helper functions
 function extractTopics(userMessage: string, botResponse: string): string[] {
-  const topics = []
-  const text = (userMessage + ' ' + botResponse).toLowerCase()
+  // Simple keyword-based topic extraction
+  const topics: string[] = [];
   
-  if (text.includes('partnership') || text.includes('partner')) topics.push('Partnership Program')
-  if (text.includes('ai') || text.includes('artificial intelligence')) topics.push('AI Technology')
-  if (text.includes('pricing') || text.includes('cost')) topics.push('Pricing')
-  if (text.includes('demo') || text.includes('trial')) topics.push('Demo/Trial')
-  if (text.includes('feature') || text.includes('capability')) topics.push('Platform Features')
-  if (text.includes('support') || text.includes('training')) topics.push('Support & Training')
-  if (text.includes('integration')) topics.push('Integration')
-  if (text.includes('alpha') || text.includes('development')) topics.push('Alpha Development')
-  if (text.includes('education') || text.includes('learning')) topics.push('Educational Technology')
+  const topicKeywords: Record<string, string> = {
+    'partnership': 'Partnership',
+    'collaborat': 'Collaboration',
+    'pricing': 'Pricing',
+    'demo': 'Demo',
+    'integrat': 'Integration',
+    'api': 'API',
+    'onboard': 'Onboarding',
+    'support': 'Support',
+    'feature': 'Features',
+    'enterprise': 'Enterprise'
+  };
+
+  const message = `${userMessage} ${botResponse}`.toLowerCase();
   
-  return topics
+  for (const [keyword, topic] of Object.entries(topicKeywords)) {
+    if (message.includes(keyword) && !topics.includes(topic)) {
+      topics.push(topic);
+    }
+  }
+  
+  return topics;
 }
 
 function extractPainPoints(userMessage: string): string[] {
-  const painPoints = []
-  const text = userMessage.toLowerCase()
+  // Simple keyword-based pain point extraction
+  const painPoints: string[] = [];
   
-  if (text.includes('difficult') || text.includes('challenge') || text.includes('problem')) {
-    painPoints.push('Implementation Challenges')
-  }
-  if (text.includes('expensive') || text.includes('budget') || text.includes('cost')) {
-    painPoints.push('Budget Constraints')
-  }
-  if (text.includes('time') || text.includes('timeline') || text.includes('urgent')) {
-    painPoints.push('Time Constraints')
-  }
-  if (text.includes('staff') || text.includes('training') || text.includes('learn')) {
-    painPoints.push('Staff Training Needs')
+  const painPointKeywords: Record<string, string> = {
+    'expensive': 'Cost concerns',
+    'cost': 'Budget constraints',
+    'hard to use': 'Usability issues',
+    'complicated': 'Complexity',
+    'slow': 'Performance issues',
+    'bug': 'Bugs/issues',
+    'missing feature': 'Missing features',
+    'support': 'Lack of support',
+    'documentation': 'Lack of documentation',
+    'learning curve': 'Steep learning curve'
+  };
+  
+  const message = userMessage.toLowerCase();
+  
+  for (const [keyword, painPoint] of Object.entries(painPointKeywords)) {
+    if (message.includes(keyword) && !painPoints.includes(painPoint)) {
+      painPoints.push(painPoint);
+    }
   }
   
-  return painPoints
+  return painPoints;
 }
 
 function countBuyingSignals(userMessage: string, botResponse: string): number {
-  let signals = 0
-  const text = userMessage.toLowerCase()
+  // Count potential buying signals in the conversation
+  const buyingSignalKeywords = [
+    'interested',
+    'pricing',
+    'trial',
+    'demo',
+    'schedule',
+    'meeting',
+    'contact',
+    'talk to sales',
+    'get started',
+    'sign up'
+  ];
   
-  if (text.includes('when can') || text.includes('how soon')) signals++
-  if (text.includes('demo') || text.includes('trial')) signals++
-  if (text.includes('price') || text.includes('cost')) signals++
-  if (text.includes('contract') || text.includes('agreement')) signals++
-  if (text.includes('implement') || text.includes('start')) signals++
-  if (text.includes('budget') || text.includes('approved')) signals++
-  
-  return signals
+  const message = `${userMessage} ${botResponse}`.toLowerCase();
+  return buyingSignalKeywords.filter(keyword => message.includes(keyword)).length;
 }
 
 function calculateEngagementScore(userMessage: string, botResponse: string): number {
-  let score = 0.5 // Base score
+  // Simple engagement score based on message length and interaction
+  let score = 0;
   
-  // Message length indicates engagement
-  if (userMessage.length > 50) score += 0.1
-  if (userMessage.length > 100) score += 0.1
+  // Base score on message length (up to 5 points)
+  score += Math.min(userMessage.length / 50, 5);
   
-  // Questions indicate engagement
-  if (userMessage.includes('?')) score += 0.1
-  
-  // Multiple sentences indicate thoughtful engagement
-  if (userMessage.split('.').length > 1) score += 0.1
-  
-  // Specific topics indicate serious interest
-  if (userMessage.toLowerCase().includes('partnership') || 
-      userMessage.toLowerCase().includes('demo') ||
-      userMessage.toLowerCase().includes('pricing')) {
-    score += 0.2
+  // Bonus for questions
+  if (userMessage.includes('?') || userMessage.toLowerCase().includes('how ') || userMessage.toLowerCase().includes('what ')) {
+    score += 2;
   }
   
-  return Math.min(1.0, score)
+  // Bonus for specific engagement terms
+  const engagementTerms = ['demo', 'schedule', 'meeting', 'trial', 'pricing'];
+  if (engagementTerms.some(term => userMessage.toLowerCase().includes(term))) {
+    score += 3;
+  }
+  
+  // Ensure score is between 1-10
+  return Math.min(Math.max(Math.round(score), 1), 10);
 }

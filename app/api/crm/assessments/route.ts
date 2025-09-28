@@ -16,8 +16,7 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get('sortBy') || 'submitted_at';
     const sortOrder = searchParams.get('sortOrder') || 'desc';
     
-    let query = supabase
-      .from('partnership_assessments')
+    let query = (supabase.from('partnership_assessments') as any)
       .select(`
         id,
         institution_name,
@@ -84,16 +83,30 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch assessments' }, { status: 500 });
     }
     
-    // Get count for pagination
-    const { count: totalCount, error: countError } = await supabase
-      .from('partnership_assessments')
+    const { count: totalCount, error: countError } = await (supabase
+      .from('partnership_assessments') as any)
       .select('*', { count: 'exact', head: true });
     
     // Get assessment statistics
-    const { data: stats, error: statsError } = await supabase
-      .from('partnership_assessments')
+    type AssessmentStatsRow = {
+      status: string | null
+      readiness_level: string | null
+      partnership_priority: string | null
+      institution_type: string | null
+      assessment_score: number | null
+    }
+
+    const statsRes = await (supabase
+      .from('partnership_assessments') as any)
       .select('status, readiness_level, partnership_priority, institution_type, assessment_score');
-    
+
+    const stats = (statsRes.data as unknown as AssessmentStatsRow[] | null);
+    const statsError = statsRes.error;
+
+    if (statsError) {
+      console.error('Error fetching assessment stats:', statsError);
+    }
+
     let assessmentStats = {
       total: stats?.length || 0,
       submitted: stats?.filter(a => a.status === 'submitted').length || 0,
@@ -102,12 +115,13 @@ export async function GET(request: NextRequest) {
       high_priority: stats?.filter(a => a.partnership_priority === 'high' || a.partnership_priority === 'critical').length || 0,
       ready_for_partnership: stats?.filter(a => a.readiness_level === 'ready' || a.readiness_level === 'committed').length || 0,
       average_score: stats?.length ? stats.reduce((sum, a) => sum + (a.assessment_score || 0), 0) / stats.length : 0,
-      by_institution_type: stats?.reduce((acc, a) => {
-        acc[a.institution_type] = (acc[a.institution_type] || 0) + 1;
+      by_institution_type: (stats || []).reduce((acc, a) => {
+        const key = a.institution_type || 'unknown'
+        acc[key] = (acc[key] || 0) + 1;
         return acc;
-      }, {} as Record<string, number>) || {}
+      }, {} as Record<string, number>)
     };
-    
+
     return NextResponse.json({
       assessments,
       statistics: assessmentStats,
@@ -133,17 +147,27 @@ export async function PATCH(request: NextRequest) {
     const url = new URL(request.url);
     const assessmentId = url.pathname.split('/').pop();
     
-    // Prepare update data
-    const updateData: any = { ...data };
+    // Define the update data type
+    type AssessmentUpdate = {
+      status?: 'pending' | 'submitted' | 'under_review' | 'approved' | 'declined';
+      review_notes?: string | null;
+      reviewed_at?: string | null;
+      reviewed_by?: string | null;
+      // Add other possible update fields as needed
+    };
     
-    // Set reviewed_at if changing status to reviewed
+    // Prepare update data with proper typing
+    const updateData: AssessmentUpdate = { ...data };
+    
+    // Set reviewed_at if changing status to a reviewed state
     if ((data.status === 'under_review' || data.status === 'approved' || data.status === 'declined') && !updateData.reviewed_at) {
       updateData.reviewed_at = new Date().toISOString();
     }
     
-    const { data: assessment, error } = await supabase
+    // Cast to any to bypass type checking for the table that's not in the Database type
+    const { data: assessment, error } = await (supabase as any)
       .from('partnership_assessments')
-      .update(updateData)
+      .update(updateData as any)
       .eq('id', assessmentId)
       .select(`
         *,

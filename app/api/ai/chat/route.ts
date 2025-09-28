@@ -4,6 +4,7 @@ import { generateEmbedding } from '@/lib/embeddings/local-embeddings'
 import { generateRAGResponse } from '@/lib/ai/gemini'
 import { AIVYConversationMemory } from '@/lib/ai/conversation-memory'
 import { ExecutiveKnowledgePrioritizer } from '@/lib/ai/executive-knowledge-prioritizer'
+import type { Database } from '@/lib/supabase/database.types'
 
 
 export async function POST(request: NextRequest) {
@@ -21,18 +22,18 @@ export async function POST(request: NextRequest) {
     // Initialize services
     const supabase = createServiceClient()
     const conversationMemory = new AIVYConversationMemory()
-    
+
     // Get or create conversation session with proper identifier format
     let sessionIdentifier = conversationId
-    
+
     // Handle legacy UUID format or create new session identifier
     if (!sessionIdentifier || sessionIdentifier === 'default' || sessionIdentifier.includes('-')) {
       // Generate a new AIVY-compatible session identifier
       sessionIdentifier = AIVYConversationMemory.generateSessionIdentifier()
     }
-    
+
     const sessionId = await conversationMemory.getOrCreateSession(sessionIdentifier, userId)
-    
+
     // Get conversation context for executive-level processing
     const context = await conversationMemory.getSessionContext(sessionId)
 
@@ -42,43 +43,42 @@ export async function POST(request: NextRequest) {
     console.log('Generated embedding with dimensions:', queryEmbedding.length)
 
     // Perform vector search for relevant context
-    console.log('Performing vector search with threshold: 0.7, match_count: 5, min_length: 200')
-    const { data: relevantChunks, error: searchError } = await supabase
-      .rpc('match_documents', {
-        query_embedding: queryEmbedding,
-        similarity_threshold: 0.7,
-        match_count: 5,
-        min_content_length: 200
-      })
+    console.log('Performing vector search with threshold: 0.7, match_count: 5')
+    type MatchDocument = Database['public']['Functions']['match_documents']['Returns'][number]
+    const { data: relevantChunks, error: searchError } = await ((supabase as any).rpc('match_documents', {
+      query_embedding: queryEmbedding,
+      similarity_threshold: 0.7,
+      match_count: 5,
+    }) as Promise<{ data: MatchDocument[] | null; error: any }>)
 
     if (searchError) {
       console.error('Vector search error:', searchError)
     }
     
-    console.log('Found relevant chunks:', relevantChunks?.length || 0)
-    if (relevantChunks?.length > 0) {
-      console.log('Top similarity scores:', relevantChunks.slice(0, 2).map(chunk => chunk.similarity))
+    const foundCount = Array.isArray(relevantChunks) ? relevantChunks.length : 0
+    console.log('Found relevant chunks:', foundCount)
+    if (foundCount > 0) {
+      console.log('Top similarity scores:', (relevantChunks as MatchDocument[]).slice(0, 2).map((chunk) => chunk.similarity))
     }
 
     // If no results found with high threshold, try with lower threshold
-    let finalRelevantChunks = relevantChunks
-    if (!relevantChunks || relevantChunks.length === 0) {
+    const initialRelevantChunks: MatchDocument[] = Array.isArray(relevantChunks) ? (relevantChunks as MatchDocument[]) : []
+    let finalRelevantChunks: MatchDocument[] = initialRelevantChunks
+    if (initialRelevantChunks.length === 0) {
       console.log('No chunks found with threshold 0.7, trying with 0.5...')
-      const { data: fallbackChunks, error: fallbackError } = await supabase
-        .rpc('match_documents', {
-          query_embedding: queryEmbedding,
-          similarity_threshold: 0.5,
-          match_count: 5,
-          min_content_length: 150  // Slightly lower minimum for fallback
-        })
+      const { data: fallbackChunks, error: fallbackError } = await ((supabase as any).rpc('match_documents', {
+        query_embedding: queryEmbedding,
+        similarity_threshold: 0.5,
+        match_count: 5,
+      }) as Promise<{ data: MatchDocument[] | null; error: any }>)
       
       if (fallbackError) {
         console.error('Fallback vector search error:', fallbackError)
       } else {
-        finalRelevantChunks = fallbackChunks
-        console.log('Found fallback chunks:', fallbackChunks?.length || 0)
-        if (fallbackChunks?.length > 0) {
-          console.log('Fallback similarity scores:', fallbackChunks.slice(0, 2).map(chunk => chunk.similarity))
+        finalRelevantChunks = (fallbackChunks ?? []) as MatchDocument[]
+        console.log('Found fallback chunks:', (fallbackChunks?.length || 0))
+        if ((fallbackChunks?.length || 0) > 0) {
+          console.log('Fallback similarity scores:', (fallbackChunks as MatchDocument[]).slice(0, 2).map((chunk) => chunk.similarity))
         }
       }
     }
@@ -88,22 +88,23 @@ export async function POST(request: NextRequest) {
     console.log('Intent analysis:', intentAnalysis.primaryIntent, 'confidence:', intentAnalysis.confidence)
     
     // Apply executive-level knowledge prioritization to retrieved chunks
-    if (finalRelevantChunks && finalRelevantChunks.length > 0) {
+    let prioritizedChunks: Array<{ content: string; similarity: number }> = []
+    if (finalRelevantChunks.length > 0) {
       const executiveContext = {
         profile: context.executiveProfile,
         state: context.conversationState,
         intent: intentAnalysis
       }
       
-      finalRelevantChunks = ExecutiveKnowledgePrioritizer.prioritizeForExecutive(
-        finalRelevantChunks.map(chunk => ({
+      prioritizedChunks = ExecutiveKnowledgePrioritizer.prioritizeForExecutive(
+        finalRelevantChunks.map((chunk) => ({
           content: chunk.content,
-          similarity: chunk.similarity
+          similarity: chunk.similarity,
         })),
-        executiveContext
+        executiveContext,
       )
       
-      console.log('Applied executive prioritization to', finalRelevantChunks.length, 'chunks')
+      console.log('Applied executive prioritization to', prioritizedChunks.length, 'chunks')
     }
 
     // Generate response using Gemini with RAG and executive context
@@ -115,43 +116,41 @@ export async function POST(request: NextRequest) {
     
     const response = await generateRAGResponse({
       query: message,
-      relevantChunks: finalRelevantChunks || [],
+      relevantChunks: prioritizedChunks || [],
       conversationHistory,
       executiveContext: {
         profile: context.executiveProfile,
         state: context.conversationState,
-        intent: intentAnalysis
-      }
+        intent: intentAnalysis,
+      },
     })
-    
+
     // Save conversation turn to AIVY memory system
     await conversationMemory.saveConversationTurn(
       sessionId,
       message,
       response,
       intentAnalysis,
-      finalRelevantChunks || []
+      prioritizedChunks || []
     )
 
     // Log analytics (optional)
     try {
-      await supabase
+      await (supabase as any)
         .from('ai_analytics')
         .insert({
           event_type: 'chat_message',
           user_id: userId || null,
-          session_id: conversationId,
+          session_id: conversationId ?? null,
           metadata: {
             message_length: message.length,
             response_length: response.length,
-            timestamp: new Date().toISOString()
-          }
-        })
+            timestamp: new Date().toISOString(),
+          },
+        } as Database['public']['Tables']['ai_analytics']['Insert'])
     } catch (analyticsError) {
       console.warn('Failed to log analytics:', analyticsError)
-      // Don't fail the request if analytics logging fails
     }
-
     // Simulate processing time
     await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000))
 

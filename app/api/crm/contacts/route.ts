@@ -1,6 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
+type Contact = {
+  id?: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  organization?: string | null;
+  role?: string | null;
+  lead_status?: string;
+  source?: string;
+  company_size?: string | null;
+  industry?: string | null;
+  job_function?: string | null;
+  notes?: string | null;
+  company_website?: string | null;
+  social_links?: Record<string, unknown> | null;
+  metadata?: Record<string, unknown> | null;
+  created_at?: string;
+  updated_at?: string;
+};
+
 // GET /api/crm/contacts - Get all contacts with filtering and pagination
 export async function GET(request: NextRequest) {
   try {
@@ -80,27 +100,29 @@ export async function POST(request: NextRequest) {
     const supabase = createServerSupabaseClient();
     const data = await request.json();
     
-    const { data: contact, error } = await supabase
+    const contactData = {
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      organization: data.organization,
+      role: data.role,
+      lead_status: data.status || 'new',
+      source: data.source || 'manual',
+      company_size: data.company_size,
+      industry: data.industry,
+      job_function: data.job_function,
+      notes: data.notes,
+      company_website: data.website,
+      social_links: data.social_links || {},
+      metadata: {
+        created_via: 'admin_panel',
+        created_by: 'admin'
+      }
+    };
+
+    const { data: contact, error } = await (supabase as any)
       .from('lead_contacts')
-      .insert([{
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        organization: data.organization,
-        role: data.role,
-        lead_status: data.status || 'new',
-        source: data.source || 'manual',
-        company_size: data.company_size,
-        industry: data.industry,
-        job_function: data.job_function,
-        notes: data.notes,
-        company_website: data.website,
-        social_links: data.social_links || {},
-        metadata: {
-          created_via: 'admin_panel',
-          created_by: 'admin'
-        }
-      }])
+      .insert(contactData)
       .select()
       .single();
     
@@ -110,10 +132,13 @@ export async function POST(request: NextRequest) {
     }
     
     // Calculate initial lead score
-    const { data: scoreResult } = await supabase
-      .rpc('calculate_lead_score', { p_contact_id: contact.id });
+    if (contact?.id) {
+      const { data: scoreResult } = await (supabase as any)
+        .rpc('calculate_lead_score', { p_contact_id: contact.id });
+      return NextResponse.json({ contact, score: scoreResult });
+    }
     
-    return NextResponse.json({ contact, score: scoreResult });
+    return NextResponse.json({ contact });
     
   } catch (error) {
     console.error('API Error:', error);
@@ -129,9 +154,15 @@ export async function PATCH(request: NextRequest) {
     const url = new URL(request.url);
     const contactId = url.pathname.split('/').pop();
     
-    const { data: contact, error } = await supabase
+    if (!contactId) {
+      return NextResponse.json({ error: 'Contact ID is required' }, { status: 400 });
+    }
+
+    const updateData = { ...data };
+    
+    const { data: contact, error } = await (supabase as any)
       .from('lead_contacts')
-      .update(data)
+      .update(updateData)
       .eq('id', contactId)
       .select()
       .single();
@@ -142,8 +173,8 @@ export async function PATCH(request: NextRequest) {
     }
     
     // Recalculate lead score if relevant fields changed
-    if (data.role || data.company_size || data.industry) {
-      await supabase.rpc('calculate_lead_score', { p_contact_id: contactId });
+    if (contactId && (data.role || data.company_size || data.industry)) {
+      await (supabase as any).rpc('calculate_lead_score', { p_contact_id: contactId });
     }
     
     return NextResponse.json({ contact });
