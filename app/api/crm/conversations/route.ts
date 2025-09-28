@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = (await createClient()) as any
+    const supabase = createServiceClient() as any
 
     // Create interaction record
     const { data: interaction, error: interactionError } = await supabase

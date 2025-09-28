@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
 import { generateEmbedding } from '@/lib/embeddings/local-embeddings'
 
+// Force Node.js runtime and dynamic rendering; this route performs server-side processing
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -39,7 +43,7 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json(
       { 
-        error: error instanceof Error ? error.message : 'Internal server error',
+        error: (error as Error)?.message ?? 'Internal server error',
         timestamp: new Date().toISOString()
       },
       { status: 500 }
@@ -156,11 +160,11 @@ async function simulateDocumentProcessing(documentId: string, content: string, s
         event_type: 'document_processing_failed',
         metadata: {
           document_id: documentId,
-          error: error.message,
+          error: (error as Error)?.message ?? 'Unknown error',
           timestamp: new Date().toISOString()
         }
       })
 
-    throw error
+    throw error as Error
   }
 }
