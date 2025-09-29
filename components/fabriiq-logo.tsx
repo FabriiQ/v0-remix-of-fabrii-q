@@ -18,7 +18,8 @@ export function FabriiQLogo({ onClick, className = "" }: FabriiQLogoProps) {
           alt="FabriiQ Logo"
           width={160}
           height={48}
-          className="h-12 w-auto transform transition-all duration-300 hover:scale-105"
+          className="w-auto h-auto transform transition-all duration-300 hover:scale-105"
+          style={{ height: '3rem', width: 'auto' }}
         />
       </div>
     </div>

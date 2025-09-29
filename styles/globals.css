@@ -212,3 +212,14 @@
 [dir="rtl"] .space-x-4 > :not(:first-child) {
   margin-right: 1rem;
 }
+
+/* Prevent CTA rows from mirroring in RTL */
+[dir="rtl"] .rtl-keep-row {
+  flex-direction: row !important;
+}
+
+/* Preserve LTR intent for containers (layout only) */
+[dir="rtl"] .ltr-preserve {
+  direction: ltr;
+  text-align: left;
+}

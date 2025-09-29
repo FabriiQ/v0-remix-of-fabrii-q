@@ -139,18 +139,20 @@ export function ServicesBrickLayout() {
       size: "large",
     },
   ]
-
-  const containerVariants = {
+  const containerVariants: Record<string, any> = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
+        delayChildren: 0.3,
         staggerChildren: 0.1,
+        ease: [0.4, 0, 0.2, 1],
+        duration: 0.5,
       },
     },
-  }
+  };
 
-  const itemVariants = {
+  const itemVariants: Record<string, any> = {
     hidden: { y: 50, opacity: 0, scale: 0.9 },
     visible: {
       y: 0,
@@ -158,10 +160,10 @@ export function ServicesBrickLayout() {
       scale: 1,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
+        ease: [0.4, 0, 0.2, 1],
       },
     },
-  }
+  };
 
   return (
     <section className="py-20 px-4 sm:px-6 relative overflow-hidden bg-black">

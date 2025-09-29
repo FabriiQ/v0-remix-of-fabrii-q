@@ -298,7 +298,9 @@ export function ServicesViewportSection() {
             {services.map((service, index) => (
               <motion.div
                 key={service.id}
-                ref={(el) => (serviceRefs.current[index] = el)}
+                ref={(el: HTMLDivElement | null) => {
+                  serviceRefs.current[index] = el;
+                }}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}

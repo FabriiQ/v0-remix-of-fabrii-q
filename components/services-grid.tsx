@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
+import { motion, useInView, Variants } from "framer-motion"
 import { Code, Cog, Search, Shield, Zap, Globe, ArrowUpRight, CheckCircle } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -101,7 +101,6 @@ export function ServicesGrid() {
         "Streamlined business processes",
         "Improved data security",
         "Enhanced customer satisfaction",
-        "Increased agility and innovation",
         "Better decision-making",
       ],
       gradient: "from-indigo-500 to-blue-500",
@@ -110,23 +109,26 @@ export function ServicesGrid() {
     },
   ]
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
+        duration: 0.6,
+        ease: "easeOut",
+        when: "beforeChildren",
         staggerChildren: 0.1,
       },
     },
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 30, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.6,
+        duration: 0.5,
         ease: "easeOut",
       },
     },

@@ -386,7 +386,7 @@ function RadarChart({
             const labelY = centerY + labelRadius * Math.sin(point.angle)
 
             // Adjust text anchor based on position
-            let textAnchor = "middle"
+            let textAnchor: "start" | "middle" | "end" = "middle"
             if (point.angle > -Math.PI * 0.25 && point.angle < Math.PI * 0.25) textAnchor = "start"
             else if (point.angle > Math.PI * 0.75 || point.angle < -Math.PI * 0.75) textAnchor = "end"
 

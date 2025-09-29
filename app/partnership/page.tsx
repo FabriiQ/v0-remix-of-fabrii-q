@@ -64,7 +64,6 @@ export default function PartnershipPage() {
         phone: "",
         role: "",
         institutionType: "",
-        institutionType: "",
         campusCount: "",
         studentPopulation: "",
         currentSystems: "",

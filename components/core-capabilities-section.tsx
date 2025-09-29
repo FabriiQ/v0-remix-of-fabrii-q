@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, ReactNode } from "react"
 import { motion } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { StatusIndicatorsGroup } from "@/components/status-indicators"
@@ -18,7 +18,38 @@ import {
   Zap,
   Database,
   BarChart,
+  LucideIcon,
 } from "lucide-react"
+
+interface Feature {
+  icon: ReactNode;
+  text: string;
+}
+
+interface Stat {
+  label: string;
+  value: string;
+}
+
+interface StatusIndicator {
+  status: 'active' | 'beta' | 'development';
+  label: string;
+}
+
+interface Capability {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  icon: ReactNode;
+  features: Feature[];
+  stats: Stat[];
+  technologies: string[];
+  statusIndicators: StatusIndicator[];
+  gradient: string;
+  bgGradient: string;
+  accentColor: string;
+}
 
 // Create capabilities configuration function that uses translations
 const createCapabilities = (t: (key: string) => string) => [
@@ -112,7 +143,7 @@ export function CoreCapabilitiesSection() {
   const { t } = useLanguage()
   
   // Get dynamic capabilities with translations
-  const capabilities = createCapabilities(t)
+  const capabilities: Capability[] = createCapabilities(t)
 
   // Intersection observer for section visibility
   useEffect(() => {
@@ -217,10 +248,14 @@ export function CoreCapabilitiesSection() {
         <div className="relative">
           {/* Capabilities Content */}
           <div className="space-y-32">
-            {capabilities.map((capability, index) => (
+            {capabilities.map((capability: Capability, index: number) => (
               <motion.div
                 key={capability.id}
-                ref={(el) => (capabilityRefs.current[index] = el)}
+                ref={(el) => {
+                  if (el) {
+                    capabilityRefs.current[index] = el;
+                  }
+                }}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
@@ -255,7 +290,7 @@ export function CoreCapabilitiesSection() {
 
                     {/* Features */}
                     <div className="space-y-4">
-                      {capability.features.map((feature, featureIndex) => (
+                      {capability.features.map((feature: Feature, featureIndex: number) => (
                         <motion.div
                           key={featureIndex}
                           initial={{ opacity: 0, x: -20 }}
@@ -272,7 +307,7 @@ export function CoreCapabilitiesSection() {
 
                     {/* Stats */}
                     <div className="grid grid-cols-3 gap-4">
-                      {capability.stats.map((stat, statIndex) => (
+                      {capability.stats.map((stat: Stat, statIndex: number) => (
                         <motion.div
                           key={statIndex}
                           initial={{ opacity: 0, y: 20 }}
@@ -287,17 +322,11 @@ export function CoreCapabilitiesSection() {
                       ))}
                     </div>
 
-                    {/* Status Indicators - Replacing Technologies */}
-                    <div className="space-y-4">
-                      <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wider">Development Status</h4>
-                      <StatusIndicatorsGroup indicators={capability.statusIndicators} />
-                    </div>
-
                     {/* Technologies */}
                     <div className="space-y-4">
                       <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wider">Tech Stack</h4>
                       <div className="flex flex-wrap gap-2">
-                        {capability.technologies.map((tech, techIndex) => (
+                        {capability.technologies.map((tech: string, techIndex: number) => (
                           <motion.div
                             key={techIndex}
                             initial={{ opacity: 0, scale: 0 }}
