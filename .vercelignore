@@ -1,0 +1,50 @@
+# Ignore everything by default
+**/*
+
+# Allow Next.js build output
+!.next/
+.next/cache/**
+
+# Allow public assets
+!public/
+public/**
+
+# Allow necessary config files
+!next.config.*
+!package.json
+!package-lock.json
+!pnpm-lock.yaml
+!vercel.json
+
+# Allow API routes (selectively)
+!app/api/admin/bulk-upload/route.ts
+!app/api/admin/bulk-upload/route.config.js
+
+# Allow necessary source files (add more as needed)
+!lib/
+!components/
+!styles/
+!types/
+
+# Allow environment files (if needed)
+!.env*.local
+!.env
+
+# Ignore large directories
+node_modules/
+.cache/
+**/node_modules/
+**/.cache/
+
+# Ignore test and development files
+**/*.test.*
+**/*.spec.*
+.vercel/
+.DS_Store
+Thumbs.db
+*.log
+*.pem
+
+# Ignore local embeddings and models
+.cache/transformers/
+**/models/
