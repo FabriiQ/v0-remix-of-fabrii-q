@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "app/api/admin/bulk-upload/route.ts": {
+      "maxDuration": 60,
+      "memory": 3008,
+      "includeFiles": [
+        "FabriiQ-docs/**/*"
+      ]
+    }
+  },
+  "buildCommand": "npm run build",
+  "installCommand": "npm install"
+}

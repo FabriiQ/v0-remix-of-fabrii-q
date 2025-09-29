@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
@@ -8,76 +12,81 @@ const nextConfig = {
   },
   images: {
     unoptimized: true,
+    domains: [],
   },
   // Configure serverless function size limits
+  output: 'standalone',
   experimental: {
-    outputFileTracingExcludes: {
-      // Exclude large dependencies from serverless functions
-      '*': [
-        '**/.cache/**',
-        '**/node_modules/**',
-        '**/public/**',
-        '**/scripts/**',
-        '**/styles/**',
-        '**/types/**',
-        '**/utils/**',
-        '**/test/**',
-        '**/tests/**',
-        '**/__tests__/**',
-        '**/*.test.*',
-        '**/*.spec.*',
-        '**/*.stories.*',
-      ],
-    },
     // Enable server actions
     serverActions: {
       bodySizeLimit: '4mb',
     },
-  },
-  // Configure API routes
-  api: {
-    bodyParser: {
-      sizeLimit: '4mb',
+    // Optimize package imports
+    optimizePackageImports: [
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-slot',
+      '@radix-ui/react-select',
+      'lucide-react',
+    ],
+    // Exclude large dependencies from serverless functions
+    outputFileTracingExcludes: {
+      '*': [
+        '**/.cache/**',
+        '**/node_modules/!(@vercel/analytics|@vercel/speed-insights)/**',
+        '**/public/**',
+        '**/scripts/**',
+        '**/test/**',
+        '**/tests/**',
+        '**/__tests__/**',
+        '**/cypress/**',
+        '**/examples/**',
+        '**/docs/**',
+        '**/dist/**',
+        '**/styles/**',
+        '**/types/**',
+        '**/utils/**',
+      ],
     },
   },
   // Webpack configuration
   webpack: (config, { isServer }) => {
+    // Exclude node_modules from serverless functions
     if (!isServer) {
-      // Ensures server-only modules are not included in client bundles
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        path: false,
-        os: false,
-      };
+      config.externals = [
+        ...(config.externals || []),
+        {
+          fs: 'commonjs fs',
+          'fs/promises': 'commonjs fs/promises',
+          path: 'commonjs path',
+          os: 'commonjs os',
+        },
+      ];
     }
-    
-    // Exclude large modules from client bundles
-    config.externals = {
-      ...config.externals,
-      'fs': 'commonjs fs',
-      'path': 'commonjs path',
-      'os': 'commonjs os',
-    };
-    
+
+    // Add file loader for markdown files
+    config.module.rules.push({
+      test: /\.md$/,
+      use: 'raw-loader',
+    });
+
     return config;
   },
-}
+};
 
 // Environment-specific configurations
 if (process.env.NODE_ENV === 'production') {
-  // Disable source maps in production
+  // Optimize production build
   nextConfig.productionBrowserSourceMaps = false;
-  
-  // Enable output file tracing with exclusions
-  nextConfig.output = 'standalone';
+  nextConfig.optimizeFonts = true;
+  nextConfig.compress = true;
+  nextConfig.reactStrictMode = false;
   
   // Configure serverless function size limits
   nextConfig.experimental = {
     ...nextConfig.experimental,
-    // Increase the serverless function size limit
     serverComponentsExternalPackages: ['sharp', 'onnxruntime-node'],
   };
 }
 
-export default nextConfig
+module.exports = withBundleAnalyzer(nextConfig);
