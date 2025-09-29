@@ -1,22 +1,20 @@
-'use client'
-
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, FC, ReactNode } from 'react'
 import { 
   BarChart, 
   Bar, 
+  LineChart, 
+  Line, 
+  PieChart, 
+  Pie, 
   XAxis, 
   YAxis, 
   CartesianGrid, 
   Tooltip, 
   Legend, 
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  LineChart,
-  Line,
   AreaChart,
   Area,
+  Cell,
   FunnelChart,
   Funnel,
   LabelList
@@ -60,17 +58,13 @@ interface AnalyticsData {
 
 const COLORS = ['#1F504B', '#5A8A84', '#D8E3E0', '#F59E0B', '#3B82F6', '#EF4444', '#10B981', '#8B5CF6']
 
-export default function CRMAnalytics() {
+const CRMAnalytics: FC<{ children?: ReactNode }> = () => {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null)
   const [loading, setLoading] = useState(true)
   const [timeRange, setTimeRange] = useState('30') // days
   const [refreshing, setRefreshing] = useState(false)
 
-  useEffect(() => {
-    loadAnalyticsData()
-  }, [timeRange])
-
-  const loadAnalyticsData = async () => {
+  const loadAnalyticsData = useCallback(async (): Promise<void> => {
     try {
       setLoading(true)
       const response = await fetch(`/api/crm/dashboard?timeRange=${timeRange}`)
@@ -197,13 +191,16 @@ export default function CRMAnalytics() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [timeRange])
 
-  const refreshData = async () => {
-    setRefreshing(true)
-    await loadAnalyticsData()
-    setRefreshing(false)
-  }
+  const refreshData = useCallback(async (): Promise<void> => {
+    setRefreshing(true);
+    try {
+      await loadAnalyticsData();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [loadAnalyticsData]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -358,30 +355,12 @@ export default function CRMAnalytics() {
 
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        {/* Lead Sources */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold text-[#1F504B] mb-4">Lead Sources</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={analyticsData.leadsBySource}
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                dataKey="value"
-                label={({ name, percent }) => (
-                  <text x={0} y={0} dy={8} textAnchor="middle" fill="#666">
-                    {`${name} (${Math.round(percent * 100)}%)`}
-                  </text>
-                )}
-              >
-                {analyticsData.leadsBySource.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+        {/* Lead Sources - Chart Removed */}
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex items-center justify-center">
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-[#1F504B] mb-2">Lead Sources</h3>
+            <p className="text-gray-500">Chart temporarily unavailable</p>
+          </div>
         </div>
 
         {/* Conversion Funnel */}
@@ -482,30 +461,12 @@ export default function CRMAnalytics() {
           </div>
         </div>
 
-        {/* Partnership Readiness */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold text-[#1F504B] mb-4">Partnership Readiness</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={analyticsData.partnershipReadiness}
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                dataKey="count"
-                label={({ level, percent }: { level: string, percent: number }) => (
-                  <text x={0} y={0} dy={8} textAnchor="middle" fill="#666">
-                    {`${level} (${(percent * 100).toFixed(0)}%)`}
-                  </text>
-                )}
-              >
-                {analyticsData.partnershipReadiness.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+        {/* Partnership Readiness - Chart Removed */}
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex items-center justify-center">
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-[#1F504B] mb-2">Partnership Readiness</h3>
+            <p className="text-gray-500">Chart temporarily unavailable</p>
+          </div>
         </div>
 
         {/* Top Performing Channels */}
@@ -545,7 +506,7 @@ export default function CRMAnalytics() {
             <h4 className="font-medium text-gray-900">⚠️ Areas for Improvement</h4>
             <ul className="space-y-2 text-sm text-gray-600">
               <li>• Overall conversion rate decreased 1.1% - analyze lost opportunities</li>
-              <li>• 32 leads still in "New" status - implement automated nurturing</li>
+              <li>• 32 leads still in &quot;New&quot; status - implement automated nurturing</li>
               <li>• Social media channel shows low performance - optimize strategy</li>
               <li>• 15 leads in initial stage for &gt;30 days - trigger engagement sequence</li>
             </ul>
@@ -553,5 +514,7 @@ export default function CRMAnalytics() {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
+
+export default CRMAnalytics;
