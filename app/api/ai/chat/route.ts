@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
-import { generateEmbedding } from '@/lib/embeddings/local-embeddings'
+import { generateEmbedding } from '@/lib/embeddings/openai-embeddings'
 import { generateRAGResponse } from '@/lib/ai/gemini'
 import { AIVYConversationMemory } from '@/lib/ai/conversation-memory'
 import { ExecutiveKnowledgePrioritizer } from '@/lib/ai/executive-knowledge-prioritizer'
@@ -37,13 +37,13 @@ export async function POST(request: NextRequest) {
     // Get conversation context for executive-level processing
     const context = await conversationMemory.getSessionContext(sessionId)
 
-    // Generate embedding for the user query
+    // Generate embedding for the user query using OpenAI
     console.log('Generating embedding for query:', message.substring(0, 100) + '...')
     const queryEmbedding = await generateEmbedding(message)
-    console.log('Generated embedding with dimensions:', queryEmbedding.length)
+    console.log('Generated OpenAI embedding with dimensions:', queryEmbedding.length)
 
     // Perform vector search for relevant context
-    console.log('Performing vector search with threshold: 0.7, match_count: 5')
+    console.log('Performing vector search with OpenAI embeddings, threshold: 0.7, match_count: 5')
     type MatchDocument = Database['public']['Functions']['match_documents']['Returns'][number]
     const { data: relevantChunks, error: searchError } = await ((supabase as any).rpc('match_documents', {
       query_embedding: queryEmbedding,
