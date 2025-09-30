@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAssessments } from '@/lib/crm/data';
+import { getAssessments } from '@/lib/services/crmService';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 // GET /api/crm/assessments - Get all partnership assessments with filtering

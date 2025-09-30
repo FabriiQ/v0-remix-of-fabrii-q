@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDashboardData } from '@/lib/crm/data';
+import { getDashboardData } from '@/lib/services/crmService';
 
 export const dynamic = 'force-dynamic';
 

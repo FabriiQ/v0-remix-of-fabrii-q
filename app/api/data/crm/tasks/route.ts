@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTasks, Task, TaskPriority, TaskStatus } from '@/lib/crm/data';
+import { getTasks, Task, TaskPriority, TaskStatus } from '@/lib/services/crmService';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 // GET /api/crm/tasks - Get all follow-up tasks with filtering

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getContacts } from '@/lib/crm/data';
+import { getContacts } from '@/lib/services/crmService';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 // GET /api/crm/contacts - Get all contacts with filtering and pagination
