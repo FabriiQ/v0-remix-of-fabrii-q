@@ -373,9 +373,9 @@ export async function getConversations(limit: number = 50, offset: number = 0): 
       ? conv.contact_interactions[0] || {}
       : conv.contact_interactions || {};
     const contact = contactInteraction.lead_contacts || {};
-    const analytics = Array.isArray(conv.conversation_analytics)
+    const analytics = (Array.isArray(conv.conversation_analytics)
       ? conv.conversation_analytics[0]
-      : conv.conversation_analytics || {};
+      : conv.conversation_analytics) || {};
     const conversationTurns = Array.isArray(conv.conversation_turns) ? conv.conversation_turns : [];
 
     return {
