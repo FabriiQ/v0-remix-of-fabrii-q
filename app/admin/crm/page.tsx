@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
-import { getDashboardData, DashboardStats } from '@/lib/crm/data';
+import { getDashboardData } from '@/lib/services/crmService';
 import CRMDashboard from './crm-dashboard';
+import { DashboardStats } from '@/lib/services/crmService';
 import { Skeleton } from '@/components/ui/skeleton';
 
 // This is now a Server Component

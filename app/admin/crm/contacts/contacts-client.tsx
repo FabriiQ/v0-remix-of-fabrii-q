@@ -12,7 +12,7 @@ import {
   Edit,
   Building
 } from 'lucide-react';
-import { ContactsData, Contact } from '@/lib/crm/data';
+import { ContactsData, Contact } from '@/lib/services/crmService';
 
 export function ContactsClient({ initialData }: { initialData: ContactsData }) {
   const [contacts, setContacts] = useState<Contact[]>(initialData.contacts);
@@ -68,10 +68,13 @@ export function ContactsClient({ initialData }: { initialData: ContactsData }) {
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this contact?')) {
       try {
-        const supabase = getSupabaseClient();
-        const { error } = await supabase.from('lead_contacts').delete().eq('id', id);
+        const response = await fetch(`/api/data/crm/contacts/${id}`, {
+          method: 'DELETE',
+        });
         
-        if (error) throw error;
+        if (!response.ok) {
+          throw new Error('Failed to delete contact');
+        }
         
         router.refresh();
       } catch (error) {
@@ -81,23 +84,33 @@ export function ContactsClient({ initialData }: { initialData: ContactsData }) {
   };
 
   const toggleStar = async (id: string, currentValue: boolean) => {
+    // Optimistic UI update
+    setContacts(prevContacts =>
+      prevContacts.map(contact =>
+        contact.id === id ? { ...contact, starred: !currentValue } : contact
+      )
+    );
+
     try {
-      const supabase = getSupabaseClient();
-      
-      const { error } = await supabase
-        .from('lead_contacts')
-        .update({ starred: !currentValue, updated_at: new Date().toISOString() })
-        .eq('id', id);
+      const response = await fetch(`/api/data/crm/contacts/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ starred: !currentValue }),
+      });
         
-      if (error) throw error;
-      
-      setContacts(prevContacts =>
-        prevContacts.map(contact =>
-          contact.id === id ? { ...contact, starred: !currentValue } : contact
-        )
-      );
+      if (!response.ok) {
+        throw new Error('Failed to toggle star');
+      }
     } catch (error) {
       console.error('Error toggling star:', error);
+      // Revert optimistic update
+      setContacts(prevContacts =>
+        prevContacts.map(contact =>
+          contact.id === id ? { ...contact, starred: currentValue } : contact
+        )
+      );
     }
   };
 

@@ -21,7 +21,7 @@ import {
   Search,
   Download
 } from 'lucide-react'
-import { TasksData, Task, TaskStats } from '@/lib/crm/data'
+import { TasksData, Task, TaskStats } from '@/lib/services/crmService'
 
 export default function TasksClient({ initialData }: { initialData: TasksData }) {
   const [tasks, setTasks] = useState<Task[]>(initialData.tasks)

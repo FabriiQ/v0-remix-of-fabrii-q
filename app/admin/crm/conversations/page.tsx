@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { getConversations } from '@/lib/crm/data';
+import { getConversations } from '@/lib/services/crmService';
 import ConversationsWrapper from './conversations-wrapper';
 import { Skeleton } from '@/components/ui/skeleton';
 

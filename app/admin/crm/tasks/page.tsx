@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { getTasks, TasksData } from '@/lib/crm/data';
+import { getTasks, TasksData } from '@/lib/services/crmService';
 import TasksClient from './tasks-client';
 import { Skeleton } from '@/components/ui/skeleton';
 

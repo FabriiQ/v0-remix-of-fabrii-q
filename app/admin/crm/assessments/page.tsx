@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { getAssessments, AssessmentsData } from '@/lib/crm/data';
+import { getAssessments, AssessmentsData } from '@/lib/services/crmService';
 import AssessmentsClient from './assessments-client';
 import { Skeleton } from '@/components/ui/skeleton';
 

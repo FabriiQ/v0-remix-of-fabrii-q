@@ -18,7 +18,7 @@ import {
   Star,
   BarChart3
 } from 'lucide-react'
-import { PartnershipAssessment, AssessmentsData } from '@/lib/crm/data'
+import { PartnershipAssessment, AssessmentsData } from '@/lib/services/crmService'
 import { useRouter } from 'next/navigation'
 import { getSupabaseClient } from '@/lib/supabase/client'
 

@@ -15,7 +15,7 @@ import {
   Search,
   ChevronRight
 } from 'lucide-react'
-import { Conversation } from '@/lib/crm/data'
+import { Conversation } from '@/lib/services/crmService'
 
 export default function ConversationsClient({ initialConversations = [] }: { initialConversations: Conversation[] }) {
   const [conversations, setConversations] = useState<Conversation[]>(initialConversations)

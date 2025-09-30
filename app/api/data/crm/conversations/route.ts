@@ -27,11 +27,11 @@ export async function GET(request: NextRequest) {
 // POST - Create interaction record and update conversation status
 export async function POST(request: NextRequest) {
   try {
-    const { 
-      sessionId, 
-      contactId, 
-      interactionType, 
-      outcome, 
+    const {
+      sessionId,
+      contactId,
+      interactionType,
+      outcome,
       sentiment = 'neutral',
       topicsDiscussed = [],
       actionItems = [],
@@ -107,9 +107,9 @@ export async function POST(request: NextRequest) {
 }
 
 async function createHandoverTask(
-  supabase: any, 
-  contactId: string, 
-  sessionId: string, 
+  supabase: any,
+  contactId: string,
+  sessionId: string,
   nextSteps?: string,
   topicsDiscussed: string[] = []
 ) {
@@ -127,7 +127,7 @@ AIVY Conversation Handover - Contact requires human assistance
 Key Discussion Topics: ${topicsDiscussed.join(', ') || 'General inquiry'}
 
 Recent Conversation Summary:
-${conversationSummary?.map((turn: any) => 
+${conversationSummary?.map((turn: any) =>
   `User: ${turn.user_query}\nAIVY: ${turn.response_content}\n---`
 ).slice(0, 3).join('\n')}
 
@@ -144,8 +144,8 @@ Please review the full conversation history and contact profile before reaching 
         task_title: 'AIVY Conversation Handover',
         task_description: taskDescription,
         due_date: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2 hours from now
-        priority: topicsDiscussed.some(topic => 
-          topic.toLowerCase().includes('demo') || 
+        priority: topicsDiscussed.some(topic =>
+          topic.toLowerCase().includes('demo') ||
           topic.toLowerCase().includes('pricing') ||
           topic.toLowerCase().includes('partnership')
         ) ? 'high' : 'medium',

@@ -9,7 +9,7 @@ import {
   ChevronRight,
   BarChart3
 } from 'lucide-react';
-import { DashboardStats } from '@/lib/crm/data';
+import { DashboardStats } from '@/lib/services/crmService';
 
 type PriorityType = 'low' | 'medium' | 'high';
 

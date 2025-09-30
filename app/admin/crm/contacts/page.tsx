@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { getContacts, ContactsData } from '@/lib/crm/data';
+import { getContacts, ContactsData } from '@/lib/services/crmService';
 import { ContactsClient } from './contacts-client';
 import { Skeleton } from '@/components/ui/skeleton';
 
