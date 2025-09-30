@@ -181,6 +181,162 @@ export async function getDashboardData(timeRange: string = '30'): Promise<Dashbo
   };
 }
 
+// Type definitions for assessment data
+export interface PartnershipAssessment {
+  id: string;
+  contact_id: string;
+  contact_name: string;
+  contact_email: string;
+  organization: string;
+  institution_name: string;
+  institution_type: string;
+  campus_count: number;
+  student_population: number;
+  investment_timeline: string;
+  partnership_commitment_level: string;
+  assessment_score: number;
+  readiness_level: 'initial' | 'exploring' | 'evaluating' | 'ready' | 'committed';
+  partnership_priority: 'low' | 'medium' | 'high' | 'critical';
+  status: 'submitted' | 'under_review' | 'approved' | 'declined' | 'follow_up_needed';
+  submitted_at: string;
+  reviewed_at?: string;
+  custom_requirements?: string;
+  vision_statement?: string;
+  lead_contacts?: any;
+}
+
+export interface AssessmentStats {
+    total: number;
+    submitted: number;
+    under_review: number;
+    approved: number;
+    high_priority: number;
+    ready_for_partnership: number;
+    average_score: number;
+    by_institution_type: Record<string, number>;
+}
+
+export interface AssessmentsData {
+  assessments: PartnershipAssessment[];
+  statistics: AssessmentStats;
+  pagination: {
+    page: number;
+    pageSize: number;
+    totalCount: number;
+    totalPages: number;
+  };
+}
+
+export async function getAssessments(
+  page: number = 1,
+  pageSize: number = 50,
+  status?: string,
+  readinessLevel?: string,
+  institutionType?: string,
+  priority?: string,
+  sortBy: string = 'submitted_at',
+  sortOrder: string = 'desc'
+): Promise<AssessmentsData> {
+  const supabase = createServerSupabaseClient();
+
+  let query = (supabase.from('partnership_assessments') as any)
+      .select(`
+        *,
+        lead_contacts!inner(*)
+      `)
+      .range((page - 1) * pageSize, page * pageSize - 1);
+
+  // Apply filters
+  if (status && status !== 'all') {
+    query = query.eq('status', status);
+  }
+  if (readinessLevel && readinessLevel !== 'all') {
+    query = query.eq('readiness_level', readinessLevel);
+  }
+  if (institutionType && institutionType !== 'all') {
+    query = query.eq('institution_type', institutionType);
+  }
+  if (priority && priority !== 'all') {
+    query = query.eq('partnership_priority', priority);
+  }
+
+  // Apply sorting
+  query = query.order(sortBy, { ascending: sortOrder === 'asc' });
+
+  const { data: assessments, error } = await query;
+
+  if (error) {
+    console.error('Error fetching assessments:', error);
+    throw new Error('Failed to fetch assessments');
+  }
+
+  const { count: totalCount, error: countError } = await (supabase
+    .from('partnership_assessments') as any)
+    .select('*', { count: 'exact', head: true });
+
+  if (countError) {
+    console.error('Error fetching assessments count:', countError);
+    throw new Error('Failed to fetch assessments count');
+  }
+
+  // Get assessment statistics
+  type AssessmentStatsRow = {
+    status: string | null
+    readiness_level: string | null
+    partnership_priority: string | null
+    institution_type: string | null
+    assessment_score: number | null
+  }
+
+  const statsRes = await (supabase
+    .from('partnership_assessments') as any)
+    .select('status, readiness_level, partnership_priority, institution_type, assessment_score');
+
+  const stats = (statsRes.data as unknown as AssessmentStatsRow[] | null);
+  const statsError = statsRes.error;
+
+  if (statsError) {
+    console.error('Error fetching assessment stats:', statsError);
+  }
+
+  let assessmentStats: AssessmentStats = {
+    total: stats?.length || 0,
+    submitted: stats?.filter(a => a.status === 'submitted').length || 0,
+    under_review: stats?.filter(a => a.status === 'under_review').length || 0,
+    approved: stats?.filter(a => a.status === 'approved').length || 0,
+    high_priority: stats?.filter(a => a.partnership_priority === 'high' || a.partnership_priority === 'critical').length || 0,
+    ready_for_partnership: stats?.filter(a => a.readiness_level === 'ready' || a.readiness_level === 'committed').length || 0,
+    average_score: stats?.length ? stats.reduce((sum, a) => sum + (a.assessment_score || 0), 0) / stats.length : 0,
+    by_institution_type: (stats || []).reduce((acc, a) => {
+      const key = a.institution_type || 'unknown'
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>)
+  };
+
+  const transformedAssessments = (assessments || []).map((assessment: any) => {
+    const contact = assessment.lead_contacts;
+    return {
+      ...assessment,
+      contact_id: contact?.id || assessment.contact_id,
+      contact_name: contact?.name || assessment.primary_contact_name,
+      contact_email: contact?.email || assessment.primary_contact_email,
+      organization: contact?.organization || assessment.institution_name,
+    };
+  });
+
+  return {
+    assessments: transformedAssessments as PartnershipAssessment[],
+    statistics: assessmentStats,
+    pagination: {
+      page,
+      pageSize,
+      totalCount: totalCount || 0,
+      totalPages: Math.ceil((totalCount || 0) / pageSize)
+    }
+  };
+}
+
 // Type definitions for contact data
 export interface Contact {
   id: string;
