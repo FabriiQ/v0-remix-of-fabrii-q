@@ -1,7 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { getSupabaseClient } from '@/lib/supabase/client'
 import { 
   CheckCircle, 
   Clock, 
@@ -19,113 +21,86 @@ import {
   Search,
   Download
 } from 'lucide-react'
+import { TasksData, Task, TaskStats } from '@/lib/services/crmService'
 
-interface Task {
-  id: string
-  contact_id?: string
-  task_type: 'call' | 'email' | 'demo' | 'meeting' | 'proposal' | 'follow_up' | 'partnership_review'
-  task_title: string
-  task_description?: string
-  due_date: string
-  priority: 'low' | 'medium' | 'high' | 'urgent'
-  status: 'pending' | 'in_progress' | 'completed' | 'cancelled'
-  assigned_to?: string
-  created_by?: string
-  completed_at?: string
-  result?: string
-  created_at: string
-  lead_contacts?: {
-    id: string
-    name: string
-    email: string
-    phone?: string
-    organization: string
-    role?: string
-    lead_status: string
-    lead_score?: number
-  }
-}
-
-interface TaskStatistics {
-  total: number
-  pending: number
-  in_progress: number
-  completed: number
-  overdue: number
-  high_priority: number
-}
-
-function TaskManagement() {
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [filteredTasks, setFilteredTasks] = useState<Task[]>([])
-  const [statistics, setStatistics] = useState<TaskStatistics>({
-    total: 0,
-    pending: 0,
-    in_progress: 0,
-    completed: 0,
-    overdue: 0,
-    high_priority: 0
-  })
-  const [loading, setLoading] = useState(true)
+export default function TasksClient({ initialData }: { initialData: TasksData }) {
+  const [tasks, setTasks] = useState<Task[]>(initialData.tasks)
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>(initialData.tasks)
+  const [statistics, setStatistics] = useState<TaskStats>(initialData.statistics)
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [typeFilter, setTypeFilter] = useState<string>('all')
   const [priorityFilter, setPriorityFilter] = useState<string>('all')
   const [dueDateFilter, setDueDateFilter] = useState<string>('all')
   const [showAddTaskModal, setShowAddTaskModal] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
-    loadTasks()
-  }, [])
+    const supabase = getSupabaseClient()
+    const channel = supabase
+      .channel('tasks-client-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'follow_up_tasks' }, () => {
+        router.refresh()
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [router])
+
+  const filterTasks = useCallback(() => {
+    let filtered = [...tasks]
+
+    if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        filtered = filtered.filter(task =>
+            task.task_title.toLowerCase().includes(query) ||
+            (task.task_description && task.task_description.toLowerCase().includes(query)) ||
+            (task.lead_contacts && task.lead_contacts.name.toLowerCase().includes(query))
+        );
+    }
+
+    if (statusFilter !== 'all') {
+        filtered = filtered.filter(task => task.status === statusFilter);
+    }
+
+    if (typeFilter !== 'all') {
+        filtered = filtered.filter(task => task.task_type === typeFilter);
+    }
+
+    if (priorityFilter !== 'all') {
+        filtered = filtered.filter(task => task.priority === priorityFilter);
+    }
+
+    const now = new Date();
+    if (dueDateFilter === 'today') {
+      const today = new Date(now.setHours(0, 0, 0, 0));
+      const tomorrow = new Date(new Date().setDate(today.getDate() + 1));
+      filtered = filtered.filter(task => {
+          const dueDate = new Date(task.due_date);
+          return dueDate >= today && dueDate < tomorrow;
+      });
+    } else if (dueDateFilter === 'overdue') {
+        filtered = filtered.filter(task => new Date(task.due_date) < now && task.status !== 'completed');
+    } else if (dueDateFilter === 'upcoming') {
+        const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1));
+        tomorrow.setHours(0,0,0,0);
+        filtered = filtered.filter(task => new Date(task.due_date) >= tomorrow);
+    }
+
+    setFilteredTasks(filtered);
+  }, [tasks, searchQuery, statusFilter, typeFilter, priorityFilter, dueDateFilter]);
 
   useEffect(() => {
     filterTasks()
-  }, [tasks, searchQuery, statusFilter, typeFilter, priorityFilter, dueDateFilter])
+  }, [filterTasks])
 
-  const loadTasks = async () => {
-    try {
-      const response = await fetch('/api/crm/tasks')
-      if (!response.ok) {
-        throw new Error('Failed to fetch tasks')
-      }
-      
-      const data = await response.json()
-      setTasks(data.tasks || [])
-      setFilteredTasks(data.tasks || [])
-      setStatistics(data.statistics || {
-        total: 0,
-        pending: 0,
-        in_progress: 0,
-        completed: 0,
-        overdue: 0,
-        high_priority: 0
-      })
-    } catch (error) {
-      console.error('Failed to load tasks:', error)
-      setTasks([])
-      setFilteredTasks([])
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const filterTasks = () => {
-    // Implementation of filterTasks function
-    // ... (keep the existing implementation)
-  }
-
-  // ... (keep all other existing functions like getStatusColor, getPriorityColor, etc.)
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#F9FAFB] p-6 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-[#1F504B] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading tasks...</p>
-        </div>
-      </div>
-    )
-  }
+  useEffect(() => {
+    setTasks(initialData.tasks);
+    setStatistics(initialData.statistics);
+    setFilteredTasks(initialData.tasks);
+  }, [initialData]);
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] p-6">
@@ -187,5 +162,3 @@ function TaskManagement() {
     </div>
   )
 }
-
-export default TaskManagement;

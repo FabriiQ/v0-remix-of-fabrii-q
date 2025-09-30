@@ -3,98 +3,80 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getSupabaseClient } from '@/lib/supabase/client';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { 
   Plus, 
   Search, 
-  Filter, 
-  MoreHorizontal, 
-  ArrowUpDown,
   Star,
-  StarOff,
-  Mail,
-  Phone,
   Trash2,
   Edit,
-  ExternalLink,
-  Building,
-  MessageSquare,
-  Target,
-  Download
+  Building
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { format } from 'date-fns';
+import { ContactsData, Contact } from '@/lib/services/crmService';
 
-type Contact = {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  organization: string;
-  role?: string;
-  leadScore: number;
-  status: 'new' | 'contacted' | 'qualified' | 'opportunity' | 'converted' | 'lost';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  lastActivity: string;
-  source: 'aivy_chat' | 'assessment' | 'manual' | 'referral';
-  tags: string[];
-  conversationCount: number;
-  hasAssessment: boolean;
-  starred: boolean;
-  createdAt: string;
-};
-
-export function ContactsClient() {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [loading, setLoading] = useState(true);
+export function ContactsClient({ initialData }: { initialData: ContactsData }) {
+  const [contacts, setContacts] = useState<Contact[]>(initialData.contacts);
+  const [filteredContacts, setFilteredContacts] = useState<Contact[]>(initialData.contacts);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedPriority, setSelectedPriority] = useState<string>('all');
-
-  const fetchContacts = useCallback(async () => {
-    try {
-      setLoading(true);
-      const supabase = getSupabaseClient();
-      const { data, error } = await supabase.from('contacts').select('*');
-      
-      if (error) throw error;
-      
-      setContacts(data || []);
-    } catch (error) {
-      console.error('Error fetching contacts:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const router = useRouter();
 
   useEffect(() => {
-    fetchContacts();
-  }, [fetchContacts]);
+    const supabase = getSupabaseClient();
+    const channel = supabase
+      .channel('contacts-client-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'lead_contacts' }, () => {
+        router.refresh();
+      })
+      .subscribe();
 
-  const filteredContacts = contacts.filter(contact => {
-    const matchesSearch = 
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [router]);
+
+  const filterContacts = useCallback(() => {
+    let filtered = [...contacts];
+
+    const matchesSearch = (contact: Contact) =>
       contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (contact.phone && contact.phone.includes(searchTerm)) ||
       contact.organization.toLowerCase().includes(searchTerm.toLowerCase());
-      
-    const matchesStatus = selectedStatus === 'all' || contact.status === selectedStatus;
-    const matchesPriority = selectedPriority === 'all' || contact.priority === selectedPriority;
+
+    const matchesStatus = (contact: Contact) =>
+      selectedStatus === 'all' || contact.lead_status === selectedStatus;
+
+    const matchesPriority = (contact: Contact) =>
+      selectedPriority === 'all' || contact.priority === selectedPriority;
+
+    filtered = contacts.filter(contact => matchesSearch(contact) && matchesStatus(contact) && matchesPriority(contact));
     
-    return matchesSearch && matchesStatus && matchesPriority;
-  });
+    setFilteredContacts(filtered);
+  }, [contacts, searchTerm, selectedStatus, selectedPriority]);
+
+  useEffect(() => {
+    filterContacts();
+  }, [filterContacts]);
+
+  useEffect(() => {
+    setContacts(initialData.contacts);
+  }, [initialData]);
+
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this contact?')) {
       try {
-        const supabase = getSupabaseClient();
-        const { error } = await supabase.from('contacts').delete().eq('id', id);
+        const response = await fetch(`/api/data/crm/contacts/${id}`, {
+          method: 'DELETE',
+        });
         
-        if (error) throw error;
+        if (!response.ok) {
+          throw new Error('Failed to delete contact');
+        }
         
-        // Refresh the contacts list
-        fetchContacts();
+        router.refresh();
       } catch (error) {
         console.error('Error deleting contact:', error);
       }
@@ -102,38 +84,35 @@ export function ContactsClient() {
   };
 
   const toggleStar = async (id: string, currentValue: boolean) => {
+    // Optimistic UI update
+    setContacts(prevContacts =>
+      prevContacts.map(contact =>
+        contact.id === id ? { ...contact, starred: !currentValue } : contact
+      )
+    );
+
     try {
-      const supabase = getSupabaseClient();
-      
-      // Update the contact's starred status directly with type assertion
-      const { error } = await (supabase
-        .from('contacts')
-        .update({ 
-          starred: !currentValue,
-          updated_at: new Date().toISOString()
-        } as never) // Using never to bypass the type checking
-        .eq('id', id) as any);
+      const response = await fetch(`/api/data/crm/contacts/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ starred: !currentValue }),
+      });
         
-      if (error) throw error;
-      
-      // Update the local state
-      setContacts(prevContacts =>
-        prevContacts.map(contact =>
-          contact.id === id ? { ...contact, starred: !currentValue } : contact
-        )
-      );
+      if (!response.ok) {
+        throw new Error('Failed to toggle star');
+      }
     } catch (error) {
       console.error('Error toggling star:', error);
+      // Revert optimistic update
+      setContacts(prevContacts =>
+        prevContacts.map(contact =>
+          contact.id === id ? { ...contact, starred: currentValue } : contact
+        )
+      );
     }
   };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -252,20 +231,20 @@ export function ContactsClient() {
                     <td className="p-4 align-middle">
                       <span
                         className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                          contact.status === 'new'
+                          contact.lead_status === 'new'
                             ? 'bg-blue-100 text-blue-800'
-                            : contact.status === 'contacted'
+                            : contact.lead_status === 'contacted'
                             ? 'bg-purple-100 text-purple-800'
-                            : contact.status === 'qualified'
+                            : contact.lead_status === 'qualified'
                             ? 'bg-green-100 text-green-800'
-                            : contact.status === 'opportunity'
+                            : contact.lead_status === 'opportunity'
                             ? 'bg-yellow-100 text-yellow-800'
-                            : contact.status === 'converted'
+                            : contact.lead_status === 'converted'
                             ? 'bg-emerald-100 text-emerald-800'
                             : 'bg-red-100 text-red-800'
                         }`}
                       >
-                        {contact.status.charAt(0).toUpperCase() + contact.status.slice(1)}
+                        {contact.lead_status.charAt(0).toUpperCase() + contact.lead_status.slice(1)}
                       </span>
                     </td>
                     <td className="p-4 align-middle">

@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect, useCallback, FC, ReactNode } from 'react'
 import { 
   BarChart, 
