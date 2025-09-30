@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -8,13 +9,9 @@ import { Button } from "@/components/ui/button";
 import { type Post } from '@/lib/services/blogService';
 import { useToast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PlusCircle } from 'lucide-react';
 
-interface BlogListProps {
-  onEditPost: (post: Post) => void;
-  key?: string; // Accept key to allow re-rendering
-}
-
-export function BlogList({ onEditPost, key }: BlogListProps) {
+export default function PostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +23,8 @@ export function BlogList({ onEditPost, key }: BlogListProps) {
         setIsLoading(true);
         const response = await fetch('/api/content/posts');
         if (!response.ok) {
-          throw new Error('Failed to fetch posts');
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch posts');
         }
         const data = await response.json();
         setPosts(data);
@@ -60,7 +58,7 @@ export function BlogList({ onEditPost, key }: BlogListProps) {
     if (isLoading) {
       return (
         <TableBody>
-          {Array.from({ length: 5 }).map((_, i) => (
+          {Array.from({ length: 8 }).map((_, i) => (
             <TableRow key={i}>
               <TableCell><Skeleton className="h-5 w-3/4" /></TableCell>
               <TableCell><Skeleton className="h-5 w-20" /></TableCell>
@@ -76,7 +74,7 @@ export function BlogList({ onEditPost, key }: BlogListProps) {
       return (
         <TableBody>
           <TableRow>
-            <TableCell colSpan={4} className="text-center text-red-500">
+            <TableCell colSpan={4} className="text-center text-red-500 py-8">
               {error}
             </TableCell>
           </TableRow>
@@ -88,8 +86,8 @@ export function BlogList({ onEditPost, key }: BlogListProps) {
         return (
             <TableBody>
                 <TableRow>
-                    <TableCell colSpan={4} className="text-center text-muted-foreground">
-                        No posts found.
+                    <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                        No posts found. Get started by creating one!
                     </TableCell>
                 </TableRow>
             </TableBody>
@@ -106,7 +104,9 @@ export function BlogList({ onEditPost, key }: BlogListProps) {
             </TableCell>
             <TableCell>{new Date(post.created_at).toLocaleDateString()}</TableCell>
             <TableCell>
-              <Button variant="outline" size="sm" onClick={() => onEditPost(post)}>Edit</Button>
+                <Link href={`/admin/content/posts/${post.id}/edit`}>
+                    <Button variant="outline" size="sm">Edit</Button>
+                </Link>
             </TableCell>
           </TableRow>
         ))}
@@ -115,23 +115,34 @@ export function BlogList({ onEditPost, key }: BlogListProps) {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Recent Blog Posts</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          {renderContent()}
-        </Table>
-      </CardContent>
-    </Card>
+    <div className="p-6 space-y-6">
+        <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-bold">Blog Posts</h1>
+            <Link href="/admin/content/posts/new">
+                <Button>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Create New Post
+                </Button>
+            </Link>
+        </div>
+        <Card>
+            <CardHeader>
+                <CardTitle>All Posts</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <Table>
+                <TableHeader>
+                    <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Created At</TableHead>
+                    <TableHead>Actions</TableHead>
+                    </TableRow>
+                </TableHeader>
+                {renderContent()}
+                </Table>
+            </CardContent>
+        </Card>
+    </div>
   );
 }

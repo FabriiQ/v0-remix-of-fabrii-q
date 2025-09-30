@@ -4,7 +4,7 @@ import { type Database } from '@/lib/supabase/database.types'
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createServiceClient()
+    const supabase = await createClient()
     const { data, error } = await supabase
       .from('content_posts')
       .select('*')

@@ -11,7 +11,8 @@ import {
   Brain,
   Users,
   MessageSquare,
-  CheckCircle
+  CheckCircle,
+  FileText
 } from 'lucide-react'
 
 interface NavItem {
@@ -36,6 +37,12 @@ export default function AdminSidebar() {
       href: '/admin/knowledge-base',
       icon: Brain,
       current: pathname === '/admin/knowledge-base'
+    },
+    {
+      name: 'Content',
+      href: '/admin/content',
+      icon: FileText,
+      current: pathname?.startsWith('/admin/content') || false
     },
     {
       name: 'CRM Dashboard',
