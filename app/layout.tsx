@@ -6,6 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { LanguageProvider } from "@/contexts/language-context"
 import { TranslationLoader } from "@/components/translation-loader"
 import { BusinessProfileHeader } from "@/components/business-profile-header"
+import { CookiesBanner } from "@/components/cookies-banner"
+import ChatBubbleWidget from "@/components/chat-bubble-widget"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -60,12 +62,13 @@ export default function RootLayout({
           defaultTheme="dark" 
           enableSystem={false}
           disableTransitionOnChange
-          suppressHydrationWarning
         >
           <LanguageProvider>
             <TranslationLoader>
               <BusinessProfileHeader />
               {children}
+              <ChatBubbleWidget />
+              <CookiesBanner />
             </TranslationLoader>
           </LanguageProvider>
         </ThemeProvider>

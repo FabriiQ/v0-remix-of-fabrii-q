@@ -10,16 +10,53 @@ import { NavBar } from "@/components/nav-bar"
 import { Footer } from "@/components/footer"
 import { useLanguage } from "@/contexts/language-context"
 
+type Capability = {
+  id: string
+  name: string
+  subtitle: string
+  category: string
+  status: string
+  description: string
+  videoUrl?: string
+  videoUrls?: string[]
+  features: string[]
+  benefits: string[]
+  tags: string[]
+  performance: Record<string, string | number>
+}
+
 export default function CapabilitiesPage() {
-  const { t } = useLanguage()
+  const { t, currentLanguage } = useLanguage()
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedFilter, setSelectedFilter] = useState("all")
-  const [selectedCapability, setSelectedCapability] = useState<any>(null)
+  const [selectedCapability, setSelectedCapability] = useState<Capability | null>(null)
   const isMobile = useMobile()
+  const [capTranslations, setCapTranslations] = useState<any | null>(null)
+
+  // Load per-page capability translations (projects.json)
+  useEffect(() => {
+    let active = true
+    const load = async () => {
+      try {
+        const res = await fetch(`/locales/${currentLanguage.code}/projects.json`)
+        if (res.ok) {
+          const data = await res.json()
+          if (active) setCapTranslations(data)
+        } else {
+          if (active) setCapTranslations(null)
+        }
+      } catch {
+        if (active) setCapTranslations(null)
+      }
+    }
+    load()
+    return () => { active = false }
+  }, [currentLanguage.code])
 
   // Create dynamic capabilities using translation keys
-  const createCapability = (id: string, videoUrl?: string, videoUrls?: string[], category?: string) => {
-    const capability = t(`pages.projects.capabilities.${id}`, {}, { returnObjects: true })
+  const createCapability = (id: string, videoUrl?: string, videoUrls?: string[], category?: string): Capability => {
+    const fromLocal = capTranslations?.pages?.projects?.capabilities?.[id]
+    const capability = fromLocal ?? t(`pages.projects.capabilities.${id}`, {}, { returnObjects: true })
     if (typeof capability === 'object' && capability !== null) {
       return {
         id,
@@ -30,10 +67,10 @@ export default function CapabilitiesPage() {
         description: capability.description || '',
         videoUrl,
         videoUrls,
-        features: capability.features || [],
-        benefits: capability.benefits || [],
-        tags: capability.tags || [],
-        performance: capability.performance || {},
+        features: (capability.features || []) as string[],
+        benefits: (capability.benefits || []) as string[],
+        tags: (capability.tags || []) as string[],
+        performance: (capability.performance || {}) as Record<string, string | number>,
       }
     }
     // Fallback for missing translations
@@ -53,36 +90,36 @@ export default function CapabilitiesPage() {
     }
   }
 
-  const capabilities = [
+  const capabilities: Capability[] = [
     // System Admin Portal
-    createCapability("system-admin-dashboard", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/System%20Admin%20Dashboard.mp4", undefined, "System Admin Portal"),
-    createCapability("academic-calendar", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Academic%20Calendar.mp4", undefined, "System Admin Portal"),
-    createCapability("enrollment-management", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Enrollments.mp4", undefined, "System Admin Portal"),
-    createCapability("fee-management", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Fee%20Management.mp4", undefined, "System Admin Portal"),
-    createCapability("question-bank", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Question%20Bank.mp4", undefined, "System Admin Portal"),
-    createCapability("communication-hub", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/System%20Admin%20Communication%20hub.mp4", undefined, "System Admin Portal"),
-    createCapability("curriculum-management", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/System%20Admin%20Subjects%20and%20learning%20outcomes.mp4", undefined, "System Admin Portal"),
-    createCapability("system-compliance", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/System-Compliance.mp4", undefined, "System Admin Portal"),
+    createCapability("system-admin-dashboard", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/System%20Admin%20Dashboard.mp4", undefined, "System Admin Portal"),
+    createCapability("academic-calendar", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Academic%20Calendar.mp4", undefined, "System Admin Portal"),
+    createCapability("enrollment-management", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Enrollments.mp4", undefined, "System Admin Portal"),
+    createCapability("fee-management", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Fee%20Management.mp4", undefined, "System Admin Portal"),
+    createCapability("question-bank", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Question%20Bank.mp4", undefined, "System Admin Portal"),
+    createCapability("communication-hub", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/System%20Admin%20Communication%20hub.mp4", undefined, "System Admin Portal"),
+    createCapability("curriculum-management", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/System%20Admin%20Subjects%20and%20learning%20outcomes.mp4", undefined, "System Admin Portal"),
+    createCapability("system-compliance", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/System-Compliance.mp4", undefined, "System Admin Portal"),
     
     // Teacher Portal
-    createCapability("class-analytics", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Class%20Reports.mp4", undefined, "Teacher Portal"),
-    createCapability("resource-management", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Class%20Resources.mp4", undefined, "Teacher Portal"),
-    createCapability("quiz-activities", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Quiz%20Activities.mp4", undefined, "Teacher Portal"),
-    createCapability("assessment-creation", undefined, ["https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/TEacher%20-%20Create%20Assessment.mp4", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher%20assements%20view%20and%20grading.mp4"], "Teacher Portal"),
-    createCapability("reading-activities", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher%20-%20Creating%20Reading%20with%20AI.mp4", undefined, "Teacher Portal"),
-    createCapability("reward-system", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher%20-%20Rewards.mp4", undefined, "Teacher Portal"),
-    createCapability("student-profiles", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Student%20class%20profile.mp4", undefined, "Teacher Portal"),
-    createCapability("aivy-assistant", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher%20assements%20view%20and%20grading.mp4", undefined, "Teacher Portal"),
-    createCapability("calendar-management", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher%20Calendar.mp4", undefined, "Teacher Portal"),
-    createCapability("teacher-communication", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher%20Messeging.mp4", undefined, "Teacher Portal"),
-    createCapability("social-wall", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher%20Social%20Wall.mp4", undefined, "Teacher Portal"),
-    createCapability("attendance-tracking", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher-%20Student%20Attendance.mp4", undefined, "Teacher Portal"),
+    createCapability("class-analytics", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Class%20Reports.mp4", undefined, "Teacher Portal"),
+    createCapability("resource-management", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Class%20Resources.mp4", undefined, "Teacher Portal"),
+    createCapability("quiz-activities", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Quiz%20Activities.mp4", undefined, "Teacher Portal"),
+    createCapability("assessment-creation", undefined, ["https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/TEacher%20-%20Create%20Assessment.mp4", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher%20assements%20view%20and%20grading.mp4"], "Teacher Portal"),
+    createCapability("reading-activities", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher%20-%20Creating%20Reading%20with%20AI.mp4", undefined, "Teacher Portal"),
+    createCapability("reward-system", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher%20-%20Rewards.mp4", undefined, "Teacher Portal"),
+    createCapability("student-profiles", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Student%20class%20profile.mp4", undefined, "Teacher Portal"),
+    createCapability("aivy-assistant", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher%20assements%20view%20and%20grading.mp4", undefined, "Teacher Portal"),
+    createCapability("calendar-management", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher%20Calendar.mp4", undefined, "Teacher Portal"),
+    createCapability("teacher-communication", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher%20Messeging.mp4", undefined, "Teacher Portal"),
+    createCapability("social-wall", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher%20Social%20Wall.mp4", undefined, "Teacher Portal"),
+    createCapability("attendance-tracking", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Teacher-%20Student%20Attendance.mp4", undefined, "Teacher Portal"),
     
     // Student Portal
-    createCapability("learning-activities", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Student%20Activties.mp4", undefined, "Student Portal"),
-    createCapability("personal-profile", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Student%20class%20profile.mp4", undefined, "Student Portal"),
-    createCapability("aivy-companion", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Companion.mp4", undefined, "Student Portal"),
-    createCapability("student-social", "https://mpfpuxztvmbmcdajkojf.supabase.co/storage/v1/object/public/Website%20Contnet/Student%20Social%20wall.mp4", undefined, "Student Portal"),
+    createCapability("learning-activities", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Student%20Activties.mp4", undefined, "Student Portal"),
+    createCapability("personal-profile", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Student%20class%20profile.mp4", undefined, "Student Portal"),
+    createCapability("aivy-companion", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Companion.mp4", undefined, "Student Portal"),
+    createCapability("student-social", "https://peofhszfpstgunsupnmz.supabase.co/storage/v1/object/public/Website%20Contnet/Student%20Social%20wall.mp4", undefined, "Student Portal"),
   ]
 
   const filters = [
@@ -318,7 +355,7 @@ export default function CapabilitiesPage() {
 
                     {/* Performance Metrics */}
                     <div className="grid grid-cols-3 gap-3">
-                      {Object.entries(capability.performance).map(([key, value]) => (
+                      {(Object.entries(capability.performance) as [string, string | number][]).map(([key, value]) => (
                         <motion.div
                           key={key}
                           className="text-center p-2 bg-gray-900/50 rounded-lg border border-gray-800"
@@ -544,7 +581,7 @@ export default function CapabilitiesPage() {
                 >
                   <h3 className="text-lg font-semibold text-white mb-3">{t("pages.capabilities.alpha_performance")}</h3>
                   <div className="grid grid-cols-3 gap-4">
-                    {Object.entries(selectedCapability.performance).map(([key, value]) => (
+                    {(Object.entries(selectedCapability.performance) as [string, string | number][]).map(([key, value]) => (
                       <motion.div
                         key={key}
                         className="text-center p-4 bg-gray-900/50 rounded-lg border border-gray-800 hover:border-primary/30 transition-all duration-200"

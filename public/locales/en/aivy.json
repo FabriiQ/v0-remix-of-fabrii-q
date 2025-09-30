@@ -1,0 +1,20 @@
+{
+  "collect": {
+    "name_question": "What is your full name?",
+    "name_hint": "Please enter your first and last name.",
+    "name_placeholder": "Enter your full name",
+    "phone_question": "What is your phone number?",
+    "phone_hint": "We will only use this to follow up about your request.",
+    "phone_placeholder": "Enter your phone number",
+    "phone_disclaimer": "Your phone number will be used only for relevant follow-ups.",
+    "organization_question": "Which organization are you with?",
+    "organization_hint": "Share your school, district, or company name.",
+    "organization_placeholder": "Enter your organization name",
+    "completed_title": "Thanks! Connecting you to AIVY...",
+    "completed_saving": "Saving your information securely...",
+    "completed_connecting": "Connecting you to AIVY now..."
+  },
+  "welcome_message": "Hello {name}! I'm AIVY, and I'm here to guide you through FabriiQ's comprehensive School Operating System.",
+  "input_placeholder": "Ask AIVY about educational strategies, partnerships, or technology solutions...",
+  "disclaimer": "AIVY may make mistakes. Always verify critical information and consult a human expert when needed."
+}

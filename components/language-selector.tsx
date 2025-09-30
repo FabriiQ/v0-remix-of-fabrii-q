@@ -13,11 +13,11 @@ export function LanguageSelector() {
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="flex items-center gap-2 h-8 px-3 text-xs hover:bg-muted/50 transition-colors">
           <span className="text-lg leading-none">{currentLanguage.flag}</span>
-          <span className="text-xs font-medium">{currentLanguage.code.toUpperCase()}</span>
+          <span className="text-xs font-medium">{currentLanguage.name}</span>
           <ChevronDown className="w-3 h-3 opacity-50" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[200px] p-1">
+      <DropdownMenuContent align="end" className="min-w-[160px] p-1">
         {languages.map((language) => (
           <DropdownMenuItem
             key={language.code}
@@ -29,10 +29,7 @@ export function LanguageSelector() {
             }`}
           >
             <span className="text-lg leading-none">{language.flag}</span>
-            <div className="flex flex-col gap-0.5 flex-1">
-              <span className="text-sm font-medium">{language.name}</span>
-              <span className="text-xs text-muted-foreground">{language.code.toUpperCase()}</span>
-            </div>
+            <span className="text-sm font-medium flex-1">{language.name}</span>
             {currentLanguage.code === language.code && (
               <div className="w-2 h-2 bg-primary rounded-full" />
             )}

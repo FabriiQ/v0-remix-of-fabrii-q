@@ -3,55 +3,73 @@
 import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
 
-// Language configuration
-export const languages = [
-  { code: "en", name: "English", flag: "🇺🇸" },
-  { code: "es", name: "Español", flag: "🇪🇸" },
-  { code: "ar", name: "العربية", flag: "🇸🇦" },
-  { code: "id", name: "Bahasa Indonesia", flag: "🇮🇩" },
-]
+  // Language configuration
+  export const languages = [
+    { code: "en", name: "English", flag: "🇺🇸" },
+    { code: "es", name: "Español", flag: "🇪🇸" },
+    { code: "ar", name: "العربية", flag: "🇸🇦" },
+    { code: "id", name: "Bahasa Indonesia", flag: "🇮🇩" },
+  ]
+  // Translation cache to store loaded translations
+  const translationCache: Record<string, any> = {}
 
-// Translation cache to store loaded translations
-const translationCache: Record<string, any> = {}
-
-// Essential fallback translations to avoid loading delays
-const fallbackTranslations = {
-  'en': {
-    'hero.alpha_status': 'Alpha Development Phase - Partnership Opportunities Available',
-    'hero.description_detailed': 'One platform. All operations. Purpose-built for education.',
-    'cta.explore_core_capabilities': 'Explore Core Capabilities',
-    'cta.become_development_partner': 'Become a Development Partner',
-    'homepage.sections.key_cornerstones.title_key': '6 Key',
-    'homepage.sections.key_cornerstones.title_cornerstones': 'Cornerstones',
-    'homepage.sections.key_cornerstones.description': 'Purpose-built features designed specifically for educational institutions, not generic solutions adapted for schools.',
-    'homepage.sections.key_cornerstones.features.aivy.title': 'AIVY Multi-Agent Intelligence',
-    'homepage.sections.key_cornerstones.features.multi_campus.title': 'Multi-Campus Operations',
-    'homepage.sections.key_cornerstones.features.privacy_compliance.title': 'Privacy-by-Design Compliance'
-  }
-}
-
-// Deep merge function to properly combine nested objects
-const deepMerge = (target: any, source: any): any => {
-  const result = { ...target }
-  
-  for (const key in source) {
-    if (source.hasOwnProperty(key)) {
-      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-        result[key] = deepMerge(target[key] || {}, source[key])
-      } else {
-        result[key] = source[key]
+  // Essential fallback translations to avoid loading delays
+  const fallbackTranslations = {
+    en: {
+      'hero.alpha_status': 'Alpha Development Phase - Partnership Opportunities Available',
+      'hero.description_detailed': 'One platform. All operations. Purpose-built for education.',
+      'cta.explore_core_capabilities': 'Explore Core Capabilities',
+      'cta.become_development_partner': 'Become a Development Partner',
+      'cta.lets_cocreate': "Let's Co-Create",
+      'homepage.sections.key_cornerstones.features.aivy.title': 'AIVY Multi-Agent Intelligence',
+      'homepage.sections.key_cornerstones.features.multi_campus.title': 'Multi-Campus Operations',
+      'homepage.sections.key_cornerstones.features.privacy_compliance.title': 'Privacy-by-Design Compliance',
+      'aivy.welcome_message': "Hello {name}! I'm AIVY, and I'm here to guide you through FabriiQ's comprehensive School Operating System.",
+      'aivy.input_placeholder': 'Ask AIVY about educational strategies, partnerships, or technology solutions...',
+      'aivy.disclaimer': 'AIVY may make mistakes. Always verify critical information and consult a human expert when needed.',
+      aivy: {
+        collect: {
+          name_question: 'What is your full name?',
+          name_hint: 'Please enter your first and last name.',
+          name_placeholder: 'Enter your full name',
+          phone_question: 'What is your phone number?',
+          phone_hint: 'We will only use this to follow up about your request.',
+          phone_placeholder: 'Enter your phone number',
+          phone_disclaimer: 'Your phone number will be used only for relevant follow-ups.',
+          organization_question: 'Which organization are you with?',
+          organization_hint: 'Share your school, district, or company name.',
+          organization_placeholder: 'Enter your organization name',
+          completed_title: 'Thanks! Connecting you to AIVY...',
+          completed_saving: 'Saving your information securely...',
+          completed_connecting: 'Connecting you to AIVY now...'
+        }
+      },
+      common: {
+        continue: 'Continue'
       }
     }
   }
-  
-  return result
-}
 
-// Load translations for a specific language
-const loadTranslations = async (languageCode: string): Promise<any> => {
-  if (translationCache[languageCode]) {
-    return translationCache[languageCode]
+  // Deep merge function to properly combine nested objects
+  const deepMerge = (target: any, source: any): any => {
+    const result = { ...target }
+    for (const key in source) {
+      if (source.hasOwnProperty(key)) {
+        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+          result[key] = deepMerge(target[key] || {}, source[key])
+        } else {
+          result[key] = source[key]
+        }
+      }
+    }
+    return result
   }
+
+  // Load translations for a specific language
+  const loadTranslations = async (languageCode: string): Promise<any> => {
+    if (translationCache[languageCode]) {
+      return translationCache[languageCode]
+    }
 
   try {
     // First try to load the main language file
@@ -67,7 +85,7 @@ const loadTranslations = async (languageCode: string): Promise<any> => {
     }
     
     // Load only essential files initially for faster load times
-    const essentialFiles = ['common', 'navigation', 'homepage']
+    const essentialFiles = ['common', 'navigation', 'homepage', 'aivy', 'projects']
     
     for (const file of essentialFiles) {
       try {
@@ -76,7 +94,12 @@ const loadTranslations = async (languageCode: string): Promise<any> => {
           const fileData = await response.json()
           // File loaded successfully
           // Deep merge to preserve existing nested structures
-          translations = deepMerge(translations, fileData)
+          // If loading the aivy file, ensure its contents are nested under the 'aivy' key
+          if (file === 'aivy') {
+            translations = deepMerge(translations, { aivy: fileData })
+          } else {
+            translations = deepMerge(translations, fileData)
+          }
         }
       } catch (e) {
         // Continue if individual file fails with detailed logging

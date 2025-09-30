@@ -1,5 +1,6 @@
 "use client"
 
+import { } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { NavBar } from "@/components/nav-bar"
@@ -11,9 +12,10 @@ import { ProfileDropdown } from "@/components/profile-dropdown"
 import { useLanguage } from "@/contexts/language-context"
 import { useDynamicMetadata } from "@/hooks/use-dynamic-metadata"
 import VideoPlayer from "@/components/video-player"
+ 
 
 export default function Home() {
-  const { t } = useLanguage()
+  const { t, currentLanguage } = useLanguage()
   useDynamicMetadata()
   
   return (
@@ -57,14 +59,13 @@ export default function Home() {
             </div>
 
             <div className="pt-8">
-              <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 ltr-preserve rtl-keep-row">
                 <Link
                   href="/projects"
                   className="group relative px-8 py-4 bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal text-white rounded-lg font-medium text-base hover:from-fabriiq-teal hover:to-fabriiq-primary transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_20px_rgba(31,80,75,0.3)]"
                 >
-                  <span className="flex items-center space-x-2">
-                    <Brain className="w-5 h-5" />
-                    <span>{t("cta.explore_core_capabilities")}</span>
+                  <span className="flex items-center">
+                    <span dir={currentLanguage.code === 'ar' ? 'rtl' : 'auto'} style={{ unicodeBidi: 'plaintext' }}>{t("cta.explore_core_capabilities")}</span>
                   </span>
                 </Link>
 
@@ -72,9 +73,8 @@ export default function Home() {
                   href="/partnership"
                   className="group relative px-8 py-4 bg-gray-800 text-white rounded-lg font-medium text-base hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 border border-gray-700"
                 >
-                  <span className="flex items-center space-x-2">
-                    <Users className="w-5 h-5" />
-                    <span>{t("cta.become_development_partner")}</span>
+                  <span className="flex items-center">
+                    <span dir={currentLanguage.code === 'ar' ? 'rtl' : 'auto'} style={{ unicodeBidi: 'plaintext' }}>{t("cta.lets_cocreate")}</span>
                   </span>
                 </Link>
               </div>
@@ -153,13 +153,13 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
-                  <div className="mb-4 rounded-lg overflow-hidden bg-gray-900/20">
+                  <div className="mb-4 rounded-lg overflow-hidden bg-gray-900/20 aspect-[4/3]">
                     <Image
                       src={feature.image || "/placeholder.svg"}
                       alt={t(`homepage.sections.key_cornerstones.features.${feature.key}.title`)}
                       width={400}
                       height={300}
-                      className="w-full h-48 object-cover object-center group-hover:scale-105 transition-transform duration-300 rounded-lg"
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300 rounded-lg bg-gray-900/40"
                       loading="lazy"
                     />
                   </div>
@@ -506,58 +506,27 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.5 }}
             >
               <div className="flex flex-col items-center space-y-6">
-                <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 ltr-preserve rtl-keep-row">
                   <Link
-                    href="/partnership"
+                    href="/projects"
                     className="group relative px-8 py-4 bg-gradient-to-r from-fabriiq-primary to-fabriiq-teal text-white rounded-lg font-medium text-base hover:from-fabriiq-teal hover:to-fabriiq-primary transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_20px_rgba(31,80,75,0.3)]"
                   >
-                    <span className="flex items-center space-x-2">
-                      <Users className="w-5 h-5" />
-                      <span>{t("homepage.sections.contact.cta.apply_partnership")}</span>
+                    <span className="flex items-center">
+                      <span dir={currentLanguage.code === 'ar' ? 'rtl' : 'auto'} style={{ unicodeBidi: 'plaintext' }}>{t("cta.explore_core_capabilities")}</span>
                     </span>
                   </Link>
 
                   <Link
-                    href="/contact"
+                    href="/partnership"
                     className="group relative px-8 py-4 bg-gray-800 text-white rounded-lg font-medium text-base hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 border border-gray-700"
                   >
-                    <span className="flex items-center space-x-2">
-                      <Zap className="w-5 h-5" />
-                      <span>{t("homepage.sections.contact.cta.schedule_discussion")}</span>
-                    </span>
-                  </Link>
-
-                  <Link
-                    href="/resources"
-                    className="group relative px-8 py-4 bg-gray-800 text-white rounded-lg font-medium text-base hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 border border-gray-700"
-                  >
-                    <span className="flex items-center space-x-2">
-                      <Brain className="w-5 h-5" />
-                      <span>{t("homepage.sections.contact.cta.alpha_documentation")}</span>
+                    <span className="flex items-center">
+                      <span dir={currentLanguage.code === 'ar' ? 'rtl' : 'auto'} style={{ unicodeBidi: 'plaintext' }}>{t("cta.lets_cocreate")}</span>
                     </span>
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center max-w-2xl">
-                  <div className="flex flex-col items-center space-y-2">
-                    <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
-                      <span className="text-primary font-bold text-sm">1</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{t("homepage.sections.contact.process.strategic_investment")}</p>
-                  </div>
-                  <div className="flex flex-col items-center space-y-2">
-                    <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
-                      <span className="text-primary font-bold text-sm">2</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{t("homepage.sections.contact.process.codevelopment")}</p>
-                  </div>
-                  <div className="flex flex-col items-center space-y-2">
-                    <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
-                      <span className="text-primary font-bold text-sm">3</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{t("homepage.sections.contact.process.competitive_advantage")}</p>
-                  </div>
-                </div>
+                {/* Removed numbered three-step grid as requested */}
               </div>
             </motion.div>
           </div>
