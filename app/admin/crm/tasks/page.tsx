@@ -1,14 +1,35 @@
-'use client';
-
 import { Suspense } from 'react';
+import { getTasks, TasksData } from '@/lib/crm/data';
+import TasksClient from './tasks-client';
 import { Skeleton } from '@/components/ui/skeleton';
-import dynamic from 'next/dynamic';
 
-// Dynamically import the client component
-const TasksClient = dynamic(() => import('./tasks-client'), {
-  loading: () => <TasksSkeleton />,
-  ssr: false
-});
+export default async function TasksPage({
+  searchParams
+}: {
+  searchParams: { [key: string]: string | string[] | undefined }
+}) {
+  const page = typeof searchParams.page === 'string' ? parseInt(searchParams.page) : 1;
+  const pageSize = typeof searchParams.pageSize === 'string' ? parseInt(searchParams.pageSize) : 50;
+  const status = typeof searchParams.status === 'string' ? searchParams.status : undefined;
+  const priority = typeof searchParams.priority === 'string' ? searchParams.priority : undefined;
+
+  const initialTasksData = await getTasks(page, pageSize, status, priority);
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Task Management</h1>
+        <p className="text-muted-foreground">
+          Manage and track all your tasks in one place
+        </p>
+      </div>
+
+      <Suspense fallback={<TasksSkeleton />}>
+        <TasksClient initialData={initialTasksData} />
+      </Suspense>
+    </div>
+  );
+}
 
 function TasksSkeleton() {
   return (
@@ -31,23 +52,6 @@ function TasksSkeleton() {
           <Skeleton key={i} className="h-16 w-full" />
         ))}
       </div>
-    </div>
-  );
-}
-
-export default function TasksPage() {
-  return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Task Management</h1>
-        <p className="text-muted-foreground">
-          Manage and track all your tasks in one place
-        </p>
-      </div>
-      
-      <Suspense fallback={<TasksSkeleton />}>
-        <TasksClient />
-      </Suspense>
     </div>
   );
 }

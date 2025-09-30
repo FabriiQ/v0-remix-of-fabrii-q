@@ -3,207 +3,50 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getSupabaseClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { 
   MessageSquare, 
   TrendingUp, 
-  Clock, 
   Users,
   Target,
-  BarChart3,
   Filter,
   Download,
   Eye,
-  Calendar,
-  ThumbsUp,
-  ThumbsDown,
-  Minus,
-  Phone,
-  Mail,
-  Building,
   Search,
   ChevronRight
 } from 'lucide-react'
+import { Conversation } from '@/lib/crm/data'
 
-interface ConversationAnalytics {
-  id: string
-  session_id: string
-  contact_id?: string
-  contact_name?: string
-  contact_email?: string
-  organization?: string
-  total_messages: number
-  conversation_duration_minutes: number
-  user_engagement_score: number
-  intent_distribution: Record<string, number>
-  topics_covered: string[]
-  pain_points_mentioned: string[]
-  buying_signals: number
-  objections_raised: string[]
-  competitive_mentions: string[]
-  demo_requested: boolean
-  contact_info_provided: boolean
-  meeting_requested: boolean
-  pricing_discussed: boolean
-  partnership_assessment_completed: boolean
-  technical_questions: number
-  business_questions: number
-  satisfaction_indicators: Record<string, any>
-  conversion_stage: 'awareness' | 'interest' | 'consideration' | 'evaluation' | 'decision' | 'partnership'
-  last_updated: string
-  created_at: string
-}
-
-export default function ConversationsClient({ initialConversations = [] }: { initialConversations: any[] }) {
-  const [conversations, setConversations] = useState<ConversationAnalytics[]>([])
-  const [filteredConversations, setFilteredConversations] = useState<ConversationAnalytics[]>([])
+export default function ConversationsClient({ initialConversations = [] }: { initialConversations: Conversation[] }) {
+  const [conversations, setConversations] = useState<Conversation[]>(initialConversations)
+  const [filteredConversations, setFilteredConversations] = useState<Conversation[]>(initialConversations)
   const [loading, setLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [stageFilter, setStageFilter] = useState<string>('all')
   const [engagementFilter, setEngagementFilter] = useState<string>('all')
   const [dateFilter, setDateFilter] = useState<string>('all')
+  const router = useRouter();
 
   useEffect(() => {
-    // Initialize with server-side data
-    if (initialConversations.length > 0) {
-      setConversations(initialConversations)
-      setFilteredConversations(initialConversations)
-    } else {
-      loadConversations()
-    }
-    
     // Set up real-time subscription for conversations
     const supabase = getSupabaseClient()
     
-    const conversationsChannel = supabase
-      .channel('conversations-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'conversation_sessions'
-        },
-        (payload) => {
-          console.log('Conversation change received:', payload)
-          loadConversations()
-        }
-      )
-      .subscribe()
-    
-    const analyticsChannel = supabase
-      .channel('conversation-analytics-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'conversation_analytics'
-        },
-        () => {
-          console.log('Conversation analytics change received')
-          loadConversations()
-        }
-      )
-      .subscribe()
-    
-    const interactionsChannel = supabase
-      .channel('interactions-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'contact_interactions'
-        },
-        () => {
-          console.log('Interaction change received')
-          loadConversations()
-        }
-      )
+    const channel = supabase
+      .channel('conversations-client-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversation_sessions' }, () => router.refresh())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversation_analytics' }, () => router.refresh())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'contact_interactions' }, () => router.refresh())
       .subscribe()
     
     // Cleanup subscriptions on unmount
     return () => {
-      supabase.removeChannel(conversationsChannel)
-      supabase.removeChannel(analyticsChannel)
-      supabase.removeChannel(interactionsChannel)
+      supabase.removeChannel(channel)
     }
-  }, [])
+  }, [router])
 
-  useEffect(() => {
-    filterConversations()
-  }, [conversations, searchQuery, stageFilter, engagementFilter, dateFilter])
-
-  const loadConversations = async () => {
-    try {
-      setLoading(true)
-      const response = await fetch('/api/crm/conversations')
-      if (!response.ok) {
-        throw new Error('Failed to fetch conversations')
-      }
-      
-      const data = await response.json()
-      
-      // Transform the API data to match our component interface
-      const transformedConversations = (data.conversations || []).map((conv: any) => {
-        // Get the first contact interaction and its related contact
-        const contactInteraction = conv.contact_interactions?.[0] || {}
-        const contact = contactInteraction.lead_contacts || {}
-        
-        // Get conversation analytics (could be array or object)
-        const analytics = Array.isArray(conv.conversation_analytics) 
-          ? conv.conversation_analytics[0] 
-          : conv.conversation_analytics || {}
-        
-        // Get conversation turns count
-        const conversationTurns = conv.conversation_turns || []
-        
-        return {
-          id: conv.id,
-          session_id: conv.session_identifier || conv.id,
-          contact_id: contact.id || contactInteraction.contact_id || null,
-          contact_name: contact.name || 'Unknown Contact',
-          contact_email: contact.email || '',
-          organization: contact.company || contact.organization || 'Unknown Organization',
-          total_messages: analytics.total_messages || conversationTurns.length || 0,
-          conversation_duration_minutes: analytics.conversation_duration_minutes || 0,
-          user_engagement_score: analytics.user_engagement_score || 0,
-          intent_distribution: analytics.intent_distribution || {},
-          topics_covered: analytics.topics_covered || [],
-          pain_points_mentioned: analytics.pain_points_mentioned || [],
-          buying_signals: analytics.buying_signals || 0,
-          objections_raised: analytics.objections_raised || [],
-          competitive_mentions: analytics.competitive_mentions || [],
-          demo_requested: analytics.demo_requested || false,
-          contact_info_provided: analytics.contact_info_provided || false,
-          meeting_requested: analytics.meeting_requested || false,
-          pricing_discussed: analytics.pricing_discussed || false,
-          partnership_assessment_completed: analytics.partnership_assessment_completed || false,
-          technical_questions: analytics.technical_questions || 0,
-          business_questions: analytics.business_questions || 0,
-          satisfaction_indicators: analytics.satisfaction_indicators || {},
-          conversion_stage: analytics.conversion_stage || 'awareness',
-          last_updated: conv.last_interaction_at || conv.updated_at || conv.created_at,
-          created_at: conv.created_at
-        } as ConversationAnalytics
-      })
-      
-      setConversations(transformedConversations)
-      setFilteredConversations(transformedConversations)
-    } catch (error) {
-      console.error('Failed to load conversations:', error)
-      // Show empty state instead of mock data
-      setConversations([])
-      setFilteredConversations([])
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const filterConversations = () => {
+  const filterConversations = useCallback(() => {
     let filtered = [...conversations]
     
-    // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
       filtered = filtered.filter(conv => 
@@ -214,12 +57,10 @@ export default function ConversationsClient({ initialConversations = [] }: { ini
       )
     }
     
-    // Apply stage filter
     if (stageFilter !== 'all') {
       filtered = filtered.filter(conv => conv.conversion_stage === stageFilter)
     }
     
-    // Apply engagement filter
     if (engagementFilter === 'high') {
       filtered = filtered.filter(conv => conv.user_engagement_score >= 7)
     } else if (engagementFilter === 'medium') {
@@ -230,21 +71,31 @@ export default function ConversationsClient({ initialConversations = [] }: { ini
       filtered = filtered.filter(conv => conv.user_engagement_score < 4)
     }
     
-    // Apply date filter
     const now = new Date()
     if (dateFilter === 'today') {
       const today = new Date(now.setHours(0, 0, 0, 0))
       filtered = filtered.filter(conv => new Date(conv.last_updated) >= today)
     } else if (dateFilter === 'week') {
-      const lastWeek = new Date(now.setDate(now.getDate() - 7))
+      const lastWeek = new Date()
+      lastWeek.setDate(now.getDate() - 7)
       filtered = filtered.filter(conv => new Date(conv.last_updated) >= lastWeek)
     } else if (dateFilter === 'month') {
-      const lastMonth = new Date(now.setMonth(now.getMonth() - 1))
+      const lastMonth = new Date()
+      lastMonth.setMonth(now.getMonth() - 1)
       filtered = filtered.filter(conv => new Date(conv.last_updated) >= lastMonth)
     }
     
     setFilteredConversations(filtered)
-  }
+  }, [conversations, searchQuery, stageFilter, engagementFilter, dateFilter]);
+
+  useEffect(() => {
+    filterConversations()
+  }, [filterConversations])
+
+  useEffect(() => {
+    setConversations(initialConversations);
+  }, [initialConversations]);
+
 
   const getEngagementColor = (score: number) => {
     if (score >= 7) return 'text-green-500'
@@ -268,16 +119,10 @@ export default function ConversationsClient({ initialConversations = [] }: { ini
     return new Date(dateString).toLocaleString()
   }
 
-  const refreshData = async () => {
-    await loadConversations()
-  }
-
-  if (loading && conversations.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    )
+  const refreshData = () => {
+    setLoading(true);
+    router.refresh();
+    setLoading(false);
   }
 
   return (
@@ -287,9 +132,10 @@ export default function ConversationsClient({ initialConversations = [] }: { ini
         <div className="flex items-center space-x-2">
           <button
             onClick={refreshData}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            disabled={loading}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400"
           >
-            Refresh
+            {loading ? 'Refreshing...' : 'Refresh'}
           </button>
         </div>
       </div>

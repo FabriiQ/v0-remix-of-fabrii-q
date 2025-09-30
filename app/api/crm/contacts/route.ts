@@ -1,96 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getContacts } from '@/lib/crm/data';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
-
-type Contact = {
-  id?: string;
-  name: string;
-  email: string;
-  phone?: string | null;
-  organization?: string | null;
-  role?: string | null;
-  lead_status?: string;
-  source?: string;
-  company_size?: string | null;
-  industry?: string | null;
-  job_function?: string | null;
-  notes?: string | null;
-  company_website?: string | null;
-  social_links?: Record<string, unknown> | null;
-  metadata?: Record<string, unknown> | null;
-  created_at?: string;
-  updated_at?: string;
-};
 
 // GET /api/crm/contacts - Get all contacts with filtering and pagination
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createServerSupabaseClient();
     const { searchParams } = new URL(request.url);
     
     const page = parseInt(searchParams.get('page') || '1');
     const pageSize = parseInt(searchParams.get('pageSize') || '50');
-    const status = searchParams.get('status');
-    const source = searchParams.get('source');
-    const search = searchParams.get('search');
+    const status = searchParams.get('status') || undefined;
+    const source = searchParams.get('source') || undefined;
+    const search = searchParams.get('search') || undefined;
     const sortBy = searchParams.get('sortBy') || 'created_at';
     const sortOrder = searchParams.get('sortOrder') || 'desc';
+
+    const contactsData = await getContacts(
+      page,
+      pageSize,
+      status,
+      source,
+      search,
+      sortBy,
+      sortOrder
+    );
     
-    let query = supabase
-      .from('lead_contacts')
-      .select(`
-        *,
-        partnership_assessments(id, assessment_score, readiness_level, submitted_at),
-        conversation_analytics(
-          session_id, total_messages, conversation_duration_minutes, 
-          user_engagement_score, demo_requested, partnership_assessment_completed,
-          conversion_stage
-        ),
-        contact_interactions(id, interaction_type, interaction_date, sentiment),
-        follow_up_tasks(id, status, due_date, priority)
-      `)
-      .range((page - 1) * pageSize, page * pageSize - 1);
-    
-    // Apply filters
-    if (status && status !== 'all') {
-      query = query.eq('lead_status', status);
-    }
-    
-    if (source && source !== 'all') {
-      query = query.eq('source', source);
-    }
-    
-    if (search) {
-      query = query.or(`name.ilike.%${search}%, email.ilike.%${search}%, organization.ilike.%${search}%`);
-    }
-    
-    // Apply sorting
-    query = query.order(sortBy, { ascending: sortOrder === 'asc' });
-    
-    const { data: contacts, error, count } = await query;
-    
-    if (error) {
-      console.error('Error fetching contacts:', error);
-      return NextResponse.json({ error: 'Failed to fetch contacts' }, { status: 500 });
-    }
-    
-    // Get count for pagination
-    const { count: totalCount, error: countError } = await supabase
-      .from('lead_contacts')
-      .select('*', { count: 'exact', head: true });
-    
-    return NextResponse.json({
-      contacts,
-      pagination: {
-        page,
-        pageSize,
-        totalCount: totalCount || 0,
-        totalPages: Math.ceil((totalCount || 0) / pageSize)
-      }
-    });
+    return NextResponse.json(contactsData);
     
   } catch (error) {
     console.error('API Error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    return NextResponse.json({ error: 'Internal server error', details: errorMessage }, { status: 500 });
   }
 }
 

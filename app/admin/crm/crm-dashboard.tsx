@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Users, 
@@ -10,84 +9,9 @@ import {
   ChevronRight,
   BarChart3
 } from 'lucide-react';
+import { DashboardStats } from '@/lib/crm/data';
 
-// Types
 type PriorityType = 'low' | 'medium' | 'high';
-
-interface DashboardStats {
-  statistics: {
-    totalLeads: number;
-    qualifiedLeads: number;
-    activeConversations: number;
-    partnershipAssessments: number;
-    conversionRate: number;
-    avgEngagementScore: number;
-  };
-  recentActivities: Array<{
-    id: string;
-    type: string;
-    title: string;
-    time: string;
-    contactName?: string;
-    organization?: string;
-    priority?: PriorityType;
-    description?: string;
-    timestamp?: string;
-  }>;
-  upcomingTasks: Array<{
-    id: string;
-    title: string;
-    dueDate: string;
-    priority: PriorityType;
-  }>;
-}
-
-// Mock data fetch function - replace with actual API calls
-const fetchDashboardData = async (): Promise<DashboardStats> => {
-  // Simulate API call
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        statistics: {
-          totalLeads: 245,
-          qualifiedLeads: 128,
-          activeConversations: 42,
-          partnershipAssessments: 15,
-          conversionRate: 0.65,
-          avgEngagementScore: 7.8
-        },
-        recentActivities: [
-          { 
-            id: '1', 
-            type: 'new_lead', 
-            title: 'New lead from website', 
-            time: '10 min ago',
-            contactName: 'John Smith',
-            organization: 'Acme Inc',
-            priority: 'high',
-            description: 'Filled out contact form on pricing page',
-            timestamp: new Date().toISOString()
-          },
-          { 
-            id: '2', 
-            type: 'meeting', 
-            title: 'Meeting with John Doe', 
-            time: '1 hour ago',
-            contactName: 'John Doe',
-            organization: 'Tech Corp',
-            priority: 'medium',
-            description: 'Product demo scheduled',
-            timestamp: new Date().toISOString()
-          },
-        ],
-        upcomingTasks: [
-          { id: '1', title: 'Follow up with potential client', dueDate: 'Today', priority: 'high' },
-          { id: '2', title: 'Send proposal', dueDate: 'Tomorrow', priority: 'medium' },
-        ],
-      });
-    }, 500);
-  });
-};
 
 // Helper function to get priority color
 const getPriorityColor = (priority: PriorityType) => {
@@ -103,73 +27,27 @@ const getPriorityColor = (priority: PriorityType) => {
   }
 };
 
-const CRMDashboard = () => {
-  const [data, setData] = useState<DashboardStats | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api/crm/dashboard');
-        if (!response.ok) {
-          throw new Error('Failed to fetch dashboard data');
-        }
-        const result = await response.json();
-        setData(result);
-      } catch (err) {
-        console.error('Error fetching dashboard data:', err);
-        setError('Failed to load dashboard data. Please try again later.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const getPriorityColor = (priority: PriorityType) => {
-    switch (priority) {
-      case 'high':
-        return 'bg-red-100 text-red-800';
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'low':
-      default:
-        return 'bg-green-100 text-green-800';
-    }
-  };
-
-  const getActivityIcon = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'lead_created':
-      case 'new_lead':
-        return <Users className="h-4 w-4 text-blue-600" />;
-      case 'conversation_started':
-      case 'new_conversation':
-        return <MessageSquare className="h-4 w-4 text-green-600" />;
-      case 'follow_up':
-      case 'followup_scheduled':
-        return <Clock className="h-4 w-4 text-yellow-600" />;
-      case 'assessment_completed':
-        return <BarChart3 className="h-4 w-4 text-purple-600" />;
-      default:
-        return <MessageSquare className="h-4 w-4 text-gray-500" />;
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#F9FAFB] p-6 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-[#1F504B] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading CRM Dashboard...</p>
-        </div>
-      </div>
-    );
+const getActivityIcon = (type: string) => {
+  switch (type.toLowerCase()) {
+    case 'lead_created':
+    case 'new_lead':
+      return <Users className="h-4 w-4 text-blue-600" />;
+    case 'conversation_started':
+    case 'new_conversation':
+      return <MessageSquare className="h-4 w-4 text-green-600" />;
+    case 'follow_up':
+    case 'followup_scheduled':
+      return <Clock className="h-4 w-4 text-yellow-600" />;
+    case 'assessment_completed':
+      return <BarChart3 className="h-4 w-4 text-purple-600" />;
+    default:
+      return <MessageSquare className="h-4 w-4 text-gray-500" />;
   }
+};
 
-  if (error || !data) {
+const CRMDashboard = ({ initialData }: { initialData: DashboardStats | null }) => {
+
+  if (!initialData) {
     return (
       <div className="min-h-screen bg-[#F9FAFB] p-6 flex items-center justify-center">
         <div className="text-center">
@@ -190,7 +68,7 @@ const CRMDashboard = () => {
           </div>
           <h3 className="mt-3 text-lg font-medium text-gray-900">Error loading dashboard</h3>
           <p className="mt-2 text-sm text-gray-600">
-            {error || 'Unable to load dashboard data. Please try again later.'}
+            Unable to load dashboard data. Please try again later.
           </p>
           <div className="mt-6">
             <button
@@ -205,7 +83,7 @@ const CRMDashboard = () => {
     );
   }
 
-  const { statistics, recentActivities } = data;
+  const { statistics, recentActivities } = initialData;
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] p-6">
@@ -266,7 +144,7 @@ const CRMDashboard = () => {
                 const priority = activity.priority || 'medium'; // Default to medium if not specified
                 const timeDisplay = activity.timestamp 
                   ? new Date(activity.timestamp).toLocaleString() 
-                  : activity.time || 'Unknown time';
+                  : 'Unknown time';
                 
                 return (
                   <div key={activity.id} className="flex items-start p-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 rounded-lg transition-colors">
@@ -288,7 +166,7 @@ const CRMDashboard = () => {
                         </span>
                       </div>
                       <p className="text-sm text-gray-600 mt-1">
-                        {activity.description || 'No description available'}
+                         'No description available'
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
                         {timeDisplay}
