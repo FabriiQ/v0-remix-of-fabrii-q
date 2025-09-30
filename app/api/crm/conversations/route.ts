@@ -1,6 +1,63 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
 
+export const dynamic = 'force-dynamic';
+
+// Type definitions for the conversation data
+interface Contact {
+  id?: string;
+  name?: string;
+  email?: string;
+  company?: string;
+  organization?: string;
+}
+
+interface ContactInteraction {
+  id?: string;
+  contact_id?: string;
+  lead_contacts?: Contact;
+  [key: string]: any;
+}
+
+interface ConversationAnalytics {
+  total_messages?: number;
+  conversation_duration_minutes?: number;
+  user_engagement_score?: number;
+  intent_distribution?: Record<string, any>;
+  topics_covered?: string[];
+  pain_points_mentioned?: string[];
+  buying_signals?: number;
+  objections_raised?: string[];
+  competitive_mentions?: string[];
+  demo_requested?: boolean;
+  contact_info_provided?: boolean;
+  meeting_requested?: boolean;
+  pricing_discussed?: boolean;
+  partnership_assessment_completed?: boolean;
+  technical_questions?: number;
+  business_questions?: number;
+  satisfaction_indicators?: Record<string, any>;
+  conversion_stage?: string;
+  [key: string]: any;
+}
+
+interface ConversationTurn {
+  id?: string;
+  [key: string]: any;
+}
+
+interface Conversation {
+  id: string;
+  session_identifier?: string;
+  contact_interactions?: ContactInteraction | ContactInteraction[];
+  conversation_analytics?: ConversationAnalytics | ConversationAnalytics[];
+  conversation_turns?: ConversationTurn | ConversationTurn[];
+  last_interaction_at?: string;
+  created_at: string;
+  updated_at: string;
+  [key: string]: any;
+}
+
 // GET - Retrieve conversations with optional filters
 export async function GET(request: NextRequest) {
   try {
@@ -19,58 +76,93 @@ export async function GET(request: NextRequest) {
     
     const supabase: any = createServiceClient()
 
-    let query = supabase
-      .from('conversations')
+    // First, get the conversations with related data
+    const { data: conversations, error } = await supabase
+      .from('conversation_sessions')
       .select(`
-        id,
-        title,
-        metadata,
-        created_at,
-        updated_at
+        *,
+        contact_interactions(
+          *,
+          lead_contacts(*)
+        ),
+        conversation_analytics(
+          *
+        ),
+        conversation_turns(
+          *
+        )
       `)
-      .order('updated_at', { ascending: false })
+      .order('last_interaction_at', { ascending: false })
       .range(offset, offset + limit - 1)
+      .limit(limit)
 
-    // Apply filters
-    if (sessionId) {
-      query = query.eq('id', sessionId)
+    if (error) {
+      console.error('Error fetching conversations:', error)
+      return NextResponse.json(
+        { error: 'Failed to fetch conversations' },
+        { status: 500 }
+      )
     }
 
-    const { data: conversations, error } = await query
+    // If no conversations found, return empty array
+    if (!conversations || conversations.length === 0) {
+      return NextResponse.json({ conversations: [] })
+    }
 
-    console.log('[conversations] primary query result', {
-      error: error ? String(error.message || error) : null,
-      count: conversations?.length ?? null
+    // Transform the data to match the frontend's expected format
+    const transformedConversations = conversations.map((conv: Conversation) => {
+      // Get the first contact interaction and its related contact
+      const contactInteraction = Array.isArray(conv.contact_interactions) 
+        ? conv.contact_interactions[0] || {}
+        : conv.contact_interactions || {}
+      
+      const contact = contactInteraction.lead_contacts || {}
+      
+      // Get conversation analytics (could be array or object)
+      const analytics = Array.isArray(conv.conversation_analytics) 
+        ? conv.conversation_analytics[0] 
+        : conv.conversation_analytics || {}
+      
+      // Get conversation turns count
+      const conversationTurns = Array.isArray(conv.conversation_turns) 
+        ? conv.conversation_turns 
+        : []
+      
+      return {
+        id: conv.id,
+        session_identifier: conv.session_identifier || conv.id,
+        contact_interactions: [{
+          ...contactInteraction,
+          lead_contacts: contact
+        }],
+        conversation_analytics: [{
+          ...analytics,
+          total_messages: analytics.total_messages || conversationTurns.length || 0,
+          conversation_duration_minutes: analytics.conversation_duration_minutes || 0,
+          user_engagement_score: analytics.user_engagement_score || 0,
+          intent_distribution: analytics.intent_distribution || {},
+          topics_covered: analytics.topics_covered || [],
+          pain_points_mentioned: analytics.pain_points_mentioned || [],
+          buying_signals: analytics.buying_signals || 0,
+          objections_raised: analytics.objections_raised || [],
+          competitive_mentions: analytics.competitive_mentions || [],
+          demo_requested: analytics.demo_requested || false,
+          contact_info_provided: analytics.contact_info_provided || false,
+          meeting_requested: analytics.meeting_requested || false,
+          pricing_discussed: analytics.pricing_discussed || false,
+          partnership_assessment_completed: analytics.partnership_assessment_completed || false,
+          technical_questions: analytics.technical_questions || 0,
+          business_questions: analytics.business_questions || 0,
+          satisfaction_indicators: analytics.satisfaction_indicators || {},
+          conversion_stage: analytics.conversion_stage || 'awareness'
+        }],
+        last_interaction_at: conv.last_interaction_at || conv.updated_at || conv.created_at,
+        created_at: conv.created_at,
+        updated_at: conv.updated_at
+      }
     })
 
-    // Fallback: if primary query errors or returns empty, fetch base rows from 'conversations' without joins
-    if (error || (Array.isArray(conversations) && conversations.length === 0)) {
-      const { data: fallback, error: fbError } = await supabase
-        .from('conversations')
-        .select(`
-          id,
-          created_at,
-          updated_at
-        `)
-        .order('updated_at', { ascending: false })
-        .range(offset, offset + limit - 1)
-
-      console.log('[conversations] fallback query result', {
-        error: fbError ? String(fbError.message || fbError) : null,
-        count: fallback?.length ?? null
-      })
-
-      if (fbError) {
-        return NextResponse.json(
-          { error: 'Failed to fetch conversations (fallback failed)' },
-          { status: 500 }
-        )
-      }
-
-      return NextResponse.json({ conversations: fallback ?? [] })
-    }
-
-    return NextResponse.json({ conversations })
+    return NextResponse.json({ conversations: transformedConversations })
   } catch (error) {
     console.error('Error in GET /api/crm/conversations:', error)
     return NextResponse.json(

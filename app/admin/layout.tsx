@@ -1,17 +1,34 @@
-'use client'
+'use client';
 
+import { ReactNode } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Database, Settings, BarChart3, Home, Brain, Users, Target, MessageSquare, CheckCircle } from 'lucide-react'
+import { 
+  Database, 
+  Settings, 
+  BarChart3, 
+  Home, 
+  Brain, 
+  Users, 
+  MessageSquare, 
+  CheckCircle 
+} from 'lucide-react'
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const pathname = usePathname()
+interface NavItem {
+  name: string;
+  href: string;
+  icon: React.ComponentType<any>;
+  current: boolean;
+}
 
-  const navigation = [
+interface AdminLayoutProps {
+  children: ReactNode;
+}
+
+export default function AdminLayout({ children }: AdminLayoutProps) {
+  const pathname = usePathname();
+
+  const navigation: NavItem[] = [
     {
       name: 'Documents',
       href: '/admin/documents',
@@ -31,12 +48,6 @@ export default function AdminLayout({
       current: pathname?.startsWith('/admin/crm') || false
     },
     {
-      name: 'Analytics',
-      href: '/admin/analytics',
-      icon: BarChart3,
-      current: pathname === '/admin/analytics'
-    },
-    {
       name: 'Settings',
       href: '/admin/settings',
       icon: Settings,
@@ -45,7 +56,7 @@ export default function AdminLayout({
   ]
 
   // CRM sub-navigation when on CRM pages
-  const crmNavigation = [
+  const crmNavigation: NavItem[] = [
     {
       name: 'Dashboard',
       href: '/admin/crm',
@@ -59,12 +70,6 @@ export default function AdminLayout({
       current: pathname?.startsWith('/admin/crm/contacts') || false
     },
     {
-      name: 'Assessments',
-      href: '/admin/crm/assessments',
-      icon: Target,
-      current: pathname?.startsWith('/admin/crm/assessments') || false
-    },
-    {
       name: 'Conversations',
       href: '/admin/crm/conversations',
       icon: MessageSquare,
@@ -75,18 +80,11 @@ export default function AdminLayout({
       href: '/admin/crm/tasks',
       icon: CheckCircle,
       current: pathname?.startsWith('/admin/crm/tasks') || false
-    },
-    {
-      name: 'Analytics',
-      href: '/admin/crm/analytics',
-      icon: BarChart3,
-      current: pathname === '/admin/crm/analytics'
     }
   ]
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Top Navigation */}
       <nav className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">

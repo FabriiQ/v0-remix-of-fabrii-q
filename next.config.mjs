@@ -18,6 +18,8 @@ const nextConfig = {
   },
   // Configure serverless function size limits
   output: 'standalone',
+  
+  // Experimental features
   experimental: {
     // Enable server actions
     serverActions: {
@@ -31,25 +33,25 @@ const nextConfig = {
       '@radix-ui/react-select',
       'lucide-react',
     ],
-    // Exclude large dependencies from serverless functions
-    outputFileTracingExcludes: {
-      '*': [
-        '**/.cache/**',
-        '**/node_modules/!(@vercel/analytics|@vercel/speed-insights)/**',
-        '**/public/**',
-        '**/scripts/**',
-        '**/test/**',
-        '**/tests/**',
-        '**/__tests__/**',
-        '**/cypress/**',
-        '**/examples/**',
-        '**/docs/**',
-        '**/dist/**',
-        '**/styles/**',
-        '**/types/**',
-        '**/utils/**',
-      ],
-    },
+  },
+  // Exclude large dependencies from serverless functions
+  outputFileTracingExcludes: {
+    '*': [
+      '**/.cache/**',
+      '**/node_modules/!(@vercel/analytics|@vercel/speed-insights)/**',
+      '**/public/**',
+      '**/scripts/**',
+      '**/test/**',
+      '**/tests/**',
+      '**/__tests__/**',
+      '**/cypress/**',
+      '**/examples/**',
+      '**/docs/**',
+      '**/dist/**',
+      '**/styles/**',
+      '**/types/**',
+      '**/utils/**',
+    ],
   },
   // Webpack configuration
   webpack: (config, { isServer }) => {
@@ -74,21 +76,16 @@ const nextConfig = {
 
     return config;
   },
+  // Moved serverComponentsExternalPackages to root level
+  serverExternalPackages: ['sharp', 'onnxruntime-node'],
 };
 
 // Environment-specific configurations
 if (process.env.NODE_ENV === 'production') {
   // Optimize production build
   nextConfig.productionBrowserSourceMaps = false;
-  nextConfig.optimizeFonts = true;
   nextConfig.compress = true;
   nextConfig.reactStrictMode = false;
-  
-  // Configure serverless function size limits
-  nextConfig.experimental = {
-    ...nextConfig.experimental,
-    serverComponentsExternalPackages: ['sharp', 'onnxruntime-node'],
-  };
 }
 
 export default bundleAnalyzer(nextConfig);
