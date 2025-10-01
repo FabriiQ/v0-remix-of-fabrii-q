@@ -31,6 +31,21 @@ CREATE TABLE IF NOT EXISTS messages (
     metadata JSONB DEFAULT '{}'::jsonb
 );
 
+-- Add channel_id column if it doesn't exist, for backwards compatibility
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM   information_schema.columns
+        WHERE  table_name = 'messages'
+        AND    column_name = 'channel_id'
+    ) THEN
+        ALTER TABLE messages
+        ADD COLUMN channel_id UUID REFERENCES channels(id) ON DELETE CASCADE;
+    END IF;
+END;
+$$;
+
 -- Create indexes for performance
 CREATE INDEX IF NOT EXISTS channels_created_by_idx ON channels(created_by);
 CREATE INDEX IF NOT EXISTS channel_participants_channel_id_idx ON channel_participants(channel_id);

@@ -10,7 +10,7 @@ import type { Database } from '@/lib/supabase/database.types'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { message, conversationId, userId } = body
+    const { message, conversationId, userId, parentTurnId } = body
 
     if (!message || typeof message !== 'string') {
       return NextResponse.json(
@@ -126,12 +126,13 @@ export async function POST(request: NextRequest) {
     })
 
     // Save conversation turn to AIVY memory system
-    await conversationMemory.saveConversationTurn(
+    const turnId = await conversationMemory.saveConversationTurn(
       sessionId,
       message,
       response,
       intentAnalysis,
-      prioritizedChunks || []
+      prioritizedChunks || [],
+      parentTurnId
     )
 
     // Log analytics (optional)
@@ -157,6 +158,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       response,
       conversationId,
+      turnId,
       timestamp: new Date().toISOString()
     })
 

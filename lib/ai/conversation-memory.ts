@@ -217,8 +217,9 @@ export class AIVYConversationMemory {
     userQuery: string,
     responseContent: string,
     intentAnalysis: IntentAnalysis,
-    knowledgeSources: any[]
-  ): Promise<void> {
+    knowledgeSources: any[],
+    parentTurnId?: string
+  ): Promise<string | null> {
     // Calculate response metrics
     const wordCount = responseContent.split(/\s+/).length
     const responseMetrics = {
@@ -229,7 +230,7 @@ export class AIVYConversationMemory {
       strategicInsight: intentAnalysis.strategicFocus.length > 0 ? 1 : 0.5
     }
 
-    const { error } = await this.supabase
+    const { data, error } = await this.supabase
       .from('conversation_turns')
       .insert({
         session_id: sessionId,
@@ -237,15 +238,21 @@ export class AIVYConversationMemory {
         response_content: responseContent,
         intent_analysis: intentAnalysis,
         knowledge_sources: knowledgeSources,
-        response_metrics: responseMetrics
+        response_metrics: responseMetrics,
+        parent_turn_id: parentTurnId
       })
+      .select('id')
+      .single()
 
     if (error) {
       console.error('Error saving conversation turn:', error)
+      return null
     }
 
     // Update conversation state based on the interaction
     await this.updateSessionContext(sessionId, intentAnalysis, userQuery)
+
+    return data?.id || null
   }
 
   private async updateSessionContext(sessionId: string, intentAnalysis: IntentAnalysis, query: string): Promise<void> {
