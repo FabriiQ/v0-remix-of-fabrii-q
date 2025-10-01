@@ -1,5 +1,6 @@
 -- Enable the uuid-ossp extension to use uuid_generate_v4()
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Enable the uuid-ossp extension in the extensions schema
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA extensions;
 
 -- Content Posts
 CREATE TABLE content_posts (

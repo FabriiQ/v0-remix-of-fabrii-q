@@ -42,6 +42,7 @@ export interface AgentState {
     | 'scheduling_demo'
     | 'qualified_lead'
     | 'unqualified_lead';
+  parentTurnId?: string; // Add this line
 }
 
 /**

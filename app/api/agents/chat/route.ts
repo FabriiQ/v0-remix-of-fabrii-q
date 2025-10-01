@@ -29,18 +29,23 @@ export async function POST(req: Request) {
     const agentResponse = await agent.process(state, agentInput);
 
     // Insert the conversation turn into the database
-    const { error } = await supabase.from('conversation_turns').insert({
-      session_id: state.id,
-      user_query: message,
-      response_content: agentResponse,
-    });
+    const { data, error } = await supabase
+      .from('conversation_turns')
+      .insert({
+        session_id: state.id,
+        user_query: message,
+        response_content: agentResponse,
+        parent_turn_id: state.parentTurnId, // Add this line
+      })
+      .select('id')
+      .single();
 
     if (error) {
       console.error('Error saving conversation turn:', error);
       // We can still return the response even if saving fails
     }
 
-    return NextResponse.json({ response: agentResponse });
+    return NextResponse.json({ response: agentResponse, turnId: data?.id });
   } catch (error) {
     console.error('Error in agent chat API:', error);
     return NextResponse.json({ error: 'An internal error occurred' }, { status: 500 });

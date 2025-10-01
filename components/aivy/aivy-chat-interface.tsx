@@ -1,560 +1,169 @@
-'use client'
+'use client';
 
-import type React from "react"
-import { useState, useRef, useEffect } from 'react'
-import { Send, Loader2 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { useLanguage } from '@/contexts/language-context'
+import { useEffect, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { Message } from 'ai';
+import { v4 as uuidv4 } from 'uuid';
+import { AgentState } from '@/types/agent';
 
-// Add custom animations inline
-const animationStyles = `
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
-`
+// This is a placeholder for a real session management implementation.
+// In a production scenario, this would be handled more robustly.
+const SESSION_IDENTIFIER = `session_${uuidv4()}`;
 
-type Role = "user" | "assistant"
-type Message = {
-  id: string
-  role: Role
-  content: string
-  timestamp: Date
-  isLoading?: boolean
-}
+export default function AivyChat() {
+  const supabase = createClient();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [sessionId, setSessionId] = useState<string | null>(null);
 
-interface ContactInfo {
-  name: string
-  phone: string
-  organization: string
-}
-
-interface AIVYChatInterfaceProps {
-  userId: string
-  conversationId: string
-  contactInfo: ContactInfo
-}
-
-export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYChatInterfaceProps) {
-  const { t } = useLanguage()
-  const [messages, setMessages] = useState<Message[]>([])
-  const [input, setInput] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const endRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
-
+  // Effect to initialize the session and subscribe to messages
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages.length])
+    const initializeSession = async () => {
+      // 1. Get or create a conversation session
+      const { data, error } = await supabase
+        .rpc('get_or_create_conversation_session', {
+          p_session_identifier: SESSION_IDENTIFIER,
+        });
 
-  // Add welcome message on component mount and language change
-  useEffect(() => {
-    const welcomeMessage = {
-      id: 'welcome',
-      role: 'assistant' as const,
-      content: t('aivy.welcome_message', { name: contactInfo.name }) || `Hello ${contactInfo.name}! I'm AIVY, and I'm here to guide you through FabriiQ's comprehensive School Operating System.`,
-      timestamp: new Date()
-    }
+      if (error) {
+        console.error('Error getting or creating session:', error);
+        return;
+      }
+      const currentSessionId = data;
+      setSessionId(currentSessionId);
 
-    if (messages.length === 0) {
-      setMessages([welcomeMessage])
-    } else {
-      // Update the welcome message if language changed
-      setMessages(prev => prev.map((msg, index) => 
-        index === 0 && msg.id === 'welcome' ? welcomeMessage : msg
-      ))
-    }
-  }, [contactInfo.name, t])
+      // 2. Fetch initial messages for the session
+      const { data: initialMessages, error: messagesError } = await supabase
+        .from('conversation_turns')
+        .select('*')
+        .eq('session_id', currentSessionId)
+        .order('created_at', { ascending: true });
 
-  const onSend = async () => {
-    const trimmed = input.trim()
-    if (!trimmed || isLoading) return
+      if (messagesError) {
+        console.error('Error fetching initial messages:', messagesError);
+      } else if (initialMessages) {
+        const formattedMessages: Message[] = initialMessages.map((msg: any) => ([
+            { role: 'user', content: msg.user_query, id: `${msg.id}_user` },
+            { role: 'assistant', content: msg.response_content, id: msg.id }
+        ])).flat();
+        setMessages(formattedMessages);
+      }
 
-    const userMsg: Message = {
-      id: `u-${Date.now()}`,
-      role: "user",
-      content: trimmed,
-      timestamp: new Date()
-    }
+      // 3. Subscribe to new messages in the conversation for multi-device sync
+      const channel = supabase
+        .channel(`conversation_turns:session_id=eq.${currentSessionId}`)
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'conversation_turns' },
+          (payload) => {
+            console.log('Realtime change received!', payload.new);
+            // This is where cross-device/tab sync would be implemented.
+            // To avoid duplicating messages for the active user, we can check if the message already exists.
+            // For now, we will just log it.
+          }
+        )
+        .subscribe();
 
-    setMessages((m) => [...m, userMsg])
-    setInput("")
-    setIsLoading(true)
-    setError(null)
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    };
 
-    // Add loading message
-    const loadingMessage: Message = {
-      id: `loading-${Date.now()}`,
-      role: 'assistant',
-      content: '',
-      timestamp: new Date(),
-      isLoading: true
-    }
-    setMessages((m) => [...m, loadingMessage])
+    initializeSession();
+  }, [supabase]);
+
+  // Handle form submission to send a new message
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || !sessionId) return;
+
+    const userMessageContent = input.trim();
+    const userMessage: Message = {
+        id: uuidv4(),
+        role: 'user',
+        content: userMessageContent,
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+
+    // Find the last assistant message to use its ID as the parent turn ID
+    const lastAssistantMessage = [...messages].reverse().find(m => m.role === 'assistant');
+    const parentTurnId = lastAssistantMessage?.id;
+
+    // Construct the agent state to send to the secure API route
+    const currentState: AgentState = {
+        id: sessionId,
+        conversationHistory: [...messages, userMessage],
+        crmData: { id: sessionId },
+        qualificationScore: 0,
+        nextActions: [],
+        conversationState: 'exploring_needs',
+        parentTurnId: parentTurnId,
+    };
 
     try {
-      const response = await fetch('/api/ai/chat', {
+      const response = await fetch('/api/agents/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: userMsg.content,
-          conversationId: conversationId,
-          userId: userId
-        })
-      })
+          message: userMessageContent,
+          state: currentState,
+        }),
+      });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        throw new Error(`API Error: ${response.statusText}`);
       }
 
-      const data = await response.json()
+      const data = await response.json();
 
-      if (data.error) {
-        throw new Error(data.error)
-      }
+      const assistantMessage: Message = {
+        id: data.turnId || uuidv4(),
+        role: 'assistant',
+        content: data.response || "I'm sorry, I couldn't generate a response.",
+      };
 
-      // Remove loading message and add AI response
-      const responseContent = data.response || 'I apologize, but I couldn\'t generate a response. Please try again.'
-      setMessages((m) => {
-        const withoutLoading = m.filter(msg => !msg.isLoading)
-        const reply: Message = {
-          id: `a-${Date.now()}`,
-          role: "assistant",
-          content: responseContent,
-          timestamp: new Date()
-        }
-        return [...withoutLoading, reply]
-      })
-
-      // Track conversation for analytics and CRM
-      await trackConversation(userMsg.content, responseContent)
+      setMessages(prev => [...prev, assistantMessage]);
 
     } catch (error) {
-      console.error('Chat error:', error)
-      setError(error instanceof Error ? error.message : 'An unexpected error occurred')
-      
-      // Remove loading message and add error message
-      setMessages((m) => {
-        const withoutLoading = m.filter(msg => !msg.isLoading)
-        const errorMessage: Message = {
-          id: `error-${Date.now()}`,
-          role: 'assistant',
-          content: 'I apologize, but I\'m having trouble responding right now. Please try again in a moment.',
-          timestamp: new Date()
-        }
-        return [...withoutLoading, errorMessage]
-      })
-    } finally {
-      setIsLoading(false)
-      inputRef.current?.focus()
+      console.error('Failed to get agent response:', error);
+      const errorMessage: Message = {
+        id: uuidv4(),
+        role: 'assistant',
+        content: "I'm having trouble connecting right now. Please try again later.",
+      };
+      setMessages(prev => [...prev, errorMessage]);
     }
-  }
-
-  const trackConversation = async (userMessage: string, botResponse: string) => {
-    try {
-      await fetch('/api/crm/conversations/track', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sessionId: conversationId,
-          userMessage,
-          botResponse,
-          timestamp: new Date().toISOString(),
-          metadata: {
-            user_id: userId,
-            contact_name: contactInfo.name,
-            contact_organization: contactInfo.organization,
-            platform: 'aivy_page',
-            response_type: 'aivy_interface'
-          }
-        })
-      })
-    } catch (error) {
-      console.error('Failed to track conversation:', error)
-      // Don't fail the chat if tracking fails
-    }
-  }
-
-  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      onSend()
-    }
-  }
+  };
 
   return (
-    <div className="h-full min-h-0 flex flex-col">
-      {/* Inject custom animations */}
-      <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
-      
-      <section
-        className="relative flex-1 flex flex-col h-full min-h-0 overflow-hidden"
-        aria-label="AIVY Chat"
-        style={
-          {
-            // Enhanced AIVY Color Palette for better contrast
-            ["--aivy-deep-bg" as any]: "#0A0A0A",
-            ["--aivy-realm-bg" as any]: "#1a1a1a",
-            ["--aivy-teal-primary" as any]: "#1F504B",
-            ["--aivy-teal-secondary" as any]: "#5A8A84",
-            ["--aivy-ribbon-glow" as any]: "#D8E3E0",
-            ["--aivy-ribbon-dark" as any]: "#2A4A46",
-            ["--aivy-text-primary" as any]: "rgba(255,255,255,0.95)",
-            ["--aivy-text-secondary" as any]: "rgba(255,255,255,0.85)",
-            ["--aivy-text-muted" as any]: "rgba(255,255,255,0.65)",
-          } as React.CSSProperties
-        }
-      >
-        {/* Use transparent background to show homepage background */}
-        <div className="absolute inset-0" />
-        
-        {/* Cosmic Particle Field */}
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{
-            backgroundImage: `
-              radial-gradient(2px 2px at 15% 25%, var(--aivy-teal-primary) 20%, transparent 50%),
-              radial-gradient(1px 1px at 85% 75%, var(--aivy-ribbon-glow) 30%, transparent 50%),
-              radial-gradient(1px 1px at 45% 15%, var(--aivy-teal-secondary) 25%, transparent 50%),
-              radial-gradient(2px 2px at 75% 85%, var(--aivy-teal-primary) 15%, transparent 50%),
-              radial-gradient(1px 1px at 25% 85%, var(--aivy-ribbon-glow) 35%, transparent 50%)
-            `,
-            backgroundSize: "800px 800px, 600px 600px, 900px 900px, 700px 700px, 500px 500px",
-          }}
-        />
-
-        {/* AIVY's Flowing Ribbon Realm */}
-        <AIVYRibbonRealm />
-
-        {/* Chat Container - Mobile Responsive */}
-        <div className="relative z-20 flex flex-col h-full min-h-0 w-full pt-24 sm:pt-28">
-          {/* Chat Messages Area (scrollable) */}
-          <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-4 space-y-4 sm:px-6 md:px-8 sm:space-y-6 overscroll-contain">
-            <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
-              {messages.map((message, index) => (
-                <AIVYMessageBubble 
-                  key={message.id} 
-                  message={message} 
-                  index={index}
-                  isFirst={index === 0}
-                />
-              ))}
-              <div ref={endRef} />
-            </div>
-          </main>
-
-          {/* Input Area pinned at bottom by flex layout */}
-          <div className="p-4 sm:p-6 md:p-8 bg-black/60 backdrop-blur-sm border-t border-gray-700/20 pb-[env(safe-area-inset-bottom)]">
-            <div className="max-w-4xl mx-auto">
-              <div 
-                className="relative flex items-center gap-2 sm:gap-3 md:gap-4 p-3 sm:p-4 rounded-full backdrop-blur-xl border"
-                style={{
-                  background: "linear-gradient(135deg, rgba(31, 80, 75, 0.15), rgba(90, 138, 132, 0.08))",
-                  borderColor: "var(--aivy-teal-primary)",
-                  borderWidth: "1px",
-                  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
-                }}
-              >
-                <input
-                  ref={inputRef}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={onKeyDown}
-                  placeholder={t('aivy.input_placeholder') || "Ask AIVY about educational strategies, partnerships, or technology solutions..."}
-                  className="flex-1 bg-transparent text-sm sm:text-base placeholder:text-[var(--aivy-text-muted)] focus:outline-none px-2 sm:px-4 py-2"
-                  style={{ color: "var(--aivy-text-primary)" }}
-                  maxLength={1000}
-                  disabled={isLoading}
-                  inputMode="text"
-                />
-                {/* Character count - Hide on mobile */}
-                <div className="hidden sm:block text-xs" style={{ color: "var(--aivy-text-muted)" }}>
-                  {input.length}/1000
-                </div>
-                {/* Send button */}
-                <button
-                  onClick={onSend}
-                  disabled={isLoading || !input.trim()}
-                  className="p-2 sm:p-3 rounded-full transition-all duration-200 disabled:opacity-50"
-                  style={{
-                    background: "linear-gradient(135deg, var(--aivy-teal-primary), var(--aivy-teal-secondary))",
-                    color: "white",
-                    boxShadow: "0 4px 16px rgba(31, 80, 75, 0.4)"
-                  }}
-                >
-                  {isLoading ? (
-                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                  ) : (
-                    <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-                  )}
-                </button>
-              </div>
-              {/* Disclaimer */}
-              <div className="mt-3 text-xs text-left" style={{ color: "var(--aivy-text-muted)" }}>
-                {t('aivy.disclaimer') || 'AIVY can make mistakes. Please verify important information.'}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  )
-}
-
-// AIVY Message Bubble - Organic flowing design
-function AIVYMessageBubble({ 
-  message, 
-  index, 
-  isFirst 
-}: { 
-  message: Message;
-  index: number;
-  isFirst: boolean;
-}) {
-  const isUser = message.role === "user"
-  const isAIVY = message.role === "assistant"
-  
-  return (
-    <div className={`flex w-full ${isUser ? 'justify-end' : 'justify-start'} items-start gap-3`}>
-      {/* Assistant avatar on the left of AI messages */}
-      {isAIVY && (
-        <img
-          src="/Aivy-Avatar.png"
-          alt="AIVY"
-          className="w-24 h-24 sm:w-28 sm:h-28 rounded-full select-none shrink-0"
-          style={{ filter: 'brightness(1.15) contrast(1.05)' }}
-        />
-      )}
-      <div 
-        className={`relative ${isUser ? 'max-w-[85%] md:max-w-[70%]' : 'max-w-[75%] md:max-w-[65%]'} ${isFirst ? 'animate-fadeIn' : ''}`}
-        style={{
-          animationDelay: `${index * 0.1}s`
-        }}
-      >
-        {/* Message bubble with organic flowing design */}
-        <div
-          className={`relative px-6 py-4 backdrop-blur-xl border ${isUser ? 'rounded-l-3xl rounded-tr-3xl rounded-br-md' : 'rounded-r-3xl rounded-tl-3xl rounded-bl-md'}`}
-          style={{
-            background: isUser 
-              ? "linear-gradient(135deg, rgba(93, 213, 196, 0.15), rgba(74, 197, 180, 0.08))"
-              : "linear-gradient(135deg, rgba(15, 42, 48, 0.85), rgba(10, 26, 30, 0.75))",
-            borderColor: isUser 
-              ? "var(--aivy-teal-primary)"
-              : "var(--aivy-ribbon-glow)",
-            borderWidth: "1px",
-            boxShadow: isUser
-              ? "0 8px 32px rgba(93, 213, 196, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
-              : "0 12px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(125, 237, 217, 0.2)",
-          }}
-        >
-          {/* Message content */}
-          {message.isLoading ? (
-            <div className="flex items-center space-x-4">
-              <div 
-                className="w-8 h-8 rounded-full flex items-center justify-center"
-                style={{ 
-                  background: "linear-gradient(135deg, var(--aivy-teal-primary), var(--aivy-teal-secondary))"
-                }}
-              >
-                <Loader2 
-                  className="w-4 h-4 animate-spin" 
-                  style={{ color: "var(--aivy-deep-bg)" }} 
-                />
-              </div>
-              <div className="flex space-x-2">
-                <div 
-                  className="w-2 h-2 rounded-full animate-bounce"
-                  style={{ backgroundColor: "var(--aivy-teal-primary)" }}
-                />
-                <div 
-                  className="w-2 h-2 rounded-full animate-bounce"
-                  style={{ 
-                    backgroundColor: "var(--aivy-teal-primary)", 
-                    animationDelay: "0.1s" 
-                  }}
-                />
-                <div 
-                  className="w-2 h-2 rounded-full animate-bounce"
-                  style={{ 
-                    backgroundColor: "var(--aivy-teal-primary)", 
-                    animationDelay: "0.2s" 
-                  }}
-                />
-              </div>
-            </div>
-          ) : (
-            <p 
-              className="text-base leading-relaxed"
-              style={{ 
-                color: isUser 
-                  ? "var(--aivy-text-primary)" 
-                  : "var(--aivy-text-secondary)" 
-              }}
-            >
-              {message.content}
-            </p>
-          )}
-          
-          {/* Subtle glow line */}
-          <div
-            className="absolute inset-x-4 top-0 h-px opacity-60"
-            style={{
-              background: `linear-gradient(90deg, transparent, ${isUser ? 'var(--aivy-teal-primary)' : 'var(--aivy-ribbon-glow)'}, transparent)`
-            }}
-          />
-        </div>
-        
-        {/* Timestamp */}
-        <div 
-          className={`text-xs mt-1 px-2 ${isUser ? 'text-right' : 'text-left'}`}
-          style={{ color: "var(--aivy-text-muted)" }}
-        >
-          {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-        </div>
-      </div>
-      {/* Spacer to align user messages with large assistant avatar width */}
-      {isUser && <div className="w-24 sm:w-28" />}
-    </div>
-  )
-}
-
-// AIVY's Flowing Ribbon Realm - The living, breathing body
-function AIVYRibbonRealm() {
-  return (
-    <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-      {/* Primary flowing ribbons - AIVY's body */}
-      <svg
-        className="absolute inset-0 w-full h-full opacity-60"
-        viewBox="0 0 1920 1080"
-        preserveAspectRatio="xMidYMid slice"
-      >
-        <defs>
-          <linearGradient id="ribbonGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="var(--aivy-ribbon-glow)" stopOpacity="0.9" />
-            <stop offset="50%" stopColor="var(--aivy-teal-primary)" stopOpacity="0.7" />
-            <stop offset="100%" stopColor="var(--aivy-ribbon-dark)" stopOpacity="0.5" />
-          </linearGradient>
-          <linearGradient id="ribbonGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="var(--aivy-teal-secondary)" stopOpacity="0.8" />
-            <stop offset="50%" stopColor="var(--aivy-ribbon-glow)" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="var(--aivy-ribbon-dark)" stopOpacity="0.4" />
-          </linearGradient>
-          <filter id="ribbonGlow">
-            <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
-            <feMerge> 
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-        
-        {/* Main flowing ribbons that frame the chat area */}
-        <g className="animate-pulse" style={{ animationDuration: "6s" }}>
-          {/* Left ribbon flow */}
-          <path
-            d="M-100,200 Q200,300 400,250 T800,400 Q1200,350 1500,450 T1920,400"
-            fill="none"
-            stroke="url(#ribbonGrad1)"
-            strokeWidth="40"
-            strokeLinecap="round"
-            filter="url(#ribbonGlow)"
-            className="animate-pulse"
-            style={{ animationDuration: "4s" }}
-          />
-          
-          {/* Right ribbon flow */}
-          <path
-            d="M1920,300 Q1700,400 1400,350 T1000,500 Q600,450 300,550 T-100,500"
-            fill="none"
-            stroke="url(#ribbonGrad2)"
-            strokeWidth="35"
-            strokeLinecap="round"
-            filter="url(#ribbonGlow)"
-            className="animate-pulse"
-            style={{ animationDuration: "5s", animationDelay: "1s" }}
-          />
-          
-          {/* Central weaving ribbon */}
-          <path
-            d="M0,600 Q300,500 600,550 T1200,450 Q1500,400 1920,350"
-            fill="none"
-            stroke="url(#ribbonGrad1)"
-            strokeWidth="25"
-            strokeLinecap="round"
-            filter="url(#ribbonGlow)"
-            opacity="0.7"
-            className="animate-pulse"
-            style={{ animationDuration: "7s", animationDelay: "2s" }}
-          />
-          
-          {/* Bottom flowing ribbon */}
-          <path
-            d="M-100,800 Q400,750 800,800 T1600,700 Q1800,650 1920,700"
-            fill="none"
-            stroke="url(#ribbonGrad2)"
-            strokeWidth="30"
-            strokeLinecap="round"
-            filter="url(#ribbonGlow)"
-            opacity="0.5"
-            className="animate-pulse"
-            style={{ animationDuration: "8s", animationDelay: "0.5s" }}
-          />
-        </g>
-        
-        {/* Secondary accent ribbons for depth */}
-        <g opacity="0.4">
-          <path
-            d="M0,100 Q500,150 1000,100 T1920,200"
-            fill="none"
-            stroke="var(--aivy-ribbon-glow)"
-            strokeWidth="15"
-            strokeLinecap="round"
-            filter="url(#ribbonGlow)"
-          />
-          <path
-            d="M1920,900 Q1400,850 800,900 T0,950"
-            fill="none"
-            stroke="var(--aivy-teal-primary)"
-            strokeWidth="12"
-            strokeLinecap="round"
-            filter="url(#ribbonGlow)"
-          />
-        </g>
-      </svg>
-      
-      {/* Floating ribbon particles for extra mystique */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(12)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute opacity-30 animate-ping"
-            style={{
-              left: `${10 + (i * 7) % 80}%`,
-              top: `${20 + (i * 11) % 60}%`,
-              animationDuration: `${3 + (i % 4)}s`,
-              animationDelay: `${i * 0.3}s`
-            }}
+    <div className="flex flex-col h-[600px] w-full max-w-2xl mx-auto border rounded-lg shadow-lg">
+      <div className="flex-1 p-4 overflow-y-auto">
+        {messages.map((m, index) => (
+          <div key={m.id || index} className={`my-2 p-2 rounded-lg ${
+              m.role === 'user' ? 'bg-blue-100 ml-auto' : 'bg-gray-100'
+            }`}
+            style={{ maxWidth: '80%' }}
           >
-            <div
-              className="w-2 h-2 rounded-full"
-              style={{
-                background: i % 3 === 0 
-                  ? "var(--aivy-teal-primary)"
-                  : i % 3 === 1 
-                    ? "var(--aivy-ribbon-glow)"
-                    : "var(--aivy-teal-secondary)",
-                boxShadow: `0 0 8px ${i % 3 === 0 ? 'var(--aivy-teal-primary)' : i % 3 === 1 ? 'var(--aivy-ribbon-glow)' : 'var(--aivy-teal-secondary)'}`
-              }}
-            />
+            <span className="font-bold">{m.role === 'user' ? 'You' : 'AIVY'}</span>
+            <p>{m.content}</p>
           </div>
         ))}
       </div>
+      <form onSubmit={handleSubmit} className="p-4 border-t">
+        <div className="flex">
+          <input
+            className="flex-1 p-2 border rounded-l-lg"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask AIVY anything..."
+          />
+          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-r-lg">
+            Send
+          </button>
+        </div>
+      </form>
     </div>
-  )
+  );
 }

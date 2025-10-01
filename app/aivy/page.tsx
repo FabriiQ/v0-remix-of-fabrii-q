@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { ContactCollection } from "@/components/aivy/contact-collection"
-import AivyChat from "@/components/aivy/Chat"
+import AivyChat from "@/components/aivy/aivy-chat-interface"
 import { NavBar } from "@/components/nav-bar"
 
 interface ContactInfo {
