@@ -166,7 +166,7 @@ const CRMDashboard = ({ initialData }: { initialData: DashboardStats | null }) =
                         </span>
                       </div>
                       <p className="text-sm text-gray-600 mt-1">
-                         'No description available'
+                        {activity.description || 'No description available'}
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
                         {timeDisplay}

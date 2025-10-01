@@ -1,6 +1,6 @@
 'use client'
 
-import { AIChat } from '@/components/ai/AIChat'
+import AivyChat from '@/components/aivy/Chat'
 import CookieConsent from '@/components/cookie-consent'
 
 export default function AIDemoPage() {
@@ -13,11 +13,7 @@ export default function AIDemoPage() {
           <div className="lg:col-span-1">
             <div className="rounded-xl overflow-hidden border border-gray-800/30 bg-black/40 backdrop-blur-sm p-4">
               <div className="h-[600px]">
-                <AIChat 
-                  userId="demo-user-123"
-                  conversationId="demo-conversation"
-                  className="h-full"
-                />
+                <AivyChat />
               </div>
             </div>
           </div>
@@ -75,7 +71,7 @@ export default function AIDemoPage() {
                       console.log('Suggested question:', question)
                     }}
                   >
-                    "{question}"
+                    &quot;{question}&quot;
                   </button>
                 ))}
               </div>
@@ -118,7 +114,7 @@ export default function AIDemoPage() {
               <strong>Alpha Version Notice:</strong> This AI assistant is currently in development. 
               Responses are generated using a mock system for demonstration purposes. 
               The production version will feature advanced RAG capabilities with vector search 
-              and integration with your institution's knowledge base.
+              and integration with your institution&apos;s knowledge base.
             </div>
           </div>
         </div>

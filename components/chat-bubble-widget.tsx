@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { AIChat } from '@/components/ai/AIChat'
+import AivyChat from '@/components/aivy/Chat'
 
 export default function ChatBubbleWidget() {
   const pathname = usePathname()
@@ -25,9 +26,11 @@ export default function ChatBubbleWidget() {
           </div>
           {/* Avatar + label */}
           <div className="flex flex-col items-center">
-            <img
+            <Image
               src="/Aivy-Avatar.png"
               alt="AIVY"
+              width={72}
+              height={72}
               className="w-[64px] h-[64px] md:w-[72px] md:h-[72px] rounded-full select-none shadow-lg aivy-float"
             />
             {/* Single dark-green revolving dot */}
@@ -64,7 +67,7 @@ export default function ChatBubbleWidget() {
           {/* Header */}
           <div className="flex justify-between items-center px-4 py-2 bg-black/50 backdrop-blur-sm border-b border-white/10">
             <div className="flex items-center gap-2">
-              <img src="/Aivy-Avatar.png" alt="AIVY" className="w-7 h-7 rounded-full" />
+              <Image src="/Aivy-Avatar.png" alt="AIVY" width={28} height={28} className="w-7 h-7 rounded-full" />
               <span className="text-sm font-semibold text-white">AIVY</span>
               <span className="text-[11px] text-white/60 px-2 py-0.5 rounded-full border border-white/10">Executive AI</span>
             </div>
@@ -78,12 +81,7 @@ export default function ChatBubbleWidget() {
           </div>
           {/* Body */}
           <div className="flex-1 overflow-hidden bg-black/40 backdrop-blur-sm">
-            <AIChat
-              userId="global-widget-visitor"
-              conversationId={`widget-${Date.now()}`}
-              className="h-full"
-              showHeader={false}
-            />
+            <AivyChat />
           </div>
         </div>
       )}
