@@ -169,7 +169,7 @@ export function PersonalitySelection({ onPersonalitySelect, onSkip }: Personalit
             variant="ghost"
             className="text-gray-600 hover:text-gray-800 px-8 py-3 rounded-full"
           >
-            I'll do it later
+            I&apos;ll do it later
           </Button>
           <Button
             onClick={handleConfirm}

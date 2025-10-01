@@ -1,3 +1,6 @@
+-- Enable the uuid-ossp extension to use uuid_generate_v4()
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Content Posts
 CREATE TABLE content_posts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

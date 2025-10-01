@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -20,14 +20,28 @@ import {
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
 import DocumentUpload from '@/components/admin/DocumentUpload'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { useToast } from "@/components/ui/use-toast"
+
+interface Role {
+  id: number;
+  name: string;
+}
 
 interface UserProfile {
-  id: string
-  user_id: string
-  full_name: string | null
-  role: 'user' | 'admin'
-  is_active: boolean
-  created_at: string
+  id: string;
+  user_id: string;
+  full_name: string | null;
+  role_id: number | null;
+  is_active: boolean;
+  created_at: string;
+  roles: { name: string } | null;
 }
 
 interface Document {
@@ -45,6 +59,7 @@ export default function AdminDashboard() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [users, setUsers] = useState<UserProfile[]>([])
+  const [roles, setRoles] = useState<Role[]>([]);
   const [documents, setDocuments] = useState<Document[]>([])
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -53,12 +68,85 @@ export default function AdminDashboard() {
     totalConversations: 0
   })
   const router = useRouter()
+  const { toast } = useToast()
 
-  useEffect(() => {
-    checkAuth()
+  const loadUsers = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select(`
+          *,
+          roles ( name )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setUsers(data || []);
+    } catch (error) {
+      console.error('Failed to load users:', error);
+    }
+  }, []);
+
+  const loadRoles = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.from('roles').select('*');
+      if (error) throw error;
+      setRoles(data || []);
+    } catch (error) {
+      console.error('Failed to load roles:', error);
+    }
+  }, []);
+
+  const handleRoleChange = async (userId: string, newRoleId: string) => {
+    const { error } = await supabase
+      .from('user_profiles')
+      .update({ role_id: newRoleId })
+      .eq('id', userId);
+
+    if (error) {
+      toast({ title: 'Error', description: `Failed to update role: ${error.message}`, variant: 'destructive' });
+    } else {
+      toast({ title: 'Success', description: 'User role updated successfully.' });
+      loadUsers(); // Refresh the user list
+    }
+  };
+
+  const loadDocuments = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('documents')
+        .select('id, title, source_type, file_size, file_type, processing_status, created_at')
+        .order('created_at', { ascending: false })
+        .limit(50)
+
+      if (error) throw error
+      setDocuments(data || [])
+    } catch (error) {
+      console.error('Failed to load documents:', error)
+    }
   }, [])
 
-  const checkAuth = async () => {
+  const loadStats = useCallback(async () => {
+    try {
+      const [usersResult, docsResult, processingResult, conversationsResult] = await Promise.all([
+        supabase.from('user_profiles').select('id', { count: 'exact', head: true }),
+        supabase.from('documents').select('id', { count: 'exact', head: true }),
+        supabase.from('documents').select('id', { count: 'exact', head: true }).in('processing_status', ['pending', 'processing']),
+        supabase.from('conversations').select('id', { count: 'exact', head: true })
+      ])
+
+      setStats({
+        totalUsers: usersResult.count || 0,
+        totalDocuments: docsResult.count || 0,
+        processingDocuments: processingResult.count || 0,
+        totalConversations: conversationsResult.count || 0
+      })
+    } catch (error) {
+      console.error('Failed to load stats:', error)
+    }
+  }, [])
+
+  const checkAuth = useCallback(async () => {
     try {
       const { data: { user }, error } = await supabase.auth.getUser()
       if (error || !user) {
@@ -81,70 +169,26 @@ export default function AdminDashboard() {
 
       setUser(user)
       setUserProfile(profile)
-      
+
       // Load dashboard data
       await Promise.all([
         loadUsers(),
         loadDocuments(),
-        loadStats()
+        loadStats(),
+        loadRoles(),
       ])
-      
+
     } catch (error) {
       console.error('Auth check failed:', error)
       router.push('/auth')
     } finally {
       setLoading(false)
     }
-  }
+  }, [router, loadUsers, loadDocuments, loadStats, loadRoles])
 
-  const loadUsers = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      if (error) throw error
-      setUsers(data || [])
-    } catch (error) {
-      console.error('Failed to load users:', error)
-    }
-  }
-
-  const loadDocuments = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('documents')
-        .select('id, title, source_type, file_size, file_type, processing_status, created_at')
-        .order('created_at', { ascending: false })
-        .limit(50)
-
-      if (error) throw error
-      setDocuments(data || [])
-    } catch (error) {
-      console.error('Failed to load documents:', error)
-    }
-  }
-
-  const loadStats = async () => {
-    try {
-      const [usersResult, docsResult, processingResult, conversationsResult] = await Promise.all([
-        supabase.from('user_profiles').select('id', { count: 'exact', head: true }),
-        supabase.from('documents').select('id', { count: 'exact', head: true }),
-        supabase.from('documents').select('id', { count: 'exact', head: true }).in('processing_status', ['pending', 'processing']),
-        supabase.from('conversations').select('id', { count: 'exact', head: true })
-      ])
-
-      setStats({
-        totalUsers: usersResult.count || 0,
-        totalDocuments: docsResult.count || 0,
-        processingDocuments: processingResult.count || 0,
-        totalConversations: conversationsResult.count || 0
-      })
-    } catch (error) {
-      console.error('Failed to load stats:', error)
-    }
-  }
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -334,10 +378,22 @@ export default function AdminDashboard() {
                           Joined {new Date(user.created_at).toLocaleDateString()}
                         </p>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge className={user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}>
-                          {user.role}
-                        </Badge>
+                      <div className="flex items-center gap-4">
+                        <Select
+                          value={user.role_id?.toString()}
+                          onValueChange={(newRoleId) => handleRoleChange(user.id, newRoleId)}
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select a role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {roles.map((role) => (
+                              <SelectItem key={role.id} value={role.id.toString()}>
+                                {role.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <Badge className={user.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
                           {user.is_active ? 'Active' : 'Inactive'}
                         </Badge>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { ContactCollection } from "@/components/aivy/contact-collection"
-import { AIVYChatInterface } from "@/components/aivy/aivy-chat-interface"
+import AivyChat from "@/components/aivy/Chat"
 import { NavBar } from "@/components/nav-bar"
 
 interface ContactInfo {
@@ -102,11 +102,7 @@ export default function AIVYPage() {
 
         {/* AIVY Chat Interface - Full Screen without page scrolling */}
         <div className="flex-1 min-h-0 pt-20 pb-0">
-          <AIVYChatInterface 
-            userId={`aivy-${contactInfo.name.replace(/\s+/g, '-').toLowerCase()}`}
-            conversationId={`aivy-conversation-${Date.now()}`}
-            contactInfo={contactInfo}
-          />
+          <AivyChat />
         </div>
         
       </div>

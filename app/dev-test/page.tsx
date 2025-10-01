@@ -359,7 +359,7 @@ export default function DevTestPage() {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Test Output</h3>
             <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm h-96 overflow-y-auto">
               {testOutput.length === 0 ? (
-                <div className="text-gray-500">Click "Run All Tests" to start testing...</div>
+                <div className="text-gray-500">Click &quot;Run All Tests&quot; to start testing...</div>
               ) : (
                 testOutput.map((line, index) => (
                   <div key={index} className="mb-1">

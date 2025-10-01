@@ -186,7 +186,7 @@ export function PartnershipAssessment({
           Partnership Co-Creation Assessment
         </h2>
         <p className="text-[#1F504B]/70">
-          Help us understand your institution's vision and co-development readiness
+          Help us understand your institution&apos;s vision and co-development readiness
         </p>
       </div>
 
@@ -436,7 +436,7 @@ export function PartnershipAssessment({
               <textarea
                 value={assessmentData.strategicChallenges}
                 onChange={(e) => handleInputChange('strategicChallenges', e.target.value)}
-                placeholder="Describe your institution's key strategic challenges and transformation goals..."
+                placeholder="Describe your institution&apos;s key strategic challenges and transformation goals..."
                 rows={3}
                 className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1F504B]/20 focus:border-[#1F504B] ${
                   errors.strategicChallenges ? 'border-red-400 bg-red-50' : 'border-gray-300'
@@ -467,12 +467,12 @@ export function PartnershipAssessment({
 
             <div>
               <label className="block text-sm font-medium text-[#1F504B] mb-1">
-                Institution's Vision Statement
+                Institution&apos;s Vision Statement
               </label>
               <textarea
                 value={assessmentData.visionStatement}
                 onChange={(e) => handleInputChange('visionStatement', e.target.value)}
-                placeholder="Share your institution's vision for educational technology transformation and how a partnership with FabriiQ would support your strategic goals..."
+                placeholder="Share your institution&apos;s vision for educational technology transformation and how a partnership with FabriiQ would support your strategic goals..."
                 rows={4}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1F504B]/20 focus:border-[#1F504B]"
               />

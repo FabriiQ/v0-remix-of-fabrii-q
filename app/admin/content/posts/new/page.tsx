@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import EditorClient from './editor-client';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
 
 function EditorSkeleton() {
     return (

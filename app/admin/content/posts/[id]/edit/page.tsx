@@ -120,7 +120,7 @@ export default function EditPostPage() {
                 <CardHeader>
                     <CardTitle>Edit Post</CardTitle>
                     <CardDescription>
-                        You are currently editing "{post.title}".
+                        You are currently editing &quot;{post.title}&quot;.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
