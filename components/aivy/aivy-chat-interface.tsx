@@ -1,9 +1,9 @@
 'use client'
 
 import type React from "react"
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import Image from 'next/image'
-import { Send, Loader2 } from 'lucide-react'
+import { Send, Loader2, MessageSquare, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useLanguage } from '@/contexts/language-context'
 
@@ -43,8 +43,14 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [replyingTo, setReplyingTo] = useState<Message | null>(null)
   const endRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const handleReply = useCallback((message: Message) => {
+    setReplyingTo(message)
+    inputRef.current?.focus()
+  }, [])
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -96,9 +102,8 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
     }
     setMessages((m) => [...m, loadingMessage])
 
-    // Find the last assistant message to use its ID as the parent turn ID
-    const lastAssistantMessage = [...newMessages].reverse().find(m => m.role === 'assistant');
-    const parentTurnId = lastAssistantMessage?.id;
+    const parentTurnId = replyingTo?.id
+    setReplyingTo(null)
 
     try {
       const response = await fetch('/api/ai/chat', {
@@ -110,7 +115,7 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
           message: userMsg.content,
           conversationId: conversationId,
           userId: userId,
-          parentTurnId: parentTurnId
+          parentTurnId
         })
       })
 
@@ -250,6 +255,7 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
                   message={message}
                   index={index}
                   isFirst={index === 0}
+                  onReply={handleReply}
                 />
               ))}
               <div ref={endRef} />
@@ -259,6 +265,14 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
           {/* Input Area pinned at bottom by flex layout */}
           <div className="p-4 sm:p-6 md:p-8 bg-black/60 backdrop-blur-sm border-t border-gray-700/20 pb-[env(safe-area-inset-bottom)]">
             <div className="max-w-4xl mx-auto">
+              {replyingTo && (
+                <div className="mb-2 p-2 bg-gray-700/50 rounded-lg text-xs text-white/80 flex justify-between items-center animate-fadeIn">
+                  <span>Replying to: &quot;{replyingTo.content.substring(0, 40)}...&quot;</span>
+                  <button onClick={() => setReplyingTo(null)} className="p-1 rounded-full hover:bg-gray-600">
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
               <div
                 className="relative flex items-center gap-2 sm:gap-3 md:gap-4 p-3 sm:p-4 rounded-full backdrop-blur-xl border"
                 style={{
@@ -318,17 +332,19 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
 function AIVYMessageBubble({
   message,
   index,
-  isFirst
+  isFirst,
+  onReply
 }: {
   message: Message;
   index: number;
   isFirst: boolean;
+  onReply: (message: Message) => void;
 }) {
   const isUser = message.role === "user"
   const isAIVY = message.role === "assistant"
 
   return (
-    <div className={`flex w-full ${isUser ? 'justify-end' : 'justify-start'} items-start gap-3`}>
+    <div className={`group flex w-full ${isUser ? 'justify-end' : 'justify-start'} items-start gap-3`}>
       {/* Assistant avatar on the left of AI messages */}
       {isAIVY && (
         <Image
@@ -419,12 +435,15 @@ function AIVYMessageBubble({
           />
         </div>
 
-        {/* Timestamp */}
+        {/* Timestamp and Reply Button */}
         <div
-          className={`text-xs mt-1 px-2 ${isUser ? 'text-right' : 'text-left'}`}
+          className={`text-xs mt-1 px-2 flex items-center gap-2 transition-opacity duration-300 group-hover:opacity-100 ${isAIVY ? 'opacity-100' : 'opacity-0'} ${isUser ? 'justify-end' : 'justify-start'}`}
           style={{ color: "var(--aivy-text-muted)" }}
         >
-          {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          <span>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          <button onClick={() => onReply(message)} className="p-1 rounded-full hover:bg-gray-700">
+            <MessageSquare className="w-3 h-3" />
+          </button>
         </div>
       </div>
       {/* Spacer to align user messages with large assistant avatar width */}

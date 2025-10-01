@@ -1,13 +1,49 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import AivyChat from '@/components/aivy/chat-interface'
+import { AIVYChatInterface } from '@/components/aivy/aivy-chat-interface'
+import { ContactCollection } from '@/components/aivy/contact-collection'
+
+interface ContactInfo {
+  name: string
+  phone: string
+  organization: string
+}
 
 export default function ChatBubbleWidget() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null)
+  const [conversationId, setConversationId] = useState<string | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [isSubmittingContact, setIsSubmittingContact] = useState(false)
+
+  // Load contact info from local storage
+  useEffect(() => {
+    const storedContact = localStorage.getItem('aivy_contactInfo')
+    if (storedContact) {
+      setContactInfo(JSON.parse(storedContact))
+    }
+  }, [])
+
+  // Generate conversation and user IDs when chat opens
+  useEffect(() => {
+    if (open && !conversationId) {
+      setConversationId(`conv_${Date.now()}`)
+      setUserId(`user_${Date.now()}`)
+    }
+  }, [open, conversationId])
+
+  const handleContactComplete = async (contact: ContactInfo) => {
+    setIsSubmittingContact(true)
+    // Here you would typically save the contact to your backend
+    // For this example, we'll just save it to local storage
+    localStorage.setItem('aivy_contactInfo', JSON.stringify(contact))
+    setContactInfo(contact)
+    setIsSubmittingContact(false)
+  }
 
   // Hide on AIVY dedicated page
   if (pathname?.startsWith('/aivy')) return null
@@ -81,7 +117,18 @@ export default function ChatBubbleWidget() {
           </div>
           {/* Body */}
           <div className="flex-1 overflow-hidden bg-black/40 backdrop-blur-sm">
-            <AivyChat />
+            {contactInfo && userId && conversationId ? (
+              <AIVYChatInterface
+                contactInfo={contactInfo}
+                userId={userId}
+                conversationId={conversationId}
+              />
+            ) : (
+              <ContactCollection
+                onComplete={handleContactComplete}
+                isSubmitting={isSubmittingContact}
+              />
+            )}
           </div>
         </div>
       )}

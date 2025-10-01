@@ -16,6 +16,18 @@ CREATE TABLE IF NOT EXISTS agents (
 -- This links them to the new agents table
 DO $$
 BEGIN
+    -- First ensure the column exists in channel_participants
+    IF NOT EXISTS (
+        SELECT 1
+        FROM   information_schema.columns
+        WHERE  table_name = 'channel_participants'
+        AND    column_name = 'agent_id'
+    ) THEN
+        ALTER TABLE channel_participants
+        ADD COLUMN agent_id UUID;
+    END IF;
+
+    -- Then add the foreign key constraint
     IF NOT EXISTS (
         SELECT 1
         FROM   pg_constraint
@@ -30,6 +42,18 @@ $$;
 
 DO $$
 BEGIN
+    -- First ensure the column exists in messages
+    IF NOT EXISTS (
+        SELECT 1
+        FROM   information_schema.columns
+        WHERE  table_name = 'messages'
+        AND    column_name = 'sender_agent_id'
+    ) THEN
+        ALTER TABLE messages
+        ADD COLUMN sender_agent_id UUID;
+    END IF;
+
+    -- Then add the foreign key constraint
     IF NOT EXISTS (
         SELECT 1
         FROM   pg_constraint
