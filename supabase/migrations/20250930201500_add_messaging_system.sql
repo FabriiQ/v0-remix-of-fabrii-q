@@ -46,6 +46,21 @@ BEGIN
 END;
 $$;
 
+-- Add sender_id column if it doesn't exist, for backwards compatibility
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM   information_schema.columns
+        WHERE  table_name = 'messages'
+        AND    column_name = 'sender_id'
+    ) THEN
+        ALTER TABLE messages
+        ADD COLUMN sender_id UUID REFERENCES auth.users(id);
+    END IF;
+END;
+$$;
+
 -- Create indexes for performance
 CREATE INDEX IF NOT EXISTS channels_created_by_idx ON channels(created_by);
 CREATE INDEX IF NOT EXISTS channel_participants_channel_id_idx ON channel_participants(channel_id);
