@@ -1,10 +1,11 @@
 -- Enable the uuid-ossp extension to use uuid_generate_v4()
+-- Enable the uuid-ossp extension to use extensions.uuid_generate_v4()
 -- Enable the uuid-ossp extension in the extensions schema
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA extensions;
 
 -- Content Posts
 CREATE TABLE content_posts (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT extensions.uuid_generate_v4(),
   title TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
   content TEXT,
@@ -21,7 +22,7 @@ CREATE TABLE content_posts (
 
 -- Post Metadata
 CREATE TABLE post_metadata (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT extensions.uuid_generate_v4(),
   post_id UUID REFERENCES content_posts(id) ON DELETE CASCADE,
   key TEXT NOT NULL,
   value JSONB NOT NULL,
@@ -32,7 +33,7 @@ CREATE TABLE post_metadata (
 
 -- Content Categories
 CREATE TABLE content_categories (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT extensions.uuid_generate_v4(),
   name TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
   description TEXT,
@@ -48,7 +49,7 @@ CREATE TABLE post_categories (
 
 -- Content Tags
 CREATE TABLE content_tags (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT extensions.uuid_generate_v4(),
   name TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -63,7 +64,7 @@ CREATE TABLE post_tags (
 
 -- Media Library
 CREATE TABLE media_library (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT extensions.uuid_generate_v4(),
   name TEXT NOT NULL,
   url TEXT NOT NULL,
   file_type TEXT NOT NULL,
@@ -77,7 +78,7 @@ CREATE TABLE media_library (
 
 -- AI Generation Logs
 CREATE TABLE ai_generation_logs (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT extensions.uuid_generate_v4(),
   prompt TEXT NOT NULL,
   parameters JSONB NOT NULL,
   output TEXT,

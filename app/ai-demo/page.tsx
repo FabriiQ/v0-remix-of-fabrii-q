@@ -1,6 +1,6 @@
 'use client'
 
-import AivyChat from '@/components/aivy/Chat'
+import AivyChat from '@/components/aivy/aivy-chat-interface'
 import CookieConsent from '@/components/cookie-consent'
 
 export default function AIDemoPage() {
