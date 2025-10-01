@@ -56,4 +56,5 @@ USING (auth.role() = 'service_role');
 --
 -- Create a publication that broadcasts all changes on the conversation_turns table.
 -- This is what enables the real-time chat functionality on the frontend.
+DROP PUBLICATION IF EXISTS supabase_realtime;
 CREATE PUBLICATION supabase_realtime FOR TABLE conversation_turns;
