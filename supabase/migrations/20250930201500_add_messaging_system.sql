@@ -46,6 +46,21 @@ BEGIN
 END;
 $$;
 
+-- Add sender_agent_id column if it doesn't exist, for backwards compatibility
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM   information_schema.columns
+        WHERE  table_name = 'messages'
+        AND    column_name = 'sender_agent_id'
+    ) THEN
+        ALTER TABLE messages
+        ADD COLUMN sender_agent_id UUID;
+    END IF;
+END;
+$$;
+
 -- Add sender_id column if it doesn't exist, for backwards compatibility
 DO $$
 BEGIN

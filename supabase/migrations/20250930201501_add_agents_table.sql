@@ -14,11 +14,33 @@ CREATE TABLE IF NOT EXISTS agents (
 
 -- Add foreign key constraints to channel_participants and messages tables
 -- This links them to the new agents table
-ALTER TABLE channel_participants
-ADD CONSTRAINT fk_agent_id FOREIGN KEY (agent_id) REFERENCES agents(id) ON DELETE SET NULL;
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM   pg_constraint
+        WHERE  conname = 'fk_agent_id'
+        AND    conrelid = 'channel_participants'::regclass
+    ) THEN
+        ALTER TABLE channel_participants
+        ADD CONSTRAINT fk_agent_id FOREIGN KEY (agent_id) REFERENCES agents(id) ON DELETE SET NULL;
+    END IF;
+END;
+$$;
 
-ALTER TABLE messages
-ADD CONSTRAINT fk_sender_agent_id FOREIGN KEY (sender_agent_id) REFERENCES agents(id) ON DELETE SET NULL;
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM   pg_constraint
+        WHERE  conname = 'fk_sender_agent_id'
+        AND    conrelid = 'messages'::regclass
+    ) THEN
+        ALTER TABLE messages
+        ADD CONSTRAINT fk_sender_agent_id FOREIGN KEY (sender_agent_id) REFERENCES agents(id) ON DELETE SET NULL;
+    END IF;
+END;
+$$;
 
 -- Create indexes for performance
 CREATE INDEX IF NOT EXISTS agents_is_active_idx ON agents(is_active);

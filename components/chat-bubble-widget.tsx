@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import AivyChat from '@/components/aivy/aivy-chat-interface'
+import AivyChat from '@/components/aivy/chat-interface'
 
 export default function ChatBubbleWidget() {
   const pathname = usePathname()
