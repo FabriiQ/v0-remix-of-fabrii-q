@@ -1,4 +1,3 @@
-import { Message } from 'ai';
 import { CRMRecord, AgentAction, AgentState, AgentInput, AgentOutput } from '@/types/agent';
 import { VisitorEngagementAgent } from './VisitorEngagementAgent';
 
@@ -27,10 +26,11 @@ export function agentReducer(state: AgentState, action: AgentAction): AgentState
         conversationHistory: [
           ...state.conversationHistory,
           {
+            id: `user-${Date.now()}`,
             role: 'user',
             content: action.content,
             createdAt: new Date(),
-          } as Message,
+          },
         ],
       };
 
@@ -40,10 +40,11 @@ export function agentReducer(state: AgentState, action: AgentAction): AgentState
             conversationHistory: [
                 ...state.conversationHistory,
                 {
+                    id: `assistant-${Date.now()}`,
                     role: 'assistant',
                     content: action.content,
                     createdAt: new Date(),
-                } as Message,
+                },
             ],
         };
 

@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Nodemailer transporter setup - replace with actual SMTP credentials
     const transporter = nodemailer.createTransport({

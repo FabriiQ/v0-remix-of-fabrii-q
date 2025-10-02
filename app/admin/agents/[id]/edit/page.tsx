@@ -36,16 +36,17 @@ export default function EditAgentPage() {
         .eq('id', agentId)
         .single();
 
-      if (error) {
+      if (error || !data) {
         toast({ title: 'Error', description: 'Failed to load agent.', variant: 'destructive' });
         router.push('/admin/agents');
       } else {
-        setAgent(data);
-        setName(data.name);
-        setAvatarUrl(data.avatar_url || '');
-        setPersona(data.persona || '');
-        setSystemPrompt(data.system_prompt || '');
-        setEnabledTools((data.enabled_tools || []).join(', '));
+        const agentData = data as Agent;
+        setAgent(agentData);
+        setName(agentData.name);
+        setAvatarUrl(agentData.avatar_url || '');
+        setPersona(agentData.persona || '');
+        setSystemPrompt(agentData.system_prompt || '');
+        setEnabledTools((agentData.enabled_tools || []).join(', '));
       }
       setLoading(false);
     };

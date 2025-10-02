@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     }
 
     // Initialize Supabase and Gemini on the server-side
-    const supabase = createClient();
+    const supabase = await createClient();
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
     // Instantiate the agent

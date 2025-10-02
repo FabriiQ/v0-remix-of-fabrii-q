@@ -13,8 +13,8 @@ interface Channel {
 interface Message {
   id: string;
   content: string;
-  created_at: string;
-  sender_id: string;
+  created_at: string | null;
+  sender_id: string | null;
   parent_message_id: string | null;
   replies?: Message[];
 }
