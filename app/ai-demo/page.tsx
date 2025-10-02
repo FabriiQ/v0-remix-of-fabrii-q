@@ -1,18 +1,58 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { Agent } from '@/types/agent'
 import { AIVYChatInterface as AivyChat } from '@/components/aivy/aivy-chat-interface'
 import CookieConsent from '@/components/cookie-consent'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import Image from 'next/image'
+import { Users } from 'lucide-react'
 
 export default function AIDemoPage() {
+  const [agents, setAgents] = useState<Agent[]>([])
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
+
+  useEffect(() => {
+    const fetchAgents = async () => {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from('agents')
+        .select('*')
+        .order('created_at', { ascending: true })
+
+      if (error) {
+        console.error('Error fetching agents for demo:', error)
+      } else {
+        setAgents(data as Agent[])
+      }
+      setLoading(false)
+    }
+
+    fetchAgents()
+  }, [supabase])
+
   return (
-    <div className="min-h-screen bg-black p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900">AIVY Agentic System Preview</h1>
+          <p className="mt-2 text-lg text-gray-600">
+            An overview of the specialized AI agents that power FabriiQ&apos;s marketing and operations.
+          </p>
+        </div>
+
         {/* Demo Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Chat Interface */}
           <div className="lg:col-span-1">
-            <div className="rounded-xl overflow-hidden border border-gray-800/30 bg-black/40 backdrop-blur-sm p-4">
-              <div className="h-[600px]">
+            <div className="rounded-xl overflow-hidden border border-gray-200 bg-white shadow-lg sticky top-8">
+              <div className="p-4 bg-gray-100 border-b border-gray-200">
+                <h3 className="font-semibold text-gray-800">Live Demo</h3>
+                <p className="text-sm text-gray-500">Interact with the Visitor Engagement Agent</p>
+              </div>
+              <div className="h-[600px] p-4">
                 <AivyChat
                   contactInfo={{ name: 'Demo User', phone: 'N/A', organization: 'Demo Org' }}
                   userId="demo-user"
@@ -23,88 +63,79 @@ export default function AIDemoPage() {
           </div>
 
           {/* Information Panel */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Features */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                AI Assistant Features
-              </h3>
-              <div className="space-y-3">
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-[#1F504B] rounded-full mt-2 flex-shrink-0"></div>
+          <div className="lg:col-span-2 space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-primary/10 rounded-full">
+                    <Users className="h-6 w-6 text-primary" />
+                  </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">Educational Management</h4>
-                    <p className="text-sm text-gray-600">Get help with student information systems, course planning, and academic workflows</p>
+                    <CardTitle>Meet the AIVY Agents</CardTitle>
+                    <CardDescription>
+                      This multi-agent system automates key tasks, from visitor engagement to content creation.
+                    </CardDescription>
                   </div>
                 </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-[#5A8A84] rounded-full mt-2 flex-shrink-0"></div>
-                  <div>
-                    <h4 className="font-medium text-gray-900">Platform Guidance</h4>
-                    <p className="text-sm text-gray-600">Learn about FabriiQ features, capabilities, and best practices</p>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="text-center text-gray-500">Loading agents...</div>
+                ) : agents.length === 0 ? (
+                  <div className="text-center text-gray-500">
+                    No agents found. Please run the database migration to seed the agents table.
                   </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-[#F59E0B] rounded-full mt-2 flex-shrink-0"></div>
-                  <div>
-                    <h4 className="font-medium text-gray-900">Smart Analytics</h4>
-                    <p className="text-sm text-gray-600">Understand data insights and generate meaningful reports</p>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {agents.map((agent) => (
+                      <div key={agent.id} className="bg-gray-50 border border-gray-200 rounded-lg p-4 flex items-start gap-4 transition-all hover:shadow-md hover:bg-white">
+                        <Image
+                          src={agent.avatar_url || '/default-avatar.png'}
+                          alt={agent.name}
+                          width={48}
+                          height={48}
+                          className="rounded-full border-2 border-white shadow-sm"
+                        />
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-gray-800">{agent.name}</h4>
+                          <p className="text-sm font-medium text-primary">{agent.persona}</p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {(agent.metadata as any)?.description || 'No description available.'}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Sample Questions */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Try These Questions
-              </h3>
-              <div className="space-y-2">
-                {[
-                  "What are FabriiQ's core capabilities?",
-                  "How does the AI help with student management?",
-                  "What administrative features are available?",
-                  "Tell me about the analytics dashboard",
-                  "How can I manage course assignments?"
-                ].map((question, index) => (
-                  <button
-                    key={index}
-                    className="w-full text-left p-3 text-sm bg-gray-50 hover:bg-[#D8E3E0] rounded-lg transition-colors border border-transparent hover:border-[#5A8A84]"
-                    onClick={() => {
-                      // This would trigger sending the question to the chat
-                      console.log('Suggested question:', question)
-                    }}
-                  >
-                    &quot;{question}&quot;
-                  </button>
-                ))}
-              </div>
-            </div>
+                )}
+              </CardContent>
+            </Card>
 
             {/* Technical Info */}
-            <div className="bg-gradient-to-r from-[#1F504B] to-[#5A8A84] rounded-lg shadow-lg p-6 text-white">
-              <h3 className="text-lg font-semibold mb-4">
-                Technical Implementation
-              </h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span>Status:</span>
-                  <span className="font-medium">Alpha Development</span>
+            <Card>
+              <CardHeader>
+                <CardTitle>Technical Architecture</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">System Status:</span>
+                    <span className="font-medium text-green-600">Operational</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Backend:</span>
+                    <span className="font-medium">Supabase + PostgreSQL</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">LLM Provider:</span>
+                    <span className="font-medium">Anthropic (Claude 3.5 Sonnet)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Architecture:</span>
+                    <span className="font-medium">12-Factor Multi-Agent System</span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span>Backend:</span>
-                  <span className="font-medium">Supabase + pgvector</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>AI Model:</span>
-                  <span className="font-medium">Supabase/gte-small</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Architecture:</span>
-                  <span className="font-medium">RAG Pipeline</span>
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
@@ -115,10 +146,9 @@ export default function AIDemoPage() {
               ⚠️
             </div>
             <div className="text-sm text-amber-800">
-              <strong>Alpha Version Notice:</strong> This AI assistant is currently in development. 
-              Responses are generated using a mock system for demonstration purposes. 
-              The production version will feature advanced RAG capabilities with vector search 
-              and integration with your institution&apos;s knowledge base.
+              <strong>System Preview Notice:</strong> This page demonstrates the structure of the AIVY Agentic System.
+              The chat interface is connected to a live agent, but full inter-agent orchestration is still in development.
+              Data is fetched directly from the database to reflect the current agent configurations.
             </div>
           </div>
         </div>
