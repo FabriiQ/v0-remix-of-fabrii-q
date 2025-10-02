@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node --loader ts-node/esm server.ts",
     "build": "next build",
-    "start": "NODE_ENV=production node --loader ts-node/esm server.ts",
+    "start": "cross-env NODE_ENV=production node --loader ts-node/esm server.ts",
     "lint": "eslint .",
     "clean": "rm -rf .next .cache",
     "clean:install": "npm run clean && npm install",
@@ -99,6 +99,7 @@
     "@types/use-sync-external-store": "^1.5.0",
     "@types/uuid": "^10.0.0",
     "@types/ws": "^8.18.1",
+    "cross-env": "^10.1.0",
     "eslint": "^9.36.0",
     "eslint-config-next": "^15.5.3",
     "postcss": "^8.5",

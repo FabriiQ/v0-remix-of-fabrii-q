@@ -31,6 +31,7 @@ export const createClient = async () => {
 
 // Service role client for admin operations and Edge Functions
 export const createServiceClient = () => {
+  console.log('createServiceClient called');
   return createServerClient<Database>(
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -48,8 +49,7 @@ export const createServiceClient = () => {
   )
 }
 
-// Export a default supabase instance for convenience
-export const supabase = createServiceClient()
+
 
 // Helper function name used in API endpoints
 export const createServerSupabaseClient = createServiceClient

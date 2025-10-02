@@ -11,9 +11,15 @@ import type {
   AppConversationTurn,
   AppLeadContact
 } from './conversation-memory.types'
+import { SupabaseClient } from '@supabase/supabase-js'
 
 export class AIVYConversationMemory {
-  private supabase = createServiceClient() as any // Cast to any to bypass type checking for now
+  private supabase: SupabaseClient
+
+  constructor(supabaseClient: SupabaseClient) {
+    console.log('AIVYConversationMemory constructor called');
+    this.supabase = supabaseClient
+  }
 
   async getOrCreateSession(sessionIdentifier: string, userId?: string): Promise<string> {
     // Convert non-UUID user IDs to null for anonymous users

@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
 import { Database } from '@/lib/supabase/database.types'
 
-// Use the exported supabase instance for admin operations
-const supabase = createServiceClient()
+
 
 interface CreateAdminRequest {
   email: string
@@ -28,6 +27,7 @@ interface AdminCheckResponse {
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse<AdminResponse>> {
+  const supabase = createServiceClient()
   try {
     const { email, password, fullName } = await request.json() as Partial<CreateAdminRequest>
 
@@ -133,6 +133,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<AdminResp
 
 // This endpoint should only be available during development/setup
 export async function GET(): Promise<NextResponse<AdminCheckResponse>> {
+  const supabase = createServiceClient()
   // Check if admin already exists
   try {
     const { data: existingAdmins, error } = await (supabase as any)
