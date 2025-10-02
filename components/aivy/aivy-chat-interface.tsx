@@ -1,8 +1,9 @@
 'use client'
 
 import type React from "react"
-import { useState, useRef, useEffect } from 'react'
-import { Send, Loader2 } from 'lucide-react'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import Image from 'next/image'
+import { Send, Loader2, MessageSquare, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useLanguage } from '@/contexts/language-context'
 
@@ -42,8 +43,14 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [replyingTo, setReplyingTo] = useState<Message | null>(null)
   const endRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const handleReply = useCallback((message: Message) => {
+    setReplyingTo(message)
+    inputRef.current?.focus()
+  }, [])
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -62,11 +69,11 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
       setMessages([welcomeMessage])
     } else {
       // Update the welcome message if language changed
-      setMessages(prev => prev.map((msg, index) => 
+      setMessages(prev => prev.map((msg, index) =>
         index === 0 && msg.id === 'welcome' ? welcomeMessage : msg
       ))
     }
-  }, [contactInfo.name, t])
+  }, [contactInfo.name, t, messages.length])
 
   const onSend = async () => {
     const trimmed = input.trim()
@@ -79,7 +86,8 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
       timestamp: new Date()
     }
 
-    setMessages((m) => [...m, userMsg])
+    const newMessages: Message[] = [...messages, userMsg]
+    setMessages(newMessages)
     setInput("")
     setIsLoading(true)
     setError(null)
@@ -94,6 +102,9 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
     }
     setMessages((m) => [...m, loadingMessage])
 
+    const parentTurnId = replyingTo?.id
+    setReplyingTo(null)
+
     try {
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
@@ -103,7 +114,8 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
         body: JSON.stringify({
           message: userMsg.content,
           conversationId: conversationId,
-          userId: userId
+          userId: userId,
+          parentTurnId
         })
       })
 
@@ -122,7 +134,7 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
       setMessages((m) => {
         const withoutLoading = m.filter(msg => !msg.isLoading)
         const reply: Message = {
-          id: `a-${Date.now()}`,
+          id: data.turnId || `a-${Date.now()}`,
           role: "assistant",
           content: responseContent,
           timestamp: new Date()
@@ -136,7 +148,7 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
     } catch (error) {
       console.error('Chat error:', error)
       setError(error instanceof Error ? error.message : 'An unexpected error occurred')
-      
+
       // Remove loading message and add error message
       setMessages((m) => {
         const withoutLoading = m.filter(msg => !msg.isLoading)
@@ -192,7 +204,7 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
     <div className="h-full min-h-0 flex flex-col">
       {/* Inject custom animations */}
       <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
-      
+
       <section
         className="relative flex-1 flex flex-col h-full min-h-0 overflow-hidden"
         aria-label="AIVY Chat"
@@ -213,7 +225,7 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
       >
         {/* Use transparent background to show homepage background */}
         <div className="absolute inset-0" />
-        
+
         {/* Cosmic Particle Field */}
         <div
           className="absolute inset-0 opacity-40"
@@ -238,11 +250,12 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
           <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-4 space-y-4 sm:px-6 md:px-8 sm:space-y-6 overscroll-contain">
             <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
               {messages.map((message, index) => (
-                <AIVYMessageBubble 
-                  key={message.id} 
-                  message={message} 
+                <AIVYMessageBubble
+                  key={message.id}
+                  message={message}
                   index={index}
                   isFirst={index === 0}
+                  onReply={handleReply}
                 />
               ))}
               <div ref={endRef} />
@@ -252,7 +265,15 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
           {/* Input Area pinned at bottom by flex layout */}
           <div className="p-4 sm:p-6 md:p-8 bg-black/60 backdrop-blur-sm border-t border-gray-700/20 pb-[env(safe-area-inset-bottom)]">
             <div className="max-w-4xl mx-auto">
-              <div 
+              {replyingTo && (
+                <div className="mb-2 p-2 bg-gray-700/50 rounded-lg text-xs text-white/80 flex justify-between items-center animate-fadeIn">
+                  <span>Replying to: &quot;{replyingTo.content.substring(0, 40)}...&quot;</span>
+                  <button onClick={() => setReplyingTo(null)} className="p-1 rounded-full hover:bg-gray-600">
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+              <div
                 className="relative flex items-center gap-2 sm:gap-3 md:gap-4 p-3 sm:p-4 rounded-full backdrop-blur-xl border"
                 style={{
                   background: "linear-gradient(135deg, rgba(31, 80, 75, 0.15), rgba(90, 138, 132, 0.08))",
@@ -308,30 +329,34 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
 }
 
 // AIVY Message Bubble - Organic flowing design
-function AIVYMessageBubble({ 
-  message, 
-  index, 
-  isFirst 
-}: { 
+function AIVYMessageBubble({
+  message,
+  index,
+  isFirst,
+  onReply
+}: {
   message: Message;
   index: number;
   isFirst: boolean;
+  onReply: (message: Message) => void;
 }) {
   const isUser = message.role === "user"
   const isAIVY = message.role === "assistant"
-  
+
   return (
-    <div className={`flex w-full ${isUser ? 'justify-end' : 'justify-start'} items-start gap-3`}>
+    <div className={`group flex w-full ${isUser ? 'justify-end' : 'justify-start'} items-start gap-3`}>
       {/* Assistant avatar on the left of AI messages */}
       {isAIVY && (
-        <img
+        <Image
           src="/Aivy-Avatar.png"
           alt="AIVY"
+          width={112}
+          height={112}
           className="w-24 h-24 sm:w-28 sm:h-28 rounded-full select-none shrink-0"
           style={{ filter: 'brightness(1.15) contrast(1.05)' }}
         />
       )}
-      <div 
+      <div
         className={`relative ${isUser ? 'max-w-[85%] md:max-w-[70%]' : 'max-w-[75%] md:max-w-[65%]'} ${isFirst ? 'animate-fadeIn' : ''}`}
         style={{
           animationDelay: `${index * 0.1}s`
@@ -341,10 +366,10 @@ function AIVYMessageBubble({
         <div
           className={`relative px-6 py-4 backdrop-blur-xl border ${isUser ? 'rounded-l-3xl rounded-tr-3xl rounded-br-md' : 'rounded-r-3xl rounded-tl-3xl rounded-bl-md'}`}
           style={{
-            background: isUser 
+            background: isUser
               ? "linear-gradient(135deg, rgba(93, 213, 196, 0.15), rgba(74, 197, 180, 0.08))"
               : "linear-gradient(135deg, rgba(15, 42, 48, 0.85), rgba(10, 26, 30, 0.75))",
-            borderColor: isUser 
+            borderColor: isUser
               ? "var(--aivy-teal-primary)"
               : "var(--aivy-ribbon-glow)",
             borderWidth: "1px",
@@ -356,51 +381,51 @@ function AIVYMessageBubble({
           {/* Message content */}
           {message.isLoading ? (
             <div className="flex items-center space-x-4">
-              <div 
+              <div
                 className="w-8 h-8 rounded-full flex items-center justify-center"
-                style={{ 
+                style={{
                   background: "linear-gradient(135deg, var(--aivy-teal-primary), var(--aivy-teal-secondary))"
                 }}
               >
-                <Loader2 
-                  className="w-4 h-4 animate-spin" 
-                  style={{ color: "var(--aivy-deep-bg)" }} 
+                <Loader2
+                  className="w-4 h-4 animate-spin"
+                  style={{ color: "var(--aivy-deep-bg)" }}
                 />
               </div>
               <div className="flex space-x-2">
-                <div 
+                <div
                   className="w-2 h-2 rounded-full animate-bounce"
                   style={{ backgroundColor: "var(--aivy-teal-primary)" }}
                 />
-                <div 
+                <div
                   className="w-2 h-2 rounded-full animate-bounce"
-                  style={{ 
-                    backgroundColor: "var(--aivy-teal-primary)", 
-                    animationDelay: "0.1s" 
+                  style={{
+                    backgroundColor: "var(--aivy-teal-primary)",
+                    animationDelay: "0.1s"
                   }}
                 />
-                <div 
+                <div
                   className="w-2 h-2 rounded-full animate-bounce"
-                  style={{ 
-                    backgroundColor: "var(--aivy-teal-primary)", 
-                    animationDelay: "0.2s" 
+                  style={{
+                    backgroundColor: "var(--aivy-teal-primary)",
+                    animationDelay: "0.2s"
                   }}
                 />
               </div>
             </div>
           ) : (
-            <p 
+            <p
               className="text-base leading-relaxed"
-              style={{ 
-                color: isUser 
-                  ? "var(--aivy-text-primary)" 
-                  : "var(--aivy-text-secondary)" 
+              style={{
+                color: isUser
+                  ? "var(--aivy-text-primary)"
+                  : "var(--aivy-text-secondary)"
               }}
             >
               {message.content}
             </p>
           )}
-          
+
           {/* Subtle glow line */}
           <div
             className="absolute inset-x-4 top-0 h-px opacity-60"
@@ -409,13 +434,16 @@ function AIVYMessageBubble({
             }}
           />
         </div>
-        
-        {/* Timestamp */}
-        <div 
-          className={`text-xs mt-1 px-2 ${isUser ? 'text-right' : 'text-left'}`}
+
+        {/* Timestamp and Reply Button */}
+        <div
+          className={`text-xs mt-1 px-2 flex items-center gap-2 transition-opacity duration-300 group-hover:opacity-100 ${isAIVY ? 'opacity-100' : 'opacity-0'} ${isUser ? 'justify-end' : 'justify-start'}`}
           style={{ color: "var(--aivy-text-muted)" }}
         >
-          {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          <span>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          <button onClick={() => onReply(message)} className="p-1 rounded-full hover:bg-gray-700">
+            <MessageSquare className="w-3 h-3" />
+          </button>
         </div>
       </div>
       {/* Spacer to align user messages with large assistant avatar width */}
@@ -447,13 +475,13 @@ function AIVYRibbonRealm() {
           </linearGradient>
           <filter id="ribbonGlow">
             <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
-            <feMerge> 
+            <feMerge>
               <feMergeNode in="coloredBlur"/>
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
         </defs>
-        
+
         {/* Main flowing ribbons that frame the chat area */}
         <g className="animate-pulse" style={{ animationDuration: "6s" }}>
           {/* Left ribbon flow */}
@@ -467,7 +495,7 @@ function AIVYRibbonRealm() {
             className="animate-pulse"
             style={{ animationDuration: "4s" }}
           />
-          
+
           {/* Right ribbon flow */}
           <path
             d="M1920,300 Q1700,400 1400,350 T1000,500 Q600,450 300,550 T-100,500"
@@ -479,7 +507,7 @@ function AIVYRibbonRealm() {
             className="animate-pulse"
             style={{ animationDuration: "5s", animationDelay: "1s" }}
           />
-          
+
           {/* Central weaving ribbon */}
           <path
             d="M0,600 Q300,500 600,550 T1200,450 Q1500,400 1920,350"
@@ -492,7 +520,7 @@ function AIVYRibbonRealm() {
             className="animate-pulse"
             style={{ animationDuration: "7s", animationDelay: "2s" }}
           />
-          
+
           {/* Bottom flowing ribbon */}
           <path
             d="M-100,800 Q400,750 800,800 T1600,700 Q1800,650 1920,700"
@@ -506,7 +534,7 @@ function AIVYRibbonRealm() {
             style={{ animationDuration: "8s", animationDelay: "0.5s" }}
           />
         </g>
-        
+
         {/* Secondary accent ribbons for depth */}
         <g opacity="0.4">
           <path
@@ -527,7 +555,7 @@ function AIVYRibbonRealm() {
           />
         </g>
       </svg>
-      
+
       {/* Floating ribbon particles for extra mystique */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(12)].map((_, i) => (
@@ -544,9 +572,9 @@ function AIVYRibbonRealm() {
             <div
               className="w-2 h-2 rounded-full"
               style={{
-                background: i % 3 === 0 
+                background: i % 3 === 0
                   ? "var(--aivy-teal-primary)"
-                  : i % 3 === 1 
+                  : i % 3 === 1
                     ? "var(--aivy-ribbon-glow)"
                     : "var(--aivy-teal-secondary)",
                 boxShadow: `0 0 8px ${i % 3 === 0 ? 'var(--aivy-teal-primary)' : i % 3 === 1 ? 'var(--aivy-ribbon-glow)' : 'var(--aivy-teal-secondary)'}`

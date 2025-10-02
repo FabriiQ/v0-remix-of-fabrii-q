@@ -40,7 +40,7 @@ export default function ContactClient() {
     const fetchContact = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/crm/contacts/${params.id}`);
+        const response = await fetch(`/api/data/crm/contacts/${params.id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch contact');
         }
@@ -84,8 +84,8 @@ export default function ContactClient() {
     setSaving(true);
     
     try {
-      const response = await fetch(`/api/crm/contacts/${params.id}`, {
-        method: 'PUT',
+      const response = await fetch(`/api/data/crm/contacts/${params.id}`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },

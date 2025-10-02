@@ -439,7 +439,7 @@ How can I best help you explore FabriiQ's potential for your institution?`
           </div>
           
           <p className="text-center text-xs text-gray-500 mt-3">
-            AIVY may make mistakes, please don't rely on its information.
+            AIVY may make mistakes, please don&apos;t rely on its information.
           </p>
         </div>
       </div>

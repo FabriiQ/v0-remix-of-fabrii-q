@@ -73,8 +73,8 @@ export function ContactCollection({ onContactSubmit, isSubmitting = false }: Con
           Welcome to Your Strategic Consultation
         </h3>
         <p className="text-[#1F504B]/70 text-sm leading-relaxed">
-          I'm AIVY, your executive conversation partner. To provide you with the most relevant insights for your institution, 
-          I'd like to know a bit about you. This helps me tailor our discussion to your specific context and challenges.
+          I&apos;m AIVY, your executive conversation partner. To provide you with the most relevant insights for your institution,
+          I&apos;d like to know a bit about you. This helps me tailor our discussion to your specific context and challenges.
         </p>
       </div>
 

@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 
-// GET /api/crm/contacts/[id] - Get specific contact with full details
+// GET /api/data/crm/contacts/[id] - Get specific contact with full details
 interface ContactParams {
   id: string;
 }
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const supabase = createServerSupabaseClient();
+    const supabase = await createClient();
     const { id } = await params;
     
     // Get contact with all related data
@@ -77,10 +77,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   }
 }
 
-// PATCH /api/crm/contacts/[id] - Update specific contact
+// PATCH /api/data/crm/contacts/[id] - Update specific contact
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const supabase = createServerSupabaseClient();
+    const supabase = await createClient();
     const { id } = await params;
     const data = await request.json();
     
@@ -116,10 +116,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   }
 }
 
-// DELETE /api/crm/contacts/[id] - Delete contact
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+// DELETE /api/data/crm/contacts/[id] - Delete contact
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id:string }> }) {
   try {
-    const supabase = createServerSupabaseClient();
+    const supabase = await createClient();
     const { id } = await params;
     
     const { error } = await supabase

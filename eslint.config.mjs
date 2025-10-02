@@ -12,6 +12,11 @@ const compat = new FlatCompat({
     allConfig: js.configs.all
 });
 
-export default defineConfig([{
-    extends: compat.extends("next/core-web-vitals"),
-}]);
+export default defineConfig([
+    {
+        ignores: [".next/"],
+    },
+    {
+        extends: compat.extends("next/core-web-vitals"),
+    }
+]);

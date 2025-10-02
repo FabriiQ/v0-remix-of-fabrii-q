@@ -1,12 +1,49 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { AIChat } from '@/components/ai/AIChat'
+import { AIVYChatInterface } from '@/components/aivy/aivy-chat-interface'
+import { ContactCollection } from '@/components/aivy/contact-collection'
+
+interface ContactInfo {
+  name: string
+  phone: string
+  organization: string
+}
 
 export default function ChatBubbleWidget() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null)
+  const [conversationId, setConversationId] = useState<string | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [isSubmittingContact, setIsSubmittingContact] = useState(false)
+
+  // Load contact info from local storage
+  useEffect(() => {
+    const storedContact = localStorage.getItem('aivy_contactInfo')
+    if (storedContact) {
+      setContactInfo(JSON.parse(storedContact))
+    }
+  }, [])
+
+  // Generate conversation and user IDs when chat opens
+  useEffect(() => {
+    if (open && !conversationId) {
+      setConversationId(`conv_${Date.now()}`)
+      setUserId(`user_${Date.now()}`)
+    }
+  }, [open, conversationId])
+
+  const handleContactComplete = async (contact: ContactInfo) => {
+    setIsSubmittingContact(true)
+    // Here you would typically save the contact to your backend
+    // For this example, we'll just save it to local storage
+    localStorage.setItem('aivy_contactInfo', JSON.stringify(contact))
+    setContactInfo(contact)
+    setIsSubmittingContact(false)
+  }
 
   // Hide on AIVY dedicated page
   if (pathname?.startsWith('/aivy')) return null
@@ -25,9 +62,11 @@ export default function ChatBubbleWidget() {
           </div>
           {/* Avatar + label */}
           <div className="flex flex-col items-center">
-            <img
+            <Image
               src="/Aivy-Avatar.png"
               alt="AIVY"
+              width={72}
+              height={72}
               className="w-[64px] h-[64px] md:w-[72px] md:h-[72px] rounded-full select-none shadow-lg aivy-float"
             />
             {/* Single dark-green revolving dot */}
@@ -64,7 +103,7 @@ export default function ChatBubbleWidget() {
           {/* Header */}
           <div className="flex justify-between items-center px-4 py-2 bg-black/50 backdrop-blur-sm border-b border-white/10">
             <div className="flex items-center gap-2">
-              <img src="/Aivy-Avatar.png" alt="AIVY" className="w-7 h-7 rounded-full" />
+              <Image src="/Aivy-Avatar.png" alt="AIVY" width={28} height={28} className="w-7 h-7 rounded-full" />
               <span className="text-sm font-semibold text-white">AIVY</span>
               <span className="text-[11px] text-white/60 px-2 py-0.5 rounded-full border border-white/10">Executive AI</span>
             </div>
@@ -78,12 +117,18 @@ export default function ChatBubbleWidget() {
           </div>
           {/* Body */}
           <div className="flex-1 overflow-hidden bg-black/40 backdrop-blur-sm">
-            <AIChat
-              userId="global-widget-visitor"
-              conversationId={`widget-${Date.now()}`}
-              className="h-full"
-              showHeader={false}
-            />
+            {contactInfo && userId && conversationId ? (
+              <AIVYChatInterface
+                contactInfo={contactInfo}
+                userId={userId}
+                conversationId={conversationId}
+              />
+            ) : (
+              <ContactCollection
+                onComplete={handleContactComplete}
+                isSubmitting={isSubmittingContact}
+              />
+            )}
           </div>
         </div>
       )}

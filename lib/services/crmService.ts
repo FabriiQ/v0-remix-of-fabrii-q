@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 
 // Type definitions for assessment data
 export interface PartnershipAssessment {
@@ -56,7 +56,7 @@ export async function getAssessments(
   sortBy: string = 'submitted_at',
   sortOrder: string = 'desc'
 ): Promise<AssessmentsData> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createClient();
 
   let query = (supabase.from('partnership_assessments') as any)
       .select(`
@@ -201,7 +201,7 @@ export async function getContacts(
   sortBy: string = 'created_at',
   sortOrder: string = 'desc'
 ): Promise<ContactsData> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createClient();
 
   let query = supabase
     .from('lead_contacts')
@@ -298,6 +298,7 @@ export interface Conversation {
   conversion_stage: 'awareness' | 'interest' | 'consideration' | 'evaluation' | 'decision' | 'partnership';
   last_updated: string;
   created_at: string;
+  conversation_turns?: any[];
 }
 
 interface RawConversation {
@@ -312,7 +313,7 @@ interface RawConversation {
 }
 
 export async function getConversations(limit: number = 50, offset: number = 0): Promise<Conversation[]> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createClient();
 
   const { data: conversations, error } = await supabase
     .from('conversation_sessions')
@@ -447,7 +448,7 @@ export async function getTasks(
   sortBy: string = 'due_date',
   sortOrder: string = 'asc'
 ): Promise<TasksData> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createClient();
 
   let query = supabase
     .from('follow_up_tasks')
@@ -570,6 +571,68 @@ export async function getTasks(
   };
 }
 
+export async function getConversationById(id: string): Promise<Conversation | null> {
+    const supabase = await createClient();
+
+    const { data: conversation, error } = await supabase
+      .from('conversation_sessions')
+      .select(`
+        *,
+        contact_interactions(
+          *,
+          lead_contacts(*)
+        ),
+        conversation_analytics(*),
+        conversation_turns(*)
+      `)
+      .eq('id', id)
+      .single();
+
+    if (error || !conversation) {
+      console.error(`Error fetching conversation ${id}:`, error);
+      return null;
+    }
+
+    const contactInteraction = Array.isArray(conversation.contact_interactions)
+      ? conversation.contact_interactions[0] || {}
+      : conversation.contact_interactions || {};
+    const contact = contactInteraction.lead_contacts || {};
+    const analytics = (Array.isArray(conversation.conversation_analytics)
+      ? conversation.conversation_analytics[0]
+      : conversation.conversation_analytics) || {};
+    const conversationTurns = Array.isArray(conversation.conversation_turns) ? conversation.conversation_turns : [];
+
+    return {
+        id: conversation.id,
+        session_id: conversation.session_identifier || conversation.id,
+        contact_id: contact.id || contactInteraction.contact_id || null,
+        contact_name: contact.name || 'Unknown Contact',
+        contact_email: contact.email || '',
+        organization: contact.company || contact.organization || 'Unknown Organization',
+        total_messages: analytics.total_messages || conversationTurns.length || 0,
+        conversation_duration_minutes: analytics.conversation_duration_minutes || 0,
+        user_engagement_score: analytics.user_engagement_score || 0,
+        intent_distribution: analytics.intent_distribution || {},
+        topics_covered: analytics.topics_covered || [],
+        pain_points_mentioned: analytics.pain_points_mentioned || [],
+        buying_signals: analytics.buying_signals || 0,
+        objections_raised: analytics.objections_raised || [],
+        competitive_mentions: analytics.competitive_mentions || [],
+        demo_requested: analytics.demo_requested || false,
+        contact_info_provided: analytics.contact_info_provided || false,
+        meeting_requested: analytics.meeting_requested || false,
+        pricing_discussed: analytics.pricing_discussed || false,
+        partnership_assessment_completed: analytics.partnership_assessment_completed || false,
+        technical_questions: analytics.technical_questions || 0,
+        business_questions: analytics.business_questions || 0,
+        satisfaction_indicators: analytics.satisfaction_indicators || {},
+        conversion_stage: analytics.conversion_stage || 'awareness',
+        last_updated: conversation.last_interaction_at || conversation.updated_at || conversation.created_at,
+        created_at: conversation.created_at,
+        conversation_turns: conversationTurns,
+      };
+  }
+
 type Activity = {
   id: string;
   interaction_type: string;
@@ -642,7 +705,7 @@ export type DashboardStats = {
 };
 
 export async function getDashboardData(timeRange: string = '30'): Promise<DashboardStats> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createClient();
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - parseInt(timeRange));
 

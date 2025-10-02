@@ -15,6 +15,8 @@ export default function AIVYPage() {
   const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null)
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false)
   const [isSubmittingContact, setIsSubmittingContact] = useState(false)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [conversationId, setConversationId] = useState<string | null>(null)
 
   // Load onboarding state from localStorage
   useEffect(() => {
@@ -30,6 +32,14 @@ export default function AIVYPage() {
       // ignore
     }
   }, [])
+
+  // Generate IDs when onboarding is complete
+  useEffect(() => {
+    if (hasCompletedOnboarding && contactInfo && !userId) {
+      setUserId(`user_${Date.now()}`)
+      setConversationId(`conv_${Date.now()}`)
+    }
+  }, [hasCompletedOnboarding, contactInfo, userId])
 
   const handleContactComplete = async (contact: ContactInfo) => {
     setIsSubmittingContact(true)
@@ -83,11 +93,6 @@ export default function AIVYPage() {
     }
   }
 
-  // Show contact collection flow if not completed
-  if (!hasCompletedOnboarding || !contactInfo) {
-    return <ContactCollection onComplete={handleContactComplete} isSubmitting={isSubmittingContact} />
-  }
-
   // Show AI chat interface with consistent background
   return (
     <main className="relative h-dvh bg-black text-foreground overflow-hidden flex flex-col">
@@ -102,11 +107,15 @@ export default function AIVYPage() {
 
         {/* AIVY Chat Interface - Full Screen without page scrolling */}
         <div className="flex-1 min-h-0 pt-20 pb-0">
-          <AIVYChatInterface 
-            userId={`aivy-${contactInfo.name.replace(/\s+/g, '-').toLowerCase()}`}
-            conversationId={`aivy-conversation-${Date.now()}`}
-            contactInfo={contactInfo}
-          />
+          {hasCompletedOnboarding && contactInfo && userId && conversationId ? (
+            <AIVYChatInterface
+              contactInfo={contactInfo}
+              userId={userId}
+              conversationId={conversationId}
+            />
+          ) : (
+            <ContactCollection onComplete={handleContactComplete} isSubmitting={isSubmittingContact} />
+          )}
         </div>
         
       </div>
