@@ -13,15 +13,6 @@ export default function AIDemoPage() {
           <div className="lg:col-span-1">
             <div className="rounded-xl overflow-hidden border border-gray-800/30 bg-black/40 backdrop-blur-sm p-4">
               <div className="h-[600px]">
-                <AivyChat
-                  userId="demo-user-123"
-                  conversationId="demo-conversation-456"
-                  contactInfo={{
-                    name: 'Valued Visitor',
-                    phone: 'N/A',
-                    organization: 'Exploratory Inc.',
-                  }}
-                />
               </div>
             </div>
           </div>
