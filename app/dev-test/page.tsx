@@ -41,7 +41,7 @@ export default function DevTestPage() {
       addOutput('✓ Database connection successful')
       updateTestStatus(testName, 'success')
       return true
-    } catch (error) {
+    } catch (error: any) {
       addOutput(`✗ Database connection failed: ${error.message}`)
       updateTestStatus(testName, 'failed')
       return false
@@ -75,7 +75,7 @@ export default function DevTestPage() {
       } else {
         throw new Error(`Only created ${results.length}/${testDocuments.length} test documents`)
       }
-    } catch (error) {
+    } catch (error: any) {
       addOutput(`✗ Test document creation failed: ${error.message}`)
       updateTestStatus(testName, 'failed')
       return false
@@ -152,7 +152,7 @@ export default function DevTestPage() {
 
       updateTestStatus(testName, 'success')
       return true
-    } catch (error) {
+    } catch (error: any) {
       addOutput(`✗ Document processing test failed: ${error.message}`)
       updateTestStatus(testName, 'failed')
       return false
@@ -191,7 +191,7 @@ export default function DevTestPage() {
       } else {
         throw new Error('No response received from chat API')
       }
-    } catch (error) {
+    } catch (error: any) {
       addOutput(`✗ Chat API test failed: ${error.message}`)
       updateTestStatus(testName, 'failed')
       return false
@@ -233,7 +233,7 @@ export default function DevTestPage() {
       }
 
       return true
-    } catch (error) {
+    } catch (error: any) {
       addOutput(`✗ Vector search test failed: ${error.message}`)
       updateTestStatus(testName, 'failed')
       return false

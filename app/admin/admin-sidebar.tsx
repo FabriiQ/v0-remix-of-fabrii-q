@@ -27,6 +27,12 @@ export default function AdminSidebar() {
 
   const navigation: NavItem[] = [
     {
+      name: 'Agents',
+      href: '/admin/agents',
+      icon: Brain,
+      current: pathname?.startsWith('/admin/agents') || false
+    },
+    {
       name: 'Documents',
       href: '/admin/documents',
       icon: Database,

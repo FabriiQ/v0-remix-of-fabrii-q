@@ -6,23 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/components/ui/use-toast';
+import { Tables } from '@/types/supabase';
 
-interface Role {
-  id: number;
-  name: string;
-  description: string;
-}
-
-interface Permission {
-  id: number;
-  name: string;
-  description: string;
-}
-
-interface RolePermission {
-  role_id: number;
-  permission_id: number;
-}
+type Role = Tables<'roles'>;
+type Permission = Tables<'permissions'>;
+type RolePermission = Tables<'role_permissions'>;
 
 export default function RolesManagementPage() {
   const [roles, setRoles] = useState<Role[]>([]);
@@ -60,8 +48,8 @@ export default function RolesManagementPage() {
       if (error) {
         toast({ title: 'Error', description: `Failed to add permission: ${error.message}`, variant: 'destructive' });
       } else {
-        setRolePermissions([...rolePermissions, { role_id: roleId, permission_id: permissionId }]);
         toast({ title: 'Success', description: 'Permission added successfully.' });
+        fetchData();
       }
     } else {
       // Remove permission from role
@@ -69,8 +57,8 @@ export default function RolesManagementPage() {
        if (error) {
         toast({ title: 'Error', description: `Failed to remove permission: ${error.message}`, variant: 'destructive' });
       } else {
-        setRolePermissions(rolePermissions.filter(rp => !(rp.role_id === roleId && rp.permission_id === permissionId)));
         toast({ title: 'Success', description: 'Permission removed successfully.' });
+        fetchData();
       }
     }
   };

@@ -1,22 +1,10 @@
 'use server'
 
 import { createServiceClient } from '@/lib/supabase/server'
+import { Tables } from '@/types/supabase'
 
-// Define the types for our Supabase tables
-interface Document {
-  id: string
-  processing_status: 'pending' | 'processing' | 'completed' | 'failed'
-  processing_time?: number
-  created_at: string
-  updated_at: string
-}
-
-interface Chunk {
-  id: string
-  token_count: number
-  document_id: string
-  created_at: string
-}
+type Document = Tables<'documents'>;
+type Chunk = Tables<'document_chunks'>;
 
 export interface KnowledgeBaseStats {
   totalDocuments: number
@@ -60,7 +48,7 @@ export async function getKnowledgeBaseStats(): Promise<{ data: KnowledgeBaseStat
 
     // Get chunk and token stats
     const { data: chunkStats, error: chunkError } = await supabase
-      .from('chunks')
+      .from('document_chunks')
       .select('token_count')
       .returns<Pick<Chunk, 'token_count'>[]>()
       .limit(1000) // Limit to avoid performance issues

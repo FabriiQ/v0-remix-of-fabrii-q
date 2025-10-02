@@ -1,4 +1,11 @@
-import { Message } from 'ai';
+import { UIMessage } from 'ai';
+
+export interface Message {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  createdAt?: Date;
+}
 
 /**
  * Represents a record in the Customer Relationship Management (CRM) system.
@@ -66,16 +73,6 @@ export interface AgentOutput {
  * Represents the configuration and state of a single AI agent.
  * This corresponds to the `agents` table in the database.
  */
-export interface Agent {
-    id: string;
-    name: string;
-    avatar_url?: string;
-    persona?: string;
-    system_prompt?: string;
-    enabled_tools?: string[];
-    is_active: boolean;
-    created_at: string;
-    updated_at: string;
-    metadata?: any;
-    role_id?: number;
-}
+import { Tables } from './supabase';
+
+export type Agent = Tables<'agents'>;

@@ -154,7 +154,7 @@ type Functions = {
 }
 
 export function createConversationClient() {
-  const supabase = createServiceClient()
+  const getSupabase = () => createServiceClient()
   
   return {
     ...supabase,

@@ -28,31 +28,11 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useToast } from "@/components/ui/use-toast"
+import { Tables } from '@/types/supabase'
 
-interface Role {
-  id: number;
-  name: string;
-}
-
-interface UserProfile {
-  id: string;
-  user_id: string;
-  full_name: string | null;
-  role_id: number | null;
-  is_active: boolean;
-  created_at: string;
-  roles: { name: string } | null;
-}
-
-interface Document {
-  id: string
-  title: string
-  source_type: 'upload' | 'web' | 'manual'
-  file_size: number | null
-  file_type: string | null
-  processing_status: 'pending' | 'processing' | 'completed' | 'failed'
-  created_at: string
-}
+type Role = Tables<'roles'>;
+type UserProfile = Tables<'user_profiles'> & { roles: { name: string } | null };
+type Document = Tables<'documents'>;
 
 export default function AdminDashboard() {
   const [user, setUser] = useState<any>(null)
@@ -100,7 +80,7 @@ export default function AdminDashboard() {
   const handleRoleChange = async (userId: string, newRoleId: string) => {
     const { error } = await supabase
       .from('user_profiles')
-      .update({ role_id: newRoleId })
+      .update({ role_id: parseInt(newRoleId, 10) })
       .eq('id', userId);
 
     if (error) {
@@ -115,7 +95,7 @@ export default function AdminDashboard() {
     try {
       const { data, error } = await supabase
         .from('documents')
-        .select('id, title, source_type, file_size, file_type, processing_status, created_at')
+        .select('*')
         .order('created_at', { ascending: false })
         .limit(50)
 
@@ -157,7 +137,7 @@ export default function AdminDashboard() {
       // Check if user is admin
       const { data: profile, error: profileError } = await supabase
         .from('user_profiles')
-        .select('*')
+        .select('*, roles ( name )')
         .eq('user_id', user.id)
         .single()
 
@@ -195,7 +175,7 @@ export default function AdminDashboard() {
     router.push('/')
   }
 
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = (status: string | null) => {
     switch (status) {
       case 'completed':
         return <CheckCircle className="h-4 w-4 text-green-500" />
@@ -208,7 +188,7 @@ export default function AdminDashboard() {
     }
   }
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string | null) => {
     switch (status) {
       case 'completed':
         return 'bg-green-100 text-green-800'
@@ -342,7 +322,7 @@ export default function AdminDashboard() {
                           {doc.processing_status}
                         </Badge>
                         <span className="text-xs text-gray-500">
-                          {new Date(doc.created_at).toLocaleDateString()}
+                          {doc.created_at ? new Date(doc.created_at).toLocaleDateString() : 'N/A'}
                         </span>
                       </div>
                     </div>
@@ -375,7 +355,7 @@ export default function AdminDashboard() {
                           {user.full_name || 'Unnamed User'}
                         </h3>
                         <p className="text-sm text-gray-500">
-                          Joined {new Date(user.created_at).toLocaleDateString()}
+                          Joined {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
                         </p>
                       </div>
                       <div className="flex items-center gap-4">

@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 
     // Initialize services
     const supabase = createServiceClient()
-    const conversationMemory = new AIVYConversationMemory()
+    const conversationMemory = new AIVYConversationMemory(supabase)
 
     // Get or create conversation session with proper identifier format
     let sessionIdentifier = conversationId

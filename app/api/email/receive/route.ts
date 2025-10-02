@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Incomplete email data' }, { status: 400 });
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
     let threadId: string | null = null;
 
     // Try to find the thread using In-Reply-To or References
