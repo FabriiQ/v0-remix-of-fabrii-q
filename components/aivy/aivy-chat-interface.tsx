@@ -115,7 +115,11 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
           message: userMsg.content,
           conversationId: conversationId,
           userId: userId,
-          parentTurnId
+          parentTurnId,
+          chat_history: newMessages.map((msg) => ({
+            role: msg.role,
+            content: msg.content,
+          })),
         })
       })
 
@@ -303,6 +307,7 @@ export function AIVYChatInterface({ userId, conversationId, contactInfo }: AIVYC
                   onClick={onSend}
                   disabled={isLoading || !input.trim()}
                   className="p-2 sm:p-3 rounded-full transition-all duration-200 disabled:opacity-50"
+                  aria-label="Send"
                   style={{
                     background: "linear-gradient(135deg, var(--aivy-teal-primary), var(--aivy-teal-secondary))",
                     color: "white",

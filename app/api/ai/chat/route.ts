@@ -5,6 +5,8 @@ import { generateRAGResponse } from '@/lib/ai/gemini'
 import { AIVYConversationMemory } from '@/lib/ai/conversation-memory'
 import { ExecutiveKnowledgePrioritizer } from '@/lib/ai/executive-knowledge-prioritizer'
 import type { Database } from '@/lib/supabase/database.types'
+import { routeRequest } from '@/lib/ai/agentic-router'
+import { AIMessage, HumanMessage } from '@langchain/core/messages'
 
 
 export async function POST(request: NextRequest) {
@@ -86,6 +88,32 @@ export async function POST(request: NextRequest) {
     // Analyze user intent using AIVY's executive intelligence
     const intentAnalysis = await conversationMemory.analyzeIntent(message, context)
     console.log('Intent analysis:', intentAnalysis.primaryIntent, 'confidence:', intentAnalysis.confidence)
+
+    // If intent is scheduling, use the agentic router
+    if (intentAnalysis.primaryIntent === 'scheduling' && intentAnalysis.confidence > 0.8) {
+      console.log('Routing to Scheduler Agent...');
+      const chat_history = context.recentHistory.map(turn => {
+        return [new HumanMessage(turn.userQuery), new AIMessage(turn.responseContent)]
+      }).flat();
+
+      const agentResponse = await routeRequest(message, chat_history);
+
+      const turnId = await conversationMemory.saveConversationTurn(
+        sessionId,
+        message,
+        agentResponse,
+        intentAnalysis,
+        [],
+        parentTurnId
+      );
+
+      return NextResponse.json({
+        response: agentResponse,
+        conversationId,
+        turnId,
+        timestamp: new Date().toISOString()
+      });
+    }
     
     // Apply executive-level knowledge prioritization to retrieved chunks
     let prioritizedChunks: Array<{ content: string; similarity: number }> = []
