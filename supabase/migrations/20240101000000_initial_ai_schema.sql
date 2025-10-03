@@ -121,33 +121,3 @@ INSERT INTO ai_settings (setting_key, setting_value, description) VALUES
 ('similarity_threshold', '0.7', 'Minimum similarity threshold for vector search'),
 ('max_results', '5', 'Maximum number of results to return from vector search'),
 ('system_prompt', '"You are FabriiQ''s AI assistant. Use the provided context to answer questions about educational management and platform features. If the context doesn''t contain relevant information, say so politely."', 'Default system prompt for AI responses');
-
--- Create the vector search function
-CREATE OR REPLACE FUNCTION match_documents(
-  query_embedding vector(384),
-  similarity_threshold float DEFAULT 0.7,
-  match_count int DEFAULT 10
-)
-RETURNS TABLE (
-  id uuid,
-  document_id uuid,
-  content text,
-  similarity float,
-  metadata jsonb
-)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-  RETURN QUERY
-  SELECT
-    document_chunks.id,
-    document_chunks.document_id,
-    document_chunks.content,
-    1 - (document_chunks.embedding <=> query_embedding) AS similarity,
-    document_chunks.metadata
-  FROM document_chunks
-  WHERE 1 - (document_chunks.embedding <=> query_embedding) > similarity_threshold
-  ORDER BY document_chunks.embedding <=> query_embedding
-  LIMIT match_count;
-END;
-$$;

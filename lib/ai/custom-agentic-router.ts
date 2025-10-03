@@ -162,11 +162,19 @@ export async function routeRequest(
   }
 
   // Save the turn to conversation memory
+  const intentAnalysisForSave = {
+    primaryIntent: intent,
+    confidence: 0.9,
+    executiveContext: {},
+    keyTopics: [],
+    strategicFocus: [] // Ensure this property exists
+  };
+
   await conversationMemory.saveConversationTurn(
     sessionId,
     message,
     response,
-    { primaryIntent: intent, confidence: 0.9, details: {} }, // Simplified intent analysis
+    intentAnalysisForSave,
     [],
     parentTurnId
   );
